@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CA Campus — Study better together",
+  title: "CA Studyspace — Study better together",
   description: "A study platform for CA Foundation aspirants: study logs, notes, official papers and live rooms.",
 };
 

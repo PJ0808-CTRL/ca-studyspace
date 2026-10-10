@@ -126,9 +126,9 @@ export default function Pomodoro({ supabase, userId, refresh }: { supabase: Supa
   }, [completeSession, endsAt, hydrated, status]);
 
   useEffect(() => {
-    if (status === "running") document.title = `${String(Math.floor(remaining / 60)).padStart(2, "0")}:${String(remaining % 60).padStart(2, "0")} · CA Campus`;
-    else document.title = "CA Campus — Study better together";
-    return () => { document.title = "CA Campus — Study better together"; };
+    if (status === "running") document.title = `${String(Math.floor(remaining / 60)).padStart(2, "0")}:${String(remaining % 60).padStart(2, "0")} · CA Studyspace`;
+    else document.title = "CA Studyspace — Study better together";
+    return () => { document.title = "CA Studyspace — Study better together"; };
   }, [remaining, status]);
 
   function startOrPause() {

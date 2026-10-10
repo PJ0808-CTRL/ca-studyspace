@@ -1,4 +1,4 @@
--- Run this once in the Supabase SQL Editor for an existing CA Campus project.
+-- Run this once in the Supabase SQL Editor for an existing CA Studyspace project.
 -- It keeps all existing text notes and adds private PDF/Word storage.
 
 alter table public.notes add column if not exists file_path text;
