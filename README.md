@@ -13,6 +13,7 @@ This is the new standalone project in `D:\ca studyspace`. The code is already in
 | `components/ThemeToggle.tsx` | Light/dark mode switch, saved on this device |
 | `components/Dashboard.tsx` | Study logs, goals, streak, weekly chart |
 | `components/Pomodoro.tsx` | Persistent focus timer with automatic study logging |
+| `components/StudyPlan.tsx` | Daily planner, syllabus tracker, revisions, and flashcards |
 | `components/Rooms.tsx` | Supabase Realtime chat rooms |
 | `components/Community.tsx` | Discussions and replies |
 | `components/Notes.tsx` | PDF/Word uploads, private/shared notes, and subject filters |
@@ -22,6 +23,7 @@ This is the new standalone project in `D:\ca studyspace`. The code is already in
 | `lib/resources.ts` | Verified official ICAI links |
 | `supabase/schema.sql` | Database tables, RLS policies, Realtime setup |
 | `supabase/migrations/20261010_note_uploads.sql` | One-time upgrade for existing Supabase projects |
+| `supabase/migrations/20261010_study_planning.sql` | One-time upgrade for planning tools |
 | `.env.local.example` | Template for your Supabase URL and publishable key |
 
 ## First local setup
@@ -74,10 +76,19 @@ Because your Supabase project already has the original tables, open [the note up
 
 After running the migration, refresh the app and open **Notes**. Choose **Upload a file**, add a title and subject, and select a PDF, DOC, or DOCX. Leave **Share with other aspirants** unchecked to keep it private. In **Shared notes**, use **Filter by subject** to browse student uploads. Downloads require a signed-in account.
 
+## Enable Study Plan in your existing project
+
+Open `supabase/migrations/20261010_study_planning.sql`, copy the full SQL, and run it once in **Supabase → SQL Editor**. This creates private tables for daily tasks, syllabus progress, spaced revisions, and flashcards. Refresh the app and open **Study plan**.
+
+Marking a syllabus chapter **Completed** schedules revisions after 1, 3, 7, 15, and 30 days. In **Pomodoro**, select an unfinished planned task before starting; completed focus sessions add their minutes to that task and mark it complete when its target is reached.
+
 ## Quick test
 
 - Log study time; the dashboard total and chart should update.
 - Start a Pomodoro session with a subject and topic. When it finishes, confirm its minutes appear on the dashboard automatically.
+- Add a task in Study plan, link it from Pomodoro, and confirm focused minutes update the task.
+- Complete a syllabus chapter and confirm its first revision is scheduled for the next day.
+- Create and review a flashcard in each subject.
 - Open a room in two browsers signed in with different student accounts. A new message should appear in both without refreshing.
 - Create a shared note and a discussion, then confirm another account can read and reply.
 - Sign in with Google after enabling the provider, then sign out and log back in.

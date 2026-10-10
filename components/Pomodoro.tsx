@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { subjects } from "@/lib/types";
+import { subjects, type StudyTask } from "@/lib/types";
 import type { Subject } from "@/lib/subjects";
 
 type Mode = "focus" | "break";
@@ -17,6 +17,7 @@ type StoredTimer = {
   subject: Subject;
   topic: string;
   logId: string | null;
+  taskId?: string | null;
   completedDate: string;
   completedCount: number;
 };
@@ -35,6 +36,8 @@ export default function Pomodoro({ supabase, userId, refresh }: { supabase: Supa
   const [subject, setSubject] = useState<Subject>("Accounting");
   const [topic, setTopic] = useState("");
   const [logId, setLogId] = useState<string | null>(null);
+  const [taskId, setTaskId] = useState<string | null>(null);
+  const [tasks, setTasks] = useState<StudyTask[]>([]);
   const [completedCount, setCompletedCount] = useState(0);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -55,6 +58,7 @@ export default function Pomodoro({ supabase, userId, refresh }: { supabase: Supa
         setSubject(saved.subject);
         setTopic(saved.topic);
         setLogId(saved.logId);
+        setTaskId(saved.taskId || null);
         setCompletedCount(count);
       }
     } catch {
@@ -65,9 +69,21 @@ export default function Pomodoro({ supabase, userId, refresh }: { supabase: Supa
 
   useEffect(() => {
     if (!hydrated) return;
-    const saved: StoredTimer = { mode, status: status === "saving" ? "paused" : status, remaining, endsAt, focusMinutes, subject, topic, logId, completedDate: today(), completedCount };
+    const saved: StoredTimer = { mode, status: status === "saving" ? "paused" : status, remaining, endsAt, focusMinutes, subject, topic, logId, taskId, completedDate: today(), completedCount };
     localStorage.setItem(storageKey, JSON.stringify(saved));
-  }, [hydrated, storageKey, mode, status, remaining, endsAt, focusMinutes, subject, topic, logId, completedCount]);
+  }, [hydrated, storageKey, mode, status, remaining, endsAt, focusMinutes, subject, topic, logId, taskId, completedCount]);
+
+  const loadTasks = useCallback(async () => {
+    const { data } = await supabase.from("study_tasks").select("*").eq("completed", false).order("due_date").limit(30);
+    setTasks((data || []) as StudyTask[]);
+  }, [supabase]);
+
+  useEffect(() => {
+    void loadTasks();
+    const update = () => void loadTasks();
+    window.addEventListener("ca-study-tasks-updated", update);
+    return () => window.removeEventListener("ca-study-tasks-updated", update);
+  }, [loadTasks]);
 
   const completeSession = useCallback(async () => {
     if (finishing.current) return;
@@ -103,15 +119,26 @@ export default function Pomodoro({ supabase, userId, refresh }: { supabase: Supa
       return;
     }
 
+    const linkedTask = tasks.find(task => task.id === taskId);
+    if (linkedTask) {
+      const loggedMinutes = Math.min(1440, linkedTask.logged_minutes + focusMinutes);
+      const completed = loggedMinutes >= linkedTask.planned_minutes;
+      const { error: taskError } = await supabase.from("study_tasks").update({ logged_minutes: loggedMinutes, completed, completed_at: completed ? new Date().toISOString() : null }).eq("id", linkedTask.id);
+      if (taskError) setError(`The session was saved, but its planned task could not be updated: ${taskError.message}`);
+    }
+
     setCompletedCount(count => count + 1);
     setMode("break");
     setRemaining(breakMinutes * 60);
     setStatus("idle");
     setLogId(null);
-    setMessage(`${focusMinutes} focused minutes saved to your dashboard. Take a short break.`);
+    setTaskId(null);
+    setMessage(`${focusMinutes} focused minutes saved${linkedTask ? " and added to your planned task" : " to your dashboard"}. Take a short break.`);
     await refresh();
+    await loadTasks();
+    window.dispatchEvent(new Event("ca-study-tasks-updated"));
     finishing.current = false;
-  }, [focusMinutes, logId, mode, refresh, subject, supabase, topic, userId]);
+  }, [focusMinutes, loadTasks, logId, mode, refresh, subject, supabase, taskId, tasks, topic, userId]);
 
   useEffect(() => {
     if (!hydrated || status !== "running" || !endsAt) return;
@@ -157,6 +184,12 @@ export default function Pomodoro({ supabase, userId, refresh }: { supabase: Supa
     setMessage(""); setError("");
   }
 
+  function chooseTask(id: string) {
+    setTaskId(id || null);
+    const task = tasks.find(item => item.id === id);
+    if (task) { setSubject(task.subject); setTopic(task.title); }
+  }
+
   function chooseFocusMinutes(minutes: number) {
     if (status === "running" || status === "saving") return;
     setFocusMinutes(minutes);
@@ -176,5 +209,5 @@ export default function Pomodoro({ supabase, userId, refresh }: { supabase: Supa
   const progress = Math.max(0, Math.min(100, ((totalSeconds - remaining) / totalSeconds) * 100));
   const time = `${String(Math.floor(remaining / 60)).padStart(2, "0")}:${String(remaining % 60).padStart(2, "0")}`;
 
-  return <><header className="page-head"><p className="eyebrow">FOCUS STUDIO</p><h1>One session. One clear goal.</h1><p>Choose a topic, start the clock, and your completed focus time will be added to the dashboard automatically.</p></header><div className="pomodoro-layout"><section className={`pomodoro-stage ${mode}`}><div className="pomodoro-tabs"><button className={mode === "focus" ? "active" : ""} onClick={() => chooseMode("focus")}>Focus</button><button className={mode === "break" ? "active" : ""} onClick={() => chooseMode("break")}>Short break</button></div><div className="timer-orbit" style={{ "--progress": `${progress * 3.6}deg` } as React.CSSProperties}><div className="timer-face"><span>{mode === "focus" ? "FOCUS TIME" : "BREATHE"}</span><strong>{time}</strong><small>{status === "running" ? "Stay with it" : status === "paused" ? "Paused" : status === "saving" ? "Saving session…" : "Ready when you are"}</small></div></div><div className="timer-actions"><button className="timer-secondary" onClick={reset} disabled={status === "saving"} aria-label="Reset timer">↺</button><button className="timer-primary" onClick={startOrPause} disabled={status === "saving"}>{status === "running" ? "Pause" : status === "paused" ? "Continue" : mode === "focus" ? "Start focus" : "Start break"}</button></div><div className="cycle-row"><span>{completedCount} session{completedCount === 1 ? "" : "s"} today</span><div>{[0, 1, 2, 3].map(index => <i className={index < completedCount % 4 || (completedCount > 0 && completedCount % 4 === 0) ? "done" : ""} key={index} />)}</div></div></section><aside className="card pomodoro-plan"><div><p className="eyebrow">SESSION PLAN</p><h3>What are you focusing on?</h3></div><div className="form-stack"><label>Subject<select value={subject} onChange={event => setSubject(event.target.value as Subject)} disabled={status === "running" || status === "saving"}>{subjects.map(item => <option key={item}>{item}</option>)}</select></label><label>Topic<input value={topic} onChange={event => setTopic(event.target.value)} maxLength={120} placeholder="e.g. Bank reconciliation" disabled={status === "running" || status === "saving"} /></label><label>Focus length<div className="duration-options">{focusOptions.map(minutes => <button className={focusMinutes === minutes ? "active" : ""} onClick={() => chooseFocusMinutes(minutes)} disabled={status === "running" || status === "saving"} key={minutes}>{minutes}<small>min</small></button>)}</div></label></div><div className="pomodoro-note"><span>✦</span><p><strong>Automatic progress</strong>Finishing a focus session logs its full length under the selected subject. Breaks are never counted as study time.</p></div>{message && <div className="notice success">{message}</div>}{error && <div className="notice error-text">{error}</div>}</aside></div></>;
+  return <><header className="page-head"><p className="eyebrow">FOCUS STUDIO</p><h1>One session. One clear goal.</h1><p>Choose a topic, start the clock, and your completed focus time will be added to the dashboard automatically.</p></header><div className="pomodoro-layout"><section className={`pomodoro-stage ${mode}`}><div className="pomodoro-tabs"><button className={mode === "focus" ? "active" : ""} onClick={() => chooseMode("focus")}>Focus</button><button className={mode === "break" ? "active" : ""} onClick={() => chooseMode("break")}>Short break</button></div><div className="timer-orbit" style={{ "--progress": `${progress * 3.6}deg` } as React.CSSProperties}><div className="timer-face"><span>{mode === "focus" ? "FOCUS TIME" : "BREATHE"}</span><strong>{time}</strong><small>{status === "running" ? "Stay with it" : status === "paused" ? "Paused" : status === "saving" ? "Saving session…" : "Ready when you are"}</small></div></div><div className="timer-actions"><button className="timer-secondary" onClick={reset} disabled={status === "saving"} aria-label="Reset timer">↺</button><button className="timer-primary" onClick={startOrPause} disabled={status === "saving"}>{status === "running" ? "Pause" : status === "paused" ? "Continue" : mode === "focus" ? "Start focus" : "Start break"}</button></div><div className="cycle-row"><span>{completedCount} session{completedCount === 1 ? "" : "s"} today</span><div>{[0, 1, 2, 3].map(index => <i className={index < completedCount % 4 || (completedCount > 0 && completedCount % 4 === 0) ? "done" : ""} key={index} />)}</div></div></section><aside className="card pomodoro-plan"><div><p className="eyebrow">SESSION PLAN</p><h3>What are you focusing on?</h3></div><div className="form-stack">{tasks.length > 0 && <label>Planned task <span className="optional">optional</span><select value={taskId || ""} onChange={event => chooseTask(event.target.value)} disabled={status === "running" || status === "saving"}><option value="">No linked task</option>{tasks.map(task => <option value={task.id} key={task.id}>{task.title} · {task.logged_minutes}/{task.planned_minutes} min</option>)}</select></label>}<label>Subject<select value={subject} onChange={event => { setSubject(event.target.value as Subject); setTaskId(null); }} disabled={status === "running" || status === "saving"}>{subjects.map(item => <option key={item}>{item}</option>)}</select></label><label>Topic<input value={topic} onChange={event => { setTopic(event.target.value); setTaskId(null); }} maxLength={120} placeholder="e.g. Bank reconciliation" disabled={status === "running" || status === "saving"} /></label><label>Focus length<div className="duration-options">{focusOptions.map(minutes => <button className={focusMinutes === minutes ? "active" : ""} onClick={() => chooseFocusMinutes(minutes)} disabled={status === "running" || status === "saving"} key={minutes}>{minutes}<small>min</small></button>)}</div></label></div><div className="pomodoro-note"><span>✦</span><p><strong>Automatic progress</strong>{taskId ? "This session will add focused minutes to your linked planned task." : "Finishing a focus session logs its full length under the selected subject."} Breaks are never counted as study time.</p></div>{message && <div className="notice success">{message}</div>}{error && <div className="notice error-text">{error}</div>}</aside></div></>;
 }
