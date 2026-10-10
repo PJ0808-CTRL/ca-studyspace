@@ -33,6 +33,9 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   robots: { index: true, follow: true },
+  verification: {
+    google: "1_-uC7hRyqDScguEx59hTMHWMd_XWlTPNL3YRWRo8lM",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
