@@ -15,12 +15,13 @@ This is the new standalone project in `D:\ca studyspace`. The code is already in
 | `components/Tests.tsx` | Timed tests and saved results |
 | `components/Rooms.tsx` | Supabase Realtime chat rooms |
 | `components/Community.tsx` | Discussions and replies |
-| `components/Notes.tsx` | Private and shared notes |
+| `components/Notes.tsx` | PDF/Word uploads, private/shared notes, and subject filters |
 | `components/Resources.tsx` | Official ICAI resource links |
 | `components/Settings.tsx` | Profile and daily goal |
 | `lib/questions.ts` | Original practice question bank |
 | `lib/resources.ts` | Verified official ICAI links |
 | `supabase/schema.sql` | Database tables, RLS policies, Realtime setup |
+| `supabase/migrations/20261010_note_uploads.sql` | One-time upgrade for existing Supabase projects |
 | `.env.local.example` | Template for your Supabase URL and publishable key |
 
 ## First local setup
@@ -67,6 +68,12 @@ See [Supabase's Google setup guide](https://supabase.com/docs/guides/auth/social
 
 Use the **Dark mode / Light mode** button on the login screen or in the app's top bar. The choice is saved in this browser, so it stays selected after refresh and sign-out.
 
+## Enable PDF and Word note uploads in your existing project
+
+Because your Supabase project already has the original tables, open [the note upload migration](supabase/migrations/20261010_note_uploads.sql), copy its full SQL, and run it **once** in **Supabase → SQL Editor**. This adds file details to existing notes, creates a **private** `study-notes` Storage bucket, sets a 10 MB limit for PDF/DOC/DOCX, and grants file access to the owner and to signed-in students when a note is shared. Existing text notes stay in place. New Supabase projects can run `supabase/schema.sql` instead.
+
+After running the migration, refresh the app and open **Notes**. Choose **Upload a file**, add a title and subject, and select a PDF, DOC, or DOCX. Leave **Share with other aspirants** unchecked to keep it private. In **Shared notes**, use **Filter by subject** to browse student uploads. Downloads require a signed-in account.
+
 ## Quick test
 
 - Log study time; the dashboard total and chart should update.
@@ -75,6 +82,7 @@ Use the **Dark mode / Light mode** button on the login screen or in the app's to
 - Create a shared note and a discussion, then confirm another account can read and reply.
 - Sign in with Google after enabling the provider, then sign out and log back in.
 - Switch to dark mode, refresh, and check that it stays dark; switch back to light mode.
+- Upload a PDF or Word note, then download it from **My notes**. Share a note and verify a second account can find it under its subject and download it. Confirm the second account cannot see your private note.
 
 ## Before putting it online
 

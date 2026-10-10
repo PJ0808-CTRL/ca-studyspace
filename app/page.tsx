@@ -12,7 +12,7 @@ import Resources from "@/components/Resources";
 import Settings from "@/components/Settings";
 import ThemeToggle from "@/components/ThemeToggle";
 import { getSupabase } from "@/lib/supabase";
-import type { Attempt, Discussion, Note, Profile, Reply, StudyLog } from "@/lib/types";
+import type { Attempt, Discussion, Profile, Reply, StudyLog } from "@/lib/types";
 
 type View = "dashboard" | "tests" | "rooms" | "community" | "notes" | "resources" | "settings";
 const navigation: { id: View; label: string; icon: string }[] = [
@@ -35,7 +35,6 @@ export default function Home() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [logs, setLogs] = useState<StudyLog[]>([]);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
-  const [notes, setNotes] = useState<Note[]>([]);
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
   const [replies, setReplies] = useState<Reply[]>([]);
 
@@ -60,17 +59,15 @@ export default function Home() {
         found = created.data;
       }
       setProfile(found as Profile);
-      const [logResult, attemptResult, noteResult, discussionResult, replyResult] = await Promise.all([
+      const [logResult, attemptResult, discussionResult, replyResult] = await Promise.all([
         supabase.from("study_logs").select("*").order("study_date", { ascending: false }).limit(100),
         supabase.from("test_attempts").select("*").order("created_at", { ascending: false }).limit(50),
-        supabase.from("notes").select("*").order("created_at", { ascending: false }).limit(100),
         supabase.from("discussions").select("*").order("created_at", { ascending: false }).limit(100),
         supabase.from("replies").select("*").order("created_at", { ascending: true }).limit(500),
       ]);
-      for (const result of [logResult, attemptResult, noteResult, discussionResult, replyResult]) if (result.error) throw result.error;
+      for (const result of [logResult, attemptResult, discussionResult, replyResult]) if (result.error) throw result.error;
       setLogs((logResult.data || []) as StudyLog[]);
       setAttempts((attemptResult.data || []) as Attempt[]);
-      setNotes((noteResult.data || []) as Note[]);
       setDiscussions((discussionResult.data || []) as Discussion[]);
       setReplies((replyResult.data || []) as Reply[]);
     } catch (error) { setError((error as Error).message); }
@@ -84,5 +81,5 @@ export default function Home() {
   if (!user) return <Auth supabase={supabase} />;
   if (!profile) return <div className="loading">{error || "Setting up your study space…"}</div>;
 
-  return <div className="app-shell"><aside className="sidebar"><div className="logo"><span>CA</span><strong>Campus<i>.</i></strong><small>FOUNDATION</small></div><p className="side-label">WORKSPACE</p><nav aria-label="Main navigation">{navigation.map(item => <button key={item.id} className={view === item.id ? "active" : ""} onClick={() => setView(item.id)}><span>{item.icon}</span>{item.label}</button>)}</nav><div className="sidebar-bottom"><div className="sidebar-help"><b>Keep showing up.</b><p>One focused session today can change your week.</p></div><div className="user-menu"><span>{profile.display_name.slice(0, 1).toUpperCase()}</span><div><strong>{profile.display_name}</strong><small>CA Foundation aspirant</small></div></div><button className="logout" onClick={() => void supabase.auth.signOut()}>Log out ↗</button></div></aside><div className="main-area"><div className="topbar"><span>CA Campus <b>/ {navigation.find(item => item.id === view)?.label}</b></span><div className="topbar-actions"><ThemeToggle /><span className="study-status"><i /> Your study space</span><span className="top-avatar">{profile.display_name.slice(0, 1).toUpperCase()}</span></div></div><nav className="mobile-menu" aria-label="Mobile navigation">{navigation.map(item => <button key={item.id} className={view === item.id ? "active" : ""} onClick={() => setView(item.id)}>{item.label}</button>)}</nav><main className="main-content">{error && <div className="notice error-text">{error} <button onClick={() => void refresh()}>Retry</button></div>}{loadingData && <div className="sync">Syncing your data…</div>}{view === "dashboard" && <Dashboard supabase={supabase} userId={user.id} profile={profile} logs={logs} attempts={attempts} refresh={refresh} goToTests={() => setView("tests")} />}{view === "tests" && <Tests supabase={supabase} attempts={attempts} refresh={refresh} />}{view === "rooms" && <Rooms supabase={supabase} userId={user.id} profile={profile} />}{view === "community" && <Community supabase={supabase} userId={user.id} profile={profile} discussions={discussions} replies={replies} refresh={refresh} />}{view === "notes" && <Notes supabase={supabase} userId={user.id} notes={notes} refresh={refresh} />}{view === "resources" && <Resources />}{view === "settings" && <Settings supabase={supabase} profile={profile} refresh={refresh} />}<footer>CA Campus is an independent study tool and is not affiliated with ICAI.</footer></main></div></div>;
+  return <div className="app-shell"><aside className="sidebar"><div className="logo"><span>CA</span><strong>Campus<i>.</i></strong><small>FOUNDATION</small></div><p className="side-label">WORKSPACE</p><nav aria-label="Main navigation">{navigation.map(item => <button key={item.id} className={view === item.id ? "active" : ""} onClick={() => setView(item.id)}><span>{item.icon}</span>{item.label}</button>)}</nav><div className="sidebar-bottom"><div className="sidebar-help"><b>Keep showing up.</b><p>One focused session today can change your week.</p></div><div className="user-menu"><span>{profile.display_name.slice(0, 1).toUpperCase()}</span><div><strong>{profile.display_name}</strong><small>CA Foundation aspirant</small></div></div><button className="logout" onClick={() => void supabase.auth.signOut()}>Log out ↗</button></div></aside><div className="main-area"><div className="topbar"><span>CA Campus <b>/ {navigation.find(item => item.id === view)?.label}</b></span><div className="topbar-actions"><ThemeToggle /><span className="study-status"><i /> Your study space</span><span className="top-avatar">{profile.display_name.slice(0, 1).toUpperCase()}</span></div></div><nav className="mobile-menu" aria-label="Mobile navigation">{navigation.map(item => <button key={item.id} className={view === item.id ? "active" : ""} onClick={() => setView(item.id)}>{item.label}</button>)}</nav><main className="main-content">{error && <div className="notice error-text">{error} <button onClick={() => void refresh()}>Retry</button></div>}{loadingData && <div className="sync">Syncing your data…</div>}{view === "dashboard" && <Dashboard supabase={supabase} userId={user.id} profile={profile} logs={logs} attempts={attempts} refresh={refresh} goToTests={() => setView("tests")} />}{view === "tests" && <Tests supabase={supabase} attempts={attempts} refresh={refresh} />}{view === "rooms" && <Rooms supabase={supabase} userId={user.id} profile={profile} />}{view === "community" && <Community supabase={supabase} userId={user.id} profile={profile} discussions={discussions} replies={replies} refresh={refresh} />}{view === "notes" && <Notes supabase={supabase} userId={user.id} />}{view === "resources" && <Resources />}{view === "settings" && <Settings supabase={supabase} profile={profile} refresh={refresh} />}<footer>CA Campus is an independent study tool and is not affiliated with ICAI.</footer></main></div></div>;
 }

@@ -42,3 +42,19 @@ html[data-theme="dark"] .goal-bar,html[data-theme="dark"] .chart-track{backgroun
 html[data-theme="dark"] .notice{background:#1c4234;border-color:#3c7653;color:#c7edd1}html[data-theme="dark"] .error-text{color:#ffb2a8!important}
 html[data-theme="dark"] .journal-row,html[data-theme="dark"] .history-row{border-color:var(--line)}
 @media(max-width:800px){.study-status{display:none}.topbar .topbar-actions{gap:5px}.topbar .theme-toggle{padding:7px}.topbar .theme-toggle span:last-child{display:none}}
+
+.note-method{margin-bottom:20px}
+.file-picker input[type="file"]{padding:11px;border:1px dashed #99bda4;background:#f8fbf7;cursor:pointer}
+.file-picker input[type="file"]::file-selector-button{border:0;background:#e3f2e8;color:#257857;border-radius:6px;padding:8px 11px;margin-right:12px;font-size:11px;font-weight:800;cursor:pointer}
+.file-picker span,.file-picker small{font-size:10px;color:var(--muted);font-weight:500}
+.note-filter{display:grid;gap:7px;margin:17px 0;font-size:11px;font-weight:800;color:var(--ink)}
+.note-filter select{width:100%;border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:11px 12px;color:var(--ink);outline:none;font-size:12px}
+.note-heading{display:flex;align-items:center;gap:8px}
+.file-type{font-size:9px;color:#688e72;border:1px solid var(--line);border-radius:5px;padding:4px 6px;font-weight:800}
+.note-attachment{display:flex;align-items:center;gap:10px;background:#f4f8f3;border:1px solid var(--line);border-radius:9px;padding:11px;margin-top:12px;min-width:0}
+.note-attachment>span{font-size:22px;color:#2d865d}.note-attachment>div{min-width:0;flex:1}.note-attachment strong,.note-attachment small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.note-attachment strong{font-size:11px}.note-attachment small{font-size:9px;color:var(--muted);margin-top:3px}
+.note-attachment .text-button{flex:none}.note-meta{display:flex;justify-content:space-between;align-items:center;margin-top:14px}.note-meta small{font-size:10px;color:#a4b2a5}
+.load-more{display:block;margin:18px auto 0;border:1px solid var(--line);background:var(--paper);color:var(--green);padding:10px 15px;border-radius:8px;font-size:11px;font-weight:800}
+html[data-theme="dark"] .file-picker input[type="file"],html[data-theme="dark"] .note-attachment{background:#1b3b31;border-color:var(--line);color:var(--ink)}
+html[data-theme="dark"] .file-picker input[type="file"]::file-selector-button{background:#2b6547;color:#d8f6e0}
+html[data-theme="dark"] .file-type{color:#c1dfc9}

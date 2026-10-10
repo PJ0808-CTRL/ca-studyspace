@@ -26,9 +26,16 @@ create table if not exists public.notes (
   user_id uuid not null references auth.users(id) on delete cascade,
   subject text not null check (subject in ('Accounting','Business Laws','Quantitative Aptitude','Business Economics')),
   title text not null check (char_length(title) between 1 and 120),
-  content text not null check (char_length(content) between 1 and 5000),
+  content text not null default '' check (char_length(content) <= 5000),
+  file_path text unique,
+  file_name text,
+  file_mime text,
+  file_size integer,
   shared boolean not null default false,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  constraint notes_body_or_file_check check (char_length(btrim(content)) > 0 or file_path is not null),
+  constraint notes_file_owner_check check (file_path is null or split_part(file_path, '/', 1) = user_id::text),
+  constraint notes_file_metadata_check check (file_path is null or (file_name is not null and file_mime is not null and file_size between 1 and 10485760))
 );
 
 create table if not exists public.discussions (
@@ -72,6 +79,7 @@ create table if not exists public.test_attempts (
 create index if not exists study_logs_user_date on public.study_logs(user_id, study_date desc);
 create index if not exists room_messages_room_date on public.room_messages(room, created_at desc);
 create index if not exists discussions_date on public.discussions(created_at desc);
+create index if not exists notes_shared_subject_date on public.notes(subject, created_at desc) where shared;
 create index if not exists replies_discussion_date on public.replies(discussion_id, created_at);
 create index if not exists attempts_user_date on public.test_attempts(user_id, created_at desc);
 
@@ -121,3 +129,23 @@ do $$ begin
     execute 'alter publication supabase_realtime add table public.room_messages';
   end if;
 end $$;
+
+-- Private documents: students can upload their own files and read shared notes.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('study-notes', 'study-notes', false, 10485760,
+  array['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
+on conflict (id) do update set public = false, file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+create policy "study notes upload" on storage.objects for insert to authenticated
+with check (bucket_id = 'study-notes' and exists (
+  select 1 from public.notes n where n.file_path = name and n.user_id = (select auth.uid())
+));
+create policy "study notes download" on storage.objects for select to authenticated
+using (bucket_id = 'study-notes' and exists (
+  select 1 from public.notes n where n.file_path = name and (n.user_id = (select auth.uid()) or n.shared)
+));
+create policy "study notes delete" on storage.objects for delete to authenticated
+using (bucket_id = 'study-notes' and exists (
+  select 1 from public.notes n where n.file_path = name and n.user_id = (select auth.uid())
+));
