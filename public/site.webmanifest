@@ -1,0 +1,21 @@
+{
+  "name": "CA Studyspace",
+  "short_name": "CA Studyspace",
+  "description": "A focused study space for CA Foundation aspirants.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f9f5",
+  "theme_color": "#123d34",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
