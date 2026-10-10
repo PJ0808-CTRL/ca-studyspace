@@ -11,6 +11,7 @@ This is the new standalone project in `D:\ca studyspace`. The code is already in
 | `components/Auth.tsx` | Supabase email and Google sign-in |
 | `components/ThemeToggle.tsx` | Light/dark mode switch, saved on this device |
 | `components/Dashboard.tsx` | Study logs, goals, streak, weekly chart |
+| `components/Pomodoro.tsx` | Persistent focus timer with automatic study logging |
 | `components/Rooms.tsx` | Supabase Realtime chat rooms |
 | `components/Community.tsx` | Discussions and replies |
 | `components/Notes.tsx` | PDF/Word uploads, private/shared notes, and subject filters |
@@ -75,6 +76,7 @@ After running the migration, refresh the app and open **Notes**. Choose **Upload
 ## Quick test
 
 - Log study time; the dashboard total and chart should update.
+- Start a Pomodoro session with a subject and topic. When it finishes, confirm its minutes appear on the dashboard automatically.
 - Open a room in two browsers signed in with different student accounts. A new message should appear in both without refreshing.
 - Create a shared note and a discussion, then confirm another account can read and reply.
 - Sign in with Google after enabling the provider, then sign out and log back in.
