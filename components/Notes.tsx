@@ -3,16 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { subjects, type Note } from "@/lib/types";
-import type { Subject } from "@/lib/questions";
+import type { Subject } from "@/lib/subjects";
+import { uploadStudyNote } from "@/lib/note-upload";
 
 const BUCKET = "study-notes";
 const PAGE_SIZE = 24;
-const MAX_FILE_SIZE = 10 * 1024 * 1024;
-const MIME_TYPES: Record<string, string> = {
-  pdf: "application/pdf",
-  doc: "application/msword",
-  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-};
 
 export default function Notes({ supabase, userId }: { supabase: SupabaseClient; userId: string }) {
   const [subject, setSubject] = useState<Subject>("Accounting");
@@ -65,22 +60,7 @@ export default function Notes({ supabase, userId }: { supabase: SupabaseClient; 
       if (!trimmedTitle) throw new Error("Add a title for your note.");
       if (method === "upload") {
         if (!file) throw new Error("Choose a PDF or Word file.");
-        const extension = file.name.split(".").pop()?.toLowerCase() || "";
-        const mime = MIME_TYPES[extension];
-        if (!mime) throw new Error("Only PDF, DOC, and DOCX files are supported.");
-        if (!file.size || file.size > MAX_FILE_SIZE) throw new Error("Choose a file smaller than 10 MB.");
-        const path = `${userId}/${crypto.randomUUID()}.${extension}`;
-        const displayName = `${file.name.slice(0, 175 - extension.length)}.${extension}`;
-        const { data: note, error: insertError } = await supabase.from("notes").insert({
-          user_id: userId, subject, title: trimmedTitle, content: "", shared,
-          file_path: path, file_name: displayName, file_mime: mime, file_size: file.size,
-        }).select("id").single();
-        if (insertError) throw insertError;
-        const { error: uploadError } = await supabase.storage.from(BUCKET).upload(path, file, { contentType: mime, upsert: false });
-        if (uploadError) {
-          await supabase.from("notes").delete().eq("id", note.id);
-          throw uploadError;
-        }
+        await uploadStudyNote({ supabase, userId, subject, title: trimmedTitle, file, shared });
         setFile(null);
         if (fileInput.current) fileInput.current.value = "";
       } else {

@@ -8,17 +8,15 @@ This is the new standalone project in `D:\ca studyspace`. The code is already in
 | --- | --- |
 | `app/page.tsx` | Main app and navigation |
 | `app/globals.css` | Complete visual design |
-| `app/api/test/route.ts` | Authenticated, server-graded tests |
 | `components/Auth.tsx` | Supabase email and Google sign-in |
 | `components/ThemeToggle.tsx` | Light/dark mode switch, saved on this device |
 | `components/Dashboard.tsx` | Study logs, goals, streak, weekly chart |
-| `components/Tests.tsx` | Timed tests and saved results |
 | `components/Rooms.tsx` | Supabase Realtime chat rooms |
 | `components/Community.tsx` | Discussions and replies |
 | `components/Notes.tsx` | PDF/Word uploads, private/shared notes, and subject filters |
 | `components/Resources.tsx` | Official ICAI resource links |
 | `components/Settings.tsx` | Profile and daily goal |
-| `lib/questions.ts` | Original practice question bank |
+| `lib/subjects.ts` | CA Foundation subject list |
 | `lib/resources.ts` | Verified official ICAI links |
 | `supabase/schema.sql` | Database tables, RLS policies, Realtime setup |
 | `supabase/migrations/20261010_note_uploads.sql` | One-time upgrade for existing Supabase projects |
@@ -58,7 +56,7 @@ This is the new standalone project in `D:\ca studyspace`. The code is already in
 2. Add `http://localhost:3000` to **Authorized JavaScript origins**. Under **Authorized redirect URIs**, paste the **Callback URL** shown in **Supabase → Authentication → Providers → Google**. For a hosted Supabase project it has the form `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback`. The Google redirect goes to Supabase, not directly to localhost.
 3. Copy the Google **Client ID** and **Client secret** into the same Supabase Google provider page, enable the provider, and save. Keep the client secret in Supabase; do not put it in `.env.local` or Git.
 4. In **Supabase → Authentication → URL Configuration**, keep the Site URL as `http://localhost:3000` and add `http://localhost:3000` to the redirect allow list if needed. The app sends users back to that origin after Google sign-in.
-5. On the CA Campus login screen, choose **Continue with Google**. Google accounts use the same profile, tests, notes, and community tables as email accounts. You do not need another SQL migration.
+5. On the CA Campus login screen, choose **Continue with Google**. Google accounts use the same profile, notes, and community tables as email accounts. You do not need another SQL migration.
 
 When deploying, add the production site origin to Google Authorized JavaScript origins and to Supabase redirect URLs; use the same Supabase callback URL in Google.
 
@@ -77,7 +75,6 @@ After running the migration, refresh the app and open **Notes**. Choose **Upload
 ## Quick test
 
 - Log study time; the dashboard total and chart should update.
-- Take a 10-question sprint and submit it; the score should appear in Previous attempts.
 - Open a room in two browsers signed in with different student accounts. A new message should appear in both without refreshing.
 - Create a shared note and a discussion, then confirm another account can read and reply.
 - Sign in with Google after enabling the provider, then sign out and log back in.
@@ -86,5 +83,5 @@ After running the migration, refresh the app and open **Notes**. Choose **Upload
 
 ## Before putting it online
 
-The question bank contains original practice questions, not full ICAI papers. The resource library links to ICAI's official collections. ICAI's current Foundation archive does not provide 50 attempts per subject. Add educator-reviewed content and community moderation before a public launch.
+The resource library links to ICAI's official collections. ICAI's current Foundation archive does not provide 50 attempts per subject. Add community moderation before a public launch.
 When local testing is finished, create a Git repository and push it to GitHub. `.env.local` is ignored by Git; set the same two public environment variables in your hosting service. Do not commit a Supabase secret or service-role key.

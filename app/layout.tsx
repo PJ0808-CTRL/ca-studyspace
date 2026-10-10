@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "CA Campus — Study better together",
-  description: "A study platform for CA Foundation aspirants: tests, progress, notes and live rooms.",
+  description: "A study platform for CA Foundation aspirants: study logs, notes, official papers and live rooms.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

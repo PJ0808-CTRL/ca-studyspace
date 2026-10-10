@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { subjects, type Discussion, type Profile, type Reply } from "@/lib/types";
-import type { Subject } from "@/lib/questions";
+import type { Subject } from "@/lib/subjects";
 
 export default function Community({ supabase, userId, profile, discussions, replies, refresh }: { supabase: SupabaseClient; userId: string; profile: Profile; discussions: Discussion[]; replies: Reply[]; refresh: () => Promise<void> }) {
   const [subject, setSubject] = useState<Subject>("Accounting"); const [title, setTitle] = useState(""); const [body, setBody] = useState("");
