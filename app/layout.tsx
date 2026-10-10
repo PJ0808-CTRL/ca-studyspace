@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "CA Studyspace — Study better together",
-  description: "A study platform for CA Foundation aspirants: study logs, notes, official papers and live rooms.",
+  description: "The all-in-one study space for CA Foundation aspirants: progress tracking, Pomodoro sessions, shared notes, live rooms, discussions, and official ICAI papers.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

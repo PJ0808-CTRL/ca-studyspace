@@ -9,6 +9,7 @@ This is the new standalone project in `D:\ca studyspace`. The code is already in
 | `app/page.tsx` | Main app and navigation |
 | `app/globals.css` | Complete visual design |
 | `components/Auth.tsx` | Supabase email and Google sign-in |
+| `components/Landing.tsx` | Animated public homepage and product overview |
 | `components/ThemeToggle.tsx` | Light/dark mode switch, saved on this device |
 | `components/Dashboard.tsx` | Study logs, goals, streak, weekly chart |
 | `components/Pomodoro.tsx` | Persistent focus timer with automatic study logging |

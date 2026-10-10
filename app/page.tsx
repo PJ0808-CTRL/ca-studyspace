@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import Auth from "@/components/Auth";
+import Landing from "@/components/Landing";
 import Dashboard from "@/components/Dashboard";
 import Pomodoro from "@/components/Pomodoro";
 import Rooms from "@/components/Rooms";
@@ -30,6 +31,8 @@ export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingData, setLoadingData] = useState(false);
+  const [authScreen, setAuthScreen] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("signup");
   const [error, setError] = useState("");
   const [view, setView] = useState<View>("dashboard");
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -75,7 +78,7 @@ export default function Home() {
 
   if (!supabase) return <main className="setup-page"><div className="setup-card"><div className="setup-theme"><ThemeToggle /></div><span className="wordmark">CA <span>Studyspace</span><i>.</i></span><p className="eyebrow">ONE SETUP STEP LEFT</p><h1>Connect your Supabase project.</h1><p>Copy <code>.env.local.example</code> to <code>.env.local</code>, paste your Project URL and publishable key, then restart <code>npm run dev</code>. Run <code>supabase/schema.sql</code> in the Supabase SQL Editor first.</p></div></main>;
   if (loading) return <div className="loading">Opening CA Studyspace…</div>;
-  if (!user) return <Auth supabase={supabase} />;
+  if (!user) return authScreen ? <div className="auth-screen-wrap"><button className="auth-back" type="button" onClick={() => setAuthScreen(false)}>← Back to homepage</button><Auth key={authMode} supabase={supabase} initialMode={authMode} /></div> : <Landing onStart={() => { setAuthMode("signup"); setAuthScreen(true); }} onLogin={() => { setAuthMode("login"); setAuthScreen(true); }} />;
   if (!profile) return <div className="loading">{error || "Setting up your study space…"}</div>;
 
   return <div className="app-shell"><aside className="sidebar"><div className="logo"><span>CA</span><strong>Studyspace<i>.</i></strong><small>FOUNDATION</small></div><p className="side-label">WORKSPACE</p><nav aria-label="Main navigation">{navigation.map(item => <button key={item.id} className={view === item.id ? "active" : ""} onClick={() => setView(item.id)}><span>{item.icon}</span>{item.label}</button>)}</nav><div className="sidebar-bottom"><div className="sidebar-help"><b>Keep showing up.</b><p>One focused session today can change your week.</p></div><div className="user-menu"><span>{profile.display_name.slice(0, 1).toUpperCase()}</span><div><strong>{profile.display_name}</strong><small>CA Foundation aspirant</small></div></div><button className="logout" onClick={() => void supabase.auth.signOut()}>Log out ↗</button></div></aside><div className="main-area"><div className="topbar"><span>CA Studyspace <b>/ {navigation.find(item => item.id === view)?.label}</b></span><div className="topbar-actions"><ThemeToggle /><span className="study-status"><i /> Your study space</span><span className="top-avatar">{profile.display_name.slice(0, 1).toUpperCase()}</span></div></div><nav className="mobile-menu" aria-label="Mobile navigation">{navigation.map(item => <button key={item.id} className={view === item.id ? "active" : ""} onClick={() => setView(item.id)}>{item.label}</button>)}</nav><main className="main-content">{error && <div className="notice error-text">{error} <button onClick={() => void refresh()}>Retry</button></div>}{loadingData && <div className="sync">Syncing your data…</div>}{view === "dashboard" && <Dashboard supabase={supabase} userId={user.id} profile={profile} logs={logs} refresh={refresh} />}<div hidden={view !== "pomodoro"}><Pomodoro supabase={supabase} userId={user.id} refresh={refresh} /></div>{view === "rooms" && <Rooms supabase={supabase} userId={user.id} profile={profile} />}{view === "community" && <Community supabase={supabase} userId={user.id} profile={profile} discussions={discussions} replies={replies} refresh={refresh} />}{view === "notes" && <Notes supabase={supabase} userId={user.id} />}{view === "resources" && <Resources />}{view === "settings" && <Settings supabase={supabase} profile={profile} refresh={refresh} />}<footer>CA Studyspace is an independent study tool and is not affiliated with ICAI.</footer></main></div></div>;

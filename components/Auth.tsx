@@ -4,8 +4,8 @@ import { useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import ThemeToggle from "@/components/ThemeToggle";
 
-export default function Auth({ supabase }: { supabase: SupabaseClient }) {
-  const [mode, setMode] = useState<"login" | "signup">("signup");
+export default function Auth({ supabase, initialMode = "signup" }: { supabase: SupabaseClient; initialMode?: "login" | "signup" }) {
+  const [mode, setMode] = useState<"login" | "signup">(initialMode);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
