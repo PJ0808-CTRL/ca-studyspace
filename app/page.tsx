@@ -41,6 +41,8 @@ export default function Home() {
   const [logs, setLogs] = useState<StudyLog[]>([]);
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
   const [replies, setReplies] = useState<Reply[]>([]);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!supabase) { setLoading(false); return; }
@@ -49,6 +51,18 @@ export default function Home() {
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => { if (alive) { setUser(session?.user ?? null); setLoading(false); } });
     return () => { alive = false; listener.subscription.unsubscribe(); };
   }, [supabase]);
+
+  useEffect(() => {
+    function handleDocClick(e: MouseEvent) {
+      if (!(e.target as HTMLElement).closest(".profile-menu-container")) {
+        setProfileMenuOpen(false);
+      }
+    }
+    if (profileMenuOpen) {
+      document.addEventListener("click", handleDocClick);
+      return () => document.removeEventListener("click", handleDocClick);
+    }
+  }, [profileMenuOpen]);
 
   const refresh = useCallback(async () => {
     if (!supabase || !user) return;
@@ -83,5 +97,175 @@ export default function Home() {
   if (!user) return authScreen ? <div className="auth-screen-wrap"><button className="auth-back" type="button" onClick={() => setAuthScreen(false)}>← Back to homepage</button><Auth key={authMode} supabase={supabase} initialMode={authMode} /></div> : <Landing onStart={() => { setAuthMode("signup"); setAuthScreen(true); }} onLogin={() => { setAuthMode("login"); setAuthScreen(true); }} />;
   if (!profile) return <div className="loading">{error || "Setting up your study space…"}</div>;
 
-  return <div className="app-shell"><aside className="sidebar"><div className="logo"><span>CA</span><strong>Studyspace<i>.</i></strong><small>FOUNDATION</small></div><p className="side-label">WORKSPACE</p><nav aria-label="Main navigation">{navigation.map(item => <button key={item.id} className={view === item.id ? "active" : ""} onClick={() => setView(item.id)}><span>{item.icon}</span>{item.label}</button>)}</nav><div className="sidebar-bottom"><div className="sidebar-help"><b>Keep showing up.</b><p>One focused session today can change your week.</p></div><div className="user-menu"><span>{profile.display_name.slice(0, 1).toUpperCase()}</span><div><strong>{profile.display_name}</strong><small>CA Foundation aspirant</small></div></div><button className="logout" onClick={() => void supabase.auth.signOut()}>Log out ↗</button></div></aside><div className="main-area"><div className="topbar"><span>CA Studyspace <b>/ {navigation.find(item => item.id === view)?.label}</b></span><div className="topbar-actions"><ThemeToggle /><span className="study-status"><i /> Your study space</span><span className="top-avatar">{profile.display_name.slice(0, 1).toUpperCase()}</span></div></div><nav className="mobile-menu" aria-label="Mobile navigation">{navigation.map(item => <button key={item.id} className={view === item.id ? "active" : ""} onClick={() => setView(item.id)}>{item.label}</button>)}</nav><main className="main-content">{error && <div className="notice error-text">{error} <button onClick={() => void refresh()}>Retry</button></div>}{loadingData && <div className="sync">Syncing your data…</div>}{view === "dashboard" && <Dashboard supabase={supabase} userId={user.id} profile={profile} logs={logs} refresh={refresh} />}{view === "plan" && <StudyPlan supabase={supabase} userId={user.id} />}<div hidden={view !== "pomodoro"}><Pomodoro supabase={supabase} userId={user.id} refresh={refresh} /></div>{view === "rooms" && <Rooms supabase={supabase} userId={user.id} profile={profile} />}{view === "community" && <Community supabase={supabase} userId={user.id} profile={profile} discussions={discussions} replies={replies} refresh={refresh} />}{view === "notes" && <Notes supabase={supabase} userId={user.id} />}{view === "resources" && <Resources />}{view === "settings" && <Settings supabase={supabase} profile={profile} refresh={refresh} />}<footer>CA Studyspace is an independent study tool and is not affiliated with ICAI.</footer></main></div></div>;
+  return (
+    <div className="app-shell">
+      <aside className="sidebar">
+        <div className="logo">
+          <span>CA</span><strong>Studyspace<i>.</i></strong>
+          <small>FOUNDATION</small>
+        </div>
+        <p className="side-label">WORKSPACE</p>
+        <nav aria-label="Main navigation">
+          {navigation.map(item => (
+            <button
+              key={item.id}
+              className={view === item.id ? "active" : ""}
+              onClick={() => setView(item.id)}
+            >
+              <span>{item.icon}</span>{item.label}
+            </button>
+          ))}
+        </nav>
+        <div className="sidebar-bottom">
+          <div className="sidebar-help">
+            <b>Keep showing up.</b>
+            <p>One focused session today can change your week.</p>
+          </div>
+          <div className="user-menu">
+            <span>{profile.display_name.slice(0, 1).toUpperCase()}</span>
+            <div>
+              <strong>{profile.display_name}</strong>
+              <small>CA Foundation aspirant</small>
+            </div>
+          </div>
+          <button className="logout" onClick={() => void supabase.auth.signOut()}>Log out ↗</button>
+        </div>
+      </aside>
+
+      <div className="main-area">
+        <div className="topbar">
+          <div className="topbar-left">
+            <button
+              className="mobile-toggle"
+              onClick={() => setMobileDrawerOpen(prev => !prev)}
+              aria-label="Toggle navigation menu"
+              aria-expanded={mobileDrawerOpen}
+            >
+              <span>☰</span>
+            </button>
+            <span className="topbar-breadcrumb">
+              CA Studyspace <b>/ {navigation.find(item => item.id === view)?.label}</b>
+            </span>
+          </div>
+
+          <div className="topbar-actions">
+            <ThemeToggle />
+            <span className="study-status"><i /> Your study space</span>
+            <div className="profile-menu-container">
+              <button
+                className="top-avatar"
+                onClick={() => setProfileMenuOpen(prev => !prev)}
+                aria-label="User menu"
+                aria-expanded={profileMenuOpen}
+              >
+                {profile.display_name.slice(0, 1).toUpperCase()}
+              </button>
+              {profileMenuOpen && (
+                <div className="profile-dropdown" role="menu">
+                  <div className="profile-dropdown-header">
+                    <strong>{profile.display_name}</strong>
+                    <small>CA Foundation aspirant</small>
+                  </div>
+                  <div className="profile-dropdown-divider" />
+                  <button
+                    className="profile-dropdown-item"
+                    onClick={() => { setView("settings"); setProfileMenuOpen(false); }}
+                  >
+                    <span>⚙</span> My profile & target
+                  </button>
+                  <button
+                    className="profile-dropdown-item danger"
+                    onClick={() => { setProfileMenuOpen(false); void supabase.auth.signOut(); }}
+                  >
+                    <span>↗</span> Log out
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <nav className="mobile-menu" aria-label="Mobile navigation">
+          {navigation.map(item => (
+            <button
+              key={item.id}
+              className={view === item.id ? "active" : ""}
+              onClick={() => setView(item.id)}
+            >
+              <span className="mobile-tab-icon">{item.icon}</span>
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        {mobileDrawerOpen && (
+          <div className="drawer-overlay" onClick={() => setMobileDrawerOpen(false)}>
+            <aside className="mobile-drawer" onClick={e => e.stopPropagation()}>
+              <div className="mobile-drawer-head">
+                <div className="logo">
+                  <span>CA</span><strong>Studyspace<i>.</i></strong>
+                  <small>FOUNDATION</small>
+                </div>
+                <button
+                  className="drawer-close"
+                  onClick={() => setMobileDrawerOpen(false)}
+                  aria-label="Close menu"
+                >
+                  ✕
+                </button>
+              </div>
+              <p className="side-label">WORKSPACE</p>
+              <nav className="drawer-nav">
+                {navigation.map(item => (
+                  <button
+                    key={item.id}
+                    className={view === item.id ? "active" : ""}
+                    onClick={() => { setView(item.id); setMobileDrawerOpen(false); }}
+                  >
+                    <span>{item.icon}</span>
+                    {item.label}
+                  </button>
+                ))}
+              </nav>
+              <div className="drawer-footer">
+                <div className="sidebar-help">
+                  <b>Keep showing up.</b>
+                  <p>One focused session today can change your week.</p>
+                </div>
+                <div className="user-menu">
+                  <span>{profile.display_name.slice(0, 1).toUpperCase()}</span>
+                  <div>
+                    <strong>{profile.display_name}</strong>
+                    <small>CA Foundation aspirant</small>
+                  </div>
+                </div>
+                <button
+                  className="logout"
+                  onClick={() => { setMobileDrawerOpen(false); void supabase.auth.signOut(); }}
+                >
+                  Log out ↗
+                </button>
+              </div>
+            </aside>
+          </div>
+        )}
+
+        <main className="main-content">
+          {error && <div className="notice error-text">{error} <button onClick={() => void refresh()}>Retry</button></div>}
+          {loadingData && <div className="sync">Syncing your data…</div>}
+          {view === "dashboard" && <Dashboard supabase={supabase} userId={user.id} profile={profile} logs={logs} refresh={refresh} />}
+          {view === "plan" && <StudyPlan supabase={supabase} userId={user.id} />}
+          <div hidden={view !== "pomodoro"}>
+            <Pomodoro supabase={supabase} userId={user.id} refresh={refresh} />
+          </div>
+          {view === "rooms" && <Rooms supabase={supabase} userId={user.id} profile={profile} />}
+          {view === "community" && <Community supabase={supabase} userId={user.id} profile={profile} discussions={discussions} replies={replies} refresh={refresh} />}
+          {view === "notes" && <Notes supabase={supabase} userId={user.id} />}
+          {view === "resources" && <Resources />}
+          {view === "settings" && <Settings supabase={supabase} profile={profile} refresh={refresh} />}
+          <footer>CA Studyspace is an independent study tool and is not affiliated with ICAI.</footer>
+        </main>
+      </div>
+    </div>
+  );
 }
