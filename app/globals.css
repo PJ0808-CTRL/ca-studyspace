@@ -158,6 +158,18 @@ html[data-theme="dark"] .planning-stats>div,html[data-theme="dark"] .syllabus-pa
 .ambient-selector button:hover{background:var(--ground);border-color:#b9d5c1}
 .ambient-selector button.active{background:#eaf5ec;border-color:#48a372;color:#186844;box-shadow:0 0 0 1px #48a372}
 .ambient-hint{display:block;margin-top:8px;font-size:9.5px;color:#287c55;font-weight:600}
+.ambient-hint.idle{color:var(--muted);font-weight:500}
+.ambient-status-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+.ambient-mute-btn{border:1px solid var(--line);background:var(--paper);color:var(--muted);border-radius:5px;padding:3px 8px;font-size:9px;font-weight:800;cursor:pointer}
+.ambient-mute-btn:hover{background:var(--ground);color:var(--ink)}
+
+/* Custom Pomodoro duration controls */
+.duration-picker-box{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.custom-duration-input{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--ground);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.custom-duration-input span{font-size:10px;font-weight:750;color:var(--muted)}
+.input-with-unit{display:flex;align-items:center;gap:4px}
+.input-with-unit input{width:64px;height:32px;padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);font-size:12px;font-weight:800;text-align:center}
+.input-with-unit span{font-size:10px;color:var(--muted);font-weight:700}
 
 /* Mock tests tracker */
 .mock-tests-container{display:flex;flex-direction:column;gap:16px}
@@ -244,6 +256,9 @@ html[data-theme="dark"] .paper-score-item.exemption{background:#3b3117;border-co
 html[data-theme="dark"] .paper-score-item.failed-cutoff{background:#411f1e;border-color:#692f2c}
 html[data-theme="dark"] .exemption-badge{background:#54431a;border-color:#775f26;color:#fde199}
 html[data-theme="dark"] .mock-failure-reason{background:#451c1b;border-color:#672826;color:#ffa39e}
+html[data-theme="dark"] .custom-duration-input{background:#0e241c;border-color:#2a5040}
+html[data-theme="dark"] .input-with-unit input{background:#143327;border-color:#345c48;color:var(--ink)}
+html[data-theme="dark"] .ambient-mute-btn{background:#102720;border-color:#345346;color:var(--muted)}
 
 /* Mobile responsive adjustments */
 @media(max-width:768px){
