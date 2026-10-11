@@ -137,14 +137,17 @@ create policy "note owner delete" on public.notes for delete to authenticated us
 
 create policy "discussions read" on public.discussions for select to authenticated using (true);
 create policy "discussions insert" on public.discussions for insert to authenticated with check ((select auth.uid()) = user_id);
+create policy "discussions owner update" on public.discussions for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 create policy "discussions owner delete" on public.discussions for delete to authenticated using ((select auth.uid()) = user_id);
 
 create policy "replies read" on public.replies for select to authenticated using (true);
 create policy "replies insert" on public.replies for insert to authenticated with check ((select auth.uid()) = user_id);
+create policy "replies owner update" on public.replies for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 create policy "replies owner delete" on public.replies for delete to authenticated using ((select auth.uid()) = user_id);
 
 create policy "messages read" on public.room_messages for select to authenticated using (true);
 create policy "messages insert" on public.room_messages for insert to authenticated with check ((select auth.uid()) = user_id);
+create policy "messages owner update" on public.room_messages for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 create policy "messages owner delete" on public.room_messages for delete to authenticated using ((select auth.uid()) = user_id);
 
 create policy "task owner all" on public.study_tasks for all to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
