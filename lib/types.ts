@@ -10,6 +10,7 @@ export type StudyTask = { id: string; user_id: string; subject: Subject; title: 
 export type SyllabusProgress = { id: string; user_id: string; subject: Subject; chapter_key: string; status: "not_started" | "learning" | "revising" | "complete"; updated_at: string };
 export type RevisionSchedule = { id: string; user_id: string; subject: Subject; topic: string; stage: number; next_review_date: string; active: boolean; last_reviewed_at: string | null; created_at: string };
 export type Flashcard = { id: string; user_id: string; subject: Subject; front: string; back: string; created_at: string; updated_at: string };
+export type MockTest = { id: string; user_id: string; title: string; test_date: string; accounting: number; business_laws: number; quantitative_aptitude: number; business_economics: number; notes?: string; created_at: string };
 
 export const subjects: Subject[] = ["Accounting", "Business Laws", "Quantitative Aptitude", "Business Economics"];
 export const rooms = ["General", ...subjects];
