@@ -123,45 +123,66 @@ export function startAmbientSound(type: AmbientSoundType, volume = 0.3): void {
       oscRight.start();
 
       ambientSource = merger;
+    } else if (type === "rain") {
+      // Authentic rainfall soundscape with organic droplets and water swell
+      const bufferSize = ctx.sampleRate * 3;
+      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+
+      let brown = 0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        // Brown noise integration for wet water base
+        brown = (brown + 0.03 * white) / 1.02;
+
+        // Occasional light raindrop spatter
+        const droplet = Math.random() < 0.0035 ? (Math.random() * 0.3 - 0.15) : 0;
+
+        // Gentle undulating rain intensity envelope
+        const swell = 0.85 + 0.15 * Math.sin((i / bufferSize) * Math.PI * 6);
+
+        output[i] = (brown * 0.7 + droplet) * swell * 0.22;
+      }
+
+      const rainSource = ctx.createBufferSource();
+      rainSource.buffer = noiseBuffer;
+      rainSource.loop = true;
+
+      // Bandpass filter centered at 950Hz gives distinct outdoor rain resonance
+      const filter = ctx.createBiquadFilter();
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(950, ctx.currentTime);
+      filter.Q.setValueAtTime(0.65, ctx.currentTime);
+
+      rainSource.connect(filter);
+      filter.connect(gainNode);
+      rainSource.start();
+
+      ambientSource = rainSource;
     } else {
-      // Generate noise buffer (2 seconds loop)
+      // type === "whitenoise": Pure, steady, soothing white noise (gentle fan/air purifier)
       const bufferSize = ctx.sampleRate * 2;
       const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const output = noiseBuffer.getChannelData(0);
 
-      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
       for (let i = 0; i < bufferSize; i++) {
-        const white = Math.random() * 2 - 1;
-        if (type === "rain") {
-          // Pink-filtered noise for soothing rain effect
-          b0 = 0.99886 * b0 + white * 0.0555179;
-          b1 = 0.99332 * b1 + white * 0.0750759;
-          b2 = 0.96900 * b2 + white * 0.1538520;
-          b3 = 0.86650 * b3 + white * 0.3104856;
-          b4 = 0.55000 * b4 + white * 0.5329522;
-          b5 = -0.7616 * b5 - white * 0.0168980;
-          output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.08;
-          b6 = white * 0.115926;
-        } else {
-          // Standard soft white noise
-          output[i] = white * 0.12;
-        }
+        output[i] = (Math.random() * 2 - 1) * 0.08;
       }
 
-      const whiteNoise = ctx.createBufferSource();
-      whiteNoise.buffer = noiseBuffer;
-      whiteNoise.loop = true;
+      const whiteSource = ctx.createBufferSource();
+      whiteSource.buffer = noiseBuffer;
+      whiteSource.loop = true;
 
-      // Filter to take away harsh high frequencies
+      // Smooth lowpass at 2400Hz to remove harshness while keeping classic white noise profile
       const filter = ctx.createBiquadFilter();
-      filter.type = type === "rain" ? "lowpass" : "bandpass";
-      filter.frequency.setValueAtTime(type === "rain" ? 850 : 1200, ctx.currentTime);
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(2400, ctx.currentTime);
 
-      whiteNoise.connect(filter);
+      whiteSource.connect(filter);
       filter.connect(gainNode);
-      whiteNoise.start();
+      whiteSource.start();
 
-      ambientSource = whiteNoise;
+      ambientSource = whiteSource;
     }
   } catch (err) {
     console.warn("Unable to start ambient sound:", err);

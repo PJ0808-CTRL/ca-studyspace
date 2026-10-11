@@ -297,14 +297,6 @@ export default function Dashboard({ supabase, userId, profile, logs, refresh }: 
             </div>
           ))}
         </div>
-        {subjectDistribution.lowest && subjectDistribution.lowest.percentage < 15 && subjectDistribution.totalMinutes > 60 && (
-          <div className="cutoff-balance-alert">
-            <span>💡</span>
-            <p>
-              <strong>Balance reminder:</strong> {subjectDistribution.lowest.subject} currently has only {subjectDistribution.lowest.percentage}% of your logged study time. To clear CA Foundation, you need at least 40 marks in every single paper plus a 50% aggregate score!
-            </p>
-          </div>
-        )}
       </section>
 
       {/* Recent History Journal */}

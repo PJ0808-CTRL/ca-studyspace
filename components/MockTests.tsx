@@ -374,7 +374,7 @@ export default function MockTests({ userId }: { userId: string }) {
               <b>No mock tests recorded yet.</b>
               <p>Log your full or sectional MTP scores to verify aggregate marks and paper cutoffs.</p>
               <button type="button" className="preset-btn" onClick={handleLoadSample} style={{ marginTop: 16 }}>
-                Load benchmark sample MTP ✦
+                Load benchmark sample MTP
               </button>
             </div>
           ) : (

@@ -15,7 +15,7 @@ export default function Landing({ onStart, onLogin }: { onStart: () => void; onL
     <div className="landing-page">
       <header className="landing-nav">
         <a className="landing-brand" href="#top" aria-label="CA Studyspace home">
-          <span>CA</span> Studyspace<i>.</i>
+          <span>CA</span> Studyspace
         </a>
         <nav className="landing-desktop-nav" aria-label="Homepage navigation">
           <a href="#features" onClick={e => { e.preventDefault(); scrollTo("features"); }}>Features</a>
@@ -50,7 +50,7 @@ export default function Landing({ onStart, onLogin }: { onStart: () => void; onL
       <main id="top">
         <section className="landing-hero">
           <div className="hero-copy">
-            <div className="landing-kicker"><i /> BUILT FOR CA FOUNDATION</div>
+            <div className="landing-kicker">BUILT FOR CA FOUNDATION</div>
             <h1>Study with <em>clarity.</em><br />Grow with consistency.</h1>
             <p>One focused space to plan your day, run Pomodoro sessions, share notes, discuss difficult concepts, and find official ICAI papers.</p>
             <div className="hero-cta">
@@ -110,11 +110,11 @@ export default function Landing({ onStart, onLogin }: { onStart: () => void; onL
         </section>
         <section className="subject-ribbon" id="subjects">
           <span>YOUR COMPLETE FOUNDATION WORKSPACE</span>
-          <div><b>Accounting</b><i>✦</i><b>Business Laws</b><i>✦</i><b>Quantitative Aptitude</b><i>✦</i><b>Business Economics</b></div>
+          <div><b>Accounting</b><b>Business Laws</b><b>Quantitative Aptitude</b><b>Business Economics</b></div>
         </section>
         <section className="landing-section" id="features">
           <div className="section-intro">
-            <p className="landing-kicker"><i /> EVERYTHING IN ONE PLACE</p>
+            <p className="landing-kicker">EVERYTHING IN ONE PLACE</p>
             <h2>Less switching.<br /><em>More studying.</em></h2>
             <p>Every tool has one job: helping you show up, stay focused, and know exactly what you accomplished.</p>
           </div>
@@ -167,7 +167,7 @@ export default function Landing({ onStart, onLogin }: { onStart: () => void; onL
         </section>
         <section className="landing-process" id="how-it-works">
           <div className="process-heading">
-            <p className="landing-kicker"><i /> YOUR DAILY RHYTHM</p>
+            <p className="landing-kicker">YOUR DAILY RHYTHM</p>
             <h2>A simple system you can<br />actually <em>stick with.</em></h2>
           </div>
           <div className="process-steps">
@@ -194,14 +194,14 @@ export default function Landing({ onStart, onLogin }: { onStart: () => void; onL
         <section className="landing-cta">
           <div className="cta-orbit one" />
           <div className="cta-orbit two" />
-          <p className="landing-kicker"><i /> YOUR NEXT SESSION STARTS HERE</p>
+          <p className="landing-kicker">YOUR NEXT SESSION STARTS HERE</p>
           <h2>Give your preparation<br />a place to <em>grow.</em></h2>
           <p>Build the routine that carries you to exam day.</p>
           <button onClick={onStart}>Create your free account <span>↗</span></button>
         </section>
       </main>
       <footer className="landing-footer">
-        <a className="landing-brand" href="#top"><span>CA</span> Studyspace<i>.</i></a>
+        <a className="landing-brand" href="#top"><span>CA</span> Studyspace</a>
         <p>Built for CA Foundation aspirants.</p>
         <div>
           <button onClick={onLogin}>Log in</button>
