@@ -137,17 +137,24 @@ export default function Home() {
             }).catch(() => {});
           }
         }
-      } else if (user.email && user.app_metadata?.provider === "google") {
+      } else if (user.email) {
         // Trigger welcome email for Google OAuth logins
-        const googleSentKey = `ca_welcome_google_sent_${user.id}`;
-        if (typeof window !== "undefined" && !localStorage.getItem(googleSentKey)) {
-          localStorage.setItem(googleSentKey, "true");
-          const name = String(found.display_name || user.user_metadata?.name || "Aspirant");
-          void fetch("/api/welcome", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: user.email, name }),
-          }).catch(() => {});
+        const isGoogle =
+          user.app_metadata?.provider === "google" ||
+          (Array.isArray(user.app_metadata?.providers) && (user.app_metadata.providers as string[]).includes("google")) ||
+          user.identities?.some((id) => id.provider === "google");
+
+        if (isGoogle) {
+          const googleSentKey = `ca_welcome_google_sent_${user.id}`;
+          if (typeof window !== "undefined" && !localStorage.getItem(googleSentKey)) {
+            localStorage.setItem(googleSentKey, "true");
+            const name = String(found.display_name || user.user_metadata?.name || "Aspirant");
+            void fetch("/api/welcome", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: user.email, name }),
+            }).catch(() => {});
+          }
         }
       }
       setProfile(found as Profile);
