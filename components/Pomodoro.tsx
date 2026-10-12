@@ -82,6 +82,7 @@ export default function Pomodoro({
   const [soundEnabled, setSoundEnabled] = useState(true);
   const finishing = useRef(false);
   const [quoteIndex, setQuoteIndex] = useState(() => Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length));
+  const [quoteVisible, setQuoteVisible] = useState(true);
   const lastQuoteInterval = useRef<number>(-1);
 
   useEffect(() => {
@@ -274,10 +275,11 @@ export default function Pomodoro({
     };
   }, [remaining, status]);
 
-  // Rotate motivational quote every 2 minutes (120s of elapsed focus time) while timer is running
+  // Rotate motivational quote with smooth fade-out and fade-in every 2 minutes (120s of elapsed focus time)
   useEffect(() => {
     if (mode !== "focus" || status !== "running") {
       lastQuoteInterval.current = -1;
+      setQuoteVisible(true);
       return;
     }
     const elapsed = Math.max(0, focusMinutes * 60 - remaining);
@@ -285,15 +287,23 @@ export default function Pomodoro({
 
     if (lastQuoteInterval.current === -1) {
       lastQuoteInterval.current = currentInterval;
+      setQuoteVisible(true);
     } else if (currentInterval !== lastQuoteInterval.current) {
       lastQuoteInterval.current = currentInterval;
-      setQuoteIndex(prev => {
-        let next = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
-        if (next === prev && MOTIVATIONAL_QUOTES.length > 1) {
-          next = (next + 1) % MOTIVATIONAL_QUOTES.length;
-        }
-        return next;
-      });
+      // 1. Fade out the current quote
+      setQuoteVisible(false);
+      // 2. Once faded out, swap the quote and fade back in
+      const timer = window.setTimeout(() => {
+        setQuoteIndex(prev => {
+          let next = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
+          if (next === prev && MOTIVATIONAL_QUOTES.length > 1) {
+            next = (next + 1) % MOTIVATIONAL_QUOTES.length;
+          }
+          return next;
+        });
+        setQuoteVisible(true);
+      }, 500);
+      return () => window.clearTimeout(timer);
     }
   }, [mode, status, remaining, focusMinutes]);
 
@@ -425,6 +435,22 @@ export default function Pomodoro({
             </button>
           </div>
 
+          {/* 2-Minute Motivational Quote in Focus Mode (At the top, above the clock with fade in/out) */}
+          {mode === "focus" && (status === "running" || status === "paused") && (
+            <div
+              className={`pomodoro-motivation-card ${quoteVisible ? "fade-in" : "fade-out"}`}
+              role="status"
+              aria-live="polite"
+            >
+              <p className="pomodoro-quote-text">
+                “{MOTIVATIONAL_QUOTES[quoteIndex]?.text || MOTIVATIONAL_QUOTES[0].text}”
+              </p>
+              <span className="pomodoro-quote-author">
+                — {MOTIVATIONAL_QUOTES[quoteIndex]?.author || MOTIVATIONAL_QUOTES[0].author}
+              </span>
+            </div>
+          )}
+
           <div
             className="timer-orbit"
             style={{ "--progress": `${progress * 3.6}deg` } as React.CSSProperties}
@@ -486,18 +512,6 @@ export default function Pomodoro({
               ))}
             </div>
           </div>
-
-          {/* 2-Minute Motivational Quote in Focus Mode */}
-          {mode === "focus" && (status === "running" || status === "paused") && (
-            <div className="pomodoro-motivation-card" role="status" aria-live="polite">
-              <p className="pomodoro-quote-text">
-                “{MOTIVATIONAL_QUOTES[quoteIndex]?.text || MOTIVATIONAL_QUOTES[0].text}”
-              </p>
-              <span className="pomodoro-quote-author">
-                — {MOTIVATIONAL_QUOTES[quoteIndex]?.author || MOTIVATIONAL_QUOTES[0].author}
-              </span>
-            </div>
-          )}
         </section>
 
         {/* Session Plan & Settings Aside */}

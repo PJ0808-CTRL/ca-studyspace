@@ -115,7 +115,7 @@ export default function Dashboard({ supabase, userId, profile, logs, refresh }: 
       <header className="page-head">
         <p className="eyebrow">YOUR STUDY DESK · {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}</p>
         <h1>Good to see you, {profile.display_name.split(" ")[0]}.</h1>
-        <p>Make today count, one topic at a time.</p>
+        <p>Kal par mat chhod, ladle</p>
       </header>
 
       {/* Exam Countdown & Target Attempt Milestone Banner */}

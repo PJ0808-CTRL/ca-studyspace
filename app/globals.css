@@ -399,19 +399,18 @@ html[data-theme="dark"] .msg-action-btn.mod-delete-btn,html[data-theme="dark"] .
 .discussion-card-row:hover .card-delete-btn{opacity:1}
 .discussion-card-row .card-delete-btn:hover{background:#faece8;border-color:#f2c7bd;color:#b3402d;transform:scale(1.1)}
 
-/* Pomodoro 2-minute motivational quotes */
-.pomodoro-motivation-card{background:linear-gradient(135deg,rgba(234,245,237,.9),rgba(244,249,245,.9));border:1px solid #c8e4d1;border-radius:12px;padding:14px 18px;margin:14px 0 6px;text-align:center;animation:fade-in .35s ease-out;box-shadow:0 2px 10px rgba(24,88,56,.04)}
-.pomodoro-motivation-tag{display:inline-flex;align-items:center;gap:5px;font-size:8.5px;font-weight:850;letter-spacing:1.2px;color:#1b6d49;text-transform:uppercase;margin-bottom:6px}
-.pomodoro-motivation-tag .sparkle{font-size:10px}
-.pomodoro-quote-text{font-family:'DM Serif Display',Georgia,serif;font-size:15px;color:var(--ink);line-height:1.45;margin:0 0 4px;font-style:italic;transition:all .25s ease}
-.pomodoro-quote-author{display:block;font-size:9.5px;color:var(--muted);font-weight:700;letter-spacing:.3px}
+/* Pomodoro 2-minute motivational quotes (Top / Above clock) */
+.pomodoro-motivation-card{position:relative;z-index:2;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.92);border-radius:14px;padding:11px 20px;margin:12px auto 8px;max-width:440px;width:92%;text-align:center;box-shadow:0 6px 20px rgba(24,88,56,.06);transition:opacity .45s cubic-bezier(.4,0,.2,1),transform .45s cubic-bezier(.4,0,.2,1)}
+.pomodoro-motivation-card.fade-out{opacity:0;transform:translateY(-6px);pointer-events:none}
+.pomodoro-motivation-card.fade-in{opacity:1;transform:translateY(0)}
+.pomodoro-quote-text{font-family:'DM Serif Display',Georgia,serif;font-size:14.5px;color:#154a37;line-height:1.45;margin:0 0 3px;font-style:italic}
+.pomodoro-quote-author{display:block;font-size:9.5px;color:#43725c;font-weight:700;letter-spacing:.4px}
 
 html[data-theme="dark"] .discussion-card-row .card-delete-btn{background:#143429;border-color:#2a5746}
 html[data-theme="dark"] .discussion-card-row .card-delete-btn:hover{background:#431f1d;border-color:#6c302d;color:#ffa099}
-html[data-theme="dark"] .pomodoro-motivation-card{background:linear-gradient(135deg,#133529,#0d271e);border-color:#265c45;box-shadow:0 4px 14px rgba(0,0,0,.2)}
-html[data-theme="dark"] .pomodoro-motivation-tag{color:#7ae0a7}
-html[data-theme="dark"] .pomodoro-quote-text{color:#e7f7ed}
-html[data-theme="dark"] .pomodoro-quote-author{color:#9abfa8}
+html[data-theme="dark"] .pomodoro-motivation-card{background:rgba(18,53,42,.82);border-color:rgba(44,98,78,.65);box-shadow:0 8px 24px rgba(0,0,0,.28)}
+html[data-theme="dark"] .pomodoro-quote-text{color:#ddf7e7}
+html[data-theme="dark"] .pomodoro-quote-author{color:#8dc4a5}
 
 
 
