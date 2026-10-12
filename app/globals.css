@@ -1075,6 +1075,57 @@ html[data-theme="dark"] .community-mobile-tabs button.active {
   color: #d9f7e4;
 }
 
+/* Landing navbar mobile proportions & moderator portal polish */
+@media (max-width: 720px) {
+  .landing-nav {
+    height: 58px;
+    padding: 0 12px;
+  }
+  .landing-brand {
+    font-size: 16px;
+    letter-spacing: -0.5px;
+  }
+  .landing-brand span {
+    font-size: 20px;
+  }
+  .landing-nav-actions {
+    gap: 6px;
+    display: flex;
+    align-items: center;
+  }
+  .landing-nav-actions .theme-toggle {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+  .landing-nav-actions .theme-toggle span:last-child {
+    display: none;
+  }
+  .landing-nav-actions .landing-mod-btn {
+    padding: 6px 9px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
+  .landing-nav-actions .landing-mod-btn .mod-text {
+    display: none;
+  }
+  .landing-nav-actions .landing-start {
+    display: none;
+  }
+  .landing-nav-actions .landing-login {
+    display: none;
+  }
+  .landing-menu-toggle {
+    display: inline-grid;
+    width: 34px;
+    height: 34px;
+  }
+}
+
+.landing-mobile-dropdown .landing-mod-btn .mod-text {
+  display: inline !important;
+}
+
+
 
 
 

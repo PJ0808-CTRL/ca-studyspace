@@ -32,8 +32,9 @@ export default function Landing({
         </nav>
         <div className="landing-nav-actions">
           <ThemeToggle />
-          <button className="landing-mod-btn" onClick={onModerator} title="Moderator and Admin Access">
-            <span>🛡️</span> Moderator Portal
+          <button className="landing-mod-btn" onClick={onModerator} title="Moderator Portal" aria-label="Moderator Portal">
+            <span className="mod-shield-icon">🛡️</span>
+            <span className="mod-text">Moderator Portal</span>
           </button>
           <button className="landing-login" onClick={onLogin}>Log in</button>
           <button className="landing-start" onClick={onStart}>Start studying</button>
