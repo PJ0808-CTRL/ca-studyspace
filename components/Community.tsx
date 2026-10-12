@@ -42,6 +42,7 @@ export default function Community({
   const [flaggedIds, setFlaggedIds] = useState<Set<string>>(new Set());
   const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
   const [modNotice, setModNotice] = useState("");
+  const [mobileTab, setMobileTab] = useState<"browse" | "ask">("browse");
 
   useEffect(() => {
     const list = getFlaggedMessages();
@@ -84,6 +85,7 @@ export default function Community({
     } else {
       setTitle("");
       setBody("");
+      setMobileTab("browse");
       await refresh();
     }
     setBusy(false);
@@ -170,8 +172,30 @@ export default function Community({
 
       {modNotice && <div className="notice success">{modNotice}</div>}
 
+      {/* Mobile Tab Switcher */}
+      <div className="community-mobile-tabs" role="tablist">
+        <button
+          type="button"
+          className={mobileTab === "browse" ? "active" : ""}
+          onClick={() => setMobileTab("browse")}
+          role="tab"
+          aria-selected={mobileTab === "browse"}
+        >
+          <span>💬</span> Browse discussions {discussions.length > 0 && `(${discussions.filter(d => !isItemDeletedByMod(d.id)).length})`}
+        </button>
+        <button
+          type="button"
+          className={mobileTab === "ask" ? "active" : ""}
+          onClick={() => { setMobileTab("ask"); setActive(null); }}
+          role="tab"
+          aria-selected={mobileTab === "ask"}
+        >
+          <span>+</span> Ask a question
+        </button>
+      </div>
+
       <div className="two-columns">
-        <section className="card">
+        <section className={`card community-card-ask ${mobileTab !== "ask" ? "community-hide-on-mobile" : ""}`}>
           <div className="section-title">
             <div>
               <p className="eyebrow">START A DISCUSSION</p>
@@ -215,7 +239,7 @@ export default function Community({
           </form>
         </section>
 
-        <section className="card">
+        <section className={`card community-card-browse ${mobileTab !== "browse" ? "community-hide-on-mobile" : ""}`}>
           <div className="section-title">
             <div>
               <p className="eyebrow">OPEN CONVERSATIONS</p>
@@ -356,7 +380,7 @@ export default function Community({
                 <button
                   type="button"
                   className="discussion"
-                  onClick={() => setActive(item.id)}
+                  onClick={() => { setActive(item.id); setMobileTab("browse"); }}
                 >
                   <span className="tag">{item.subject}</span>
                   <strong>{item.title}</strong>
