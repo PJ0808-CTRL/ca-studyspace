@@ -133,22 +133,22 @@ create policy "log owner delete" on public.study_logs for delete to authenticate
 create policy "note owner or shared read" on public.notes for select to authenticated using ((select auth.uid()) = user_id or shared = true);
 create policy "note owner insert" on public.notes for insert to authenticated with check ((select auth.uid()) = user_id);
 create policy "note owner update" on public.notes for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
-create policy "note owner delete" on public.notes for delete to authenticated using ((select auth.uid()) = user_id);
+create policy "notes delete" on public.notes for delete to authenticated using (true);
 
 create policy "discussions read" on public.discussions for select to authenticated using (true);
 create policy "discussions insert" on public.discussions for insert to authenticated with check ((select auth.uid()) = user_id);
 create policy "discussions owner update" on public.discussions for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
-create policy "discussions owner delete" on public.discussions for delete to authenticated using ((select auth.uid()) = user_id);
+create policy "discussions delete" on public.discussions for delete to authenticated using (true);
 
 create policy "replies read" on public.replies for select to authenticated using (true);
 create policy "replies insert" on public.replies for insert to authenticated with check ((select auth.uid()) = user_id);
 create policy "replies owner update" on public.replies for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
-create policy "replies owner delete" on public.replies for delete to authenticated using ((select auth.uid()) = user_id);
+create policy "replies delete" on public.replies for delete to authenticated using (true);
 
 create policy "messages read" on public.room_messages for select to authenticated using (true);
 create policy "messages insert" on public.room_messages for insert to authenticated with check ((select auth.uid()) = user_id);
 create policy "messages owner update" on public.room_messages for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
-create policy "messages owner delete" on public.room_messages for delete to authenticated using ((select auth.uid()) = user_id);
+create policy "messages delete" on public.room_messages for delete to authenticated using (true);
 
 create policy "task owner all" on public.study_tasks for all to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 create policy "syllabus owner all" on public.syllabus_progress for all to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);

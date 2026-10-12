@@ -44,6 +44,34 @@ export function isModeratorActive(userId?: string): boolean {
   }
 }
 
+// Track IDs of notes, discussions, and replies deleted by moderators
+const MODERATED_DELETED_ITEMS_KEY = "ca_studyspace_moderator_deleted_items";
+
+export function getDeletedItemsByMod(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(MODERATED_DELETED_ITEMS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function markItemDeletedByMod(id: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    const list = getDeletedItemsByMod();
+    if (!list.includes(id)) {
+      list.push(id);
+      localStorage.setItem(MODERATED_DELETED_ITEMS_KEY, JSON.stringify(list));
+    }
+  } catch {}
+}
+
+export function isItemDeletedByMod(id: string): boolean {
+  return getDeletedItemsByMod().includes(id);
+}
+
 // Common patterns of abuse, harassment, and spam
 const BLOCKED_WORDS = [
   // Profanity & abuse

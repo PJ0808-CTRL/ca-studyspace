@@ -339,7 +339,7 @@ export default function Home() {
           </div>
           {view === "rooms" && <Rooms supabase={supabase} userId={user.id} profile={profile} isModerator={isModerator} />}
           {view === "community" && <Community supabase={supabase} userId={user.id} profile={profile} discussions={discussions} replies={replies} refresh={refresh} isModerator={isModerator} />}
-          {view === "notes" && <Notes supabase={supabase} userId={user.id} />}
+          {view === "notes" && <Notes supabase={supabase} userId={user.id} isModerator={isModerator} />}
           {view === "resources" && <Resources />}
           {view === "settings" && <Settings supabase={supabase} profile={profile} refresh={refresh} />}
           <footer>CA Studyspace is an independent study tool and is not affiliated with ICAI.</footer>

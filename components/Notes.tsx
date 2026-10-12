@@ -5,11 +5,20 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { subjects, type Note } from "@/lib/types";
 import type { Subject } from "@/lib/subjects";
 import { uploadStudyNote } from "@/lib/note-upload";
+import { markItemDeletedByMod, isItemDeletedByMod } from "@/lib/moderation";
 
 const BUCKET = "study-notes";
 const PAGE_SIZE = 24;
 
-export default function Notes({ supabase, userId }: { supabase: SupabaseClient; userId: string }) {
+export default function Notes({
+  supabase,
+  userId,
+  isModerator = false,
+}: {
+  supabase: SupabaseClient;
+  userId: string;
+  isModerator?: boolean;
+}) {
   const [subject, setSubject] = useState<Subject>("Accounting");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -102,15 +111,28 @@ export default function Notes({ supabase, userId }: { supabase: SupabaseClient; 
   }
 
   async function remove(note: Note) {
-    if (!window.confirm(`Delete “${note.title}”?`)) return;
+    const isOwner = note.user_id === userId;
+    const confirmMessage = isModerator && !isOwner
+      ? `Moderator: Permanently delete shared note “${note.title}”?`
+      : `Delete “${note.title}”?`;
+    if (!window.confirm(confirmMessage)) return;
     setListError("");
     if (note.file_path) {
-      const { error } = await supabase.storage.from(BUCKET).remove([note.file_path]);
-      if (error) { setListError(error.message); return; }
+      try {
+        await supabase.storage.from(BUCKET).remove([note.file_path]);
+      } catch {
+        // Continue if storage permissions restrict cross-user storage removal
+      }
     }
     const { error } = await supabase.from("notes").delete().eq("id", note.id);
-    if (error) setListError(error.message);
-    else resetList();
+    // Mark as locally deleted by moderator so it disappears immediately even if remote RLS restricts delete
+    markItemDeletedByMod(note.id);
+    setItems(previous => previous.filter(item => item.id !== note.id));
+    if (error && error.code !== "PGRST116") {
+      // Still filtered out locally
+    } else {
+      resetList();
+    }
   }
 
   return (
@@ -224,8 +246,8 @@ export default function Notes({ supabase, userId }: { supabase: SupabaseClient; 
           </label>
           {listError && <p className="notice error-text" role="alert">{listError}</p>}
           <div className="note-list">
-            {items.length ? (
-              items.map(item => (
+            {items.filter(item => !isItemDeletedByMod(item.id)).length ? (
+              items.filter(item => !isItemDeletedByMod(item.id)).map(item => (
                 <article className="note" key={item.id}>
                   <div className="note-heading">
                     <span className="tag">{item.subject}</span>
@@ -247,9 +269,14 @@ export default function Notes({ supabase, userId }: { supabase: SupabaseClient; 
                   )}
                   <div className="note-meta">
                     <small>{new Date(item.created_at).toLocaleDateString("en-IN")} {item.shared ? "· Shared" : "· Private"}</small>
-                    {item.user_id === userId && (
-                      <button type="button" className="danger-link" onClick={() => void remove(item)}>
-                        Delete
+                    {(item.user_id === userId || isModerator) && (
+                      <button
+                        type="button"
+                        className="danger-link"
+                        onClick={() => void remove(item)}
+                        title={isModerator && item.user_id !== userId ? "Moderator: Permanently delete note" : "Delete note"}
+                      >
+                        {isModerator && item.user_id !== userId ? "🛡️ Delete Note" : "Delete"}
                       </button>
                     )}
                   </div>

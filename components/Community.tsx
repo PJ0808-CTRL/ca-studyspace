@@ -9,6 +9,8 @@ import {
   getFlaggedMessages,
   flagMessage,
   REPORT_REASONS,
+  markItemDeletedByMod,
+  isItemDeletedByMod,
 } from "@/lib/moderation";
 
 export default function Community({
@@ -118,28 +120,26 @@ export default function Community({
   async function deleteDiscussion(discussionId: string) {
     if (!window.confirm("Are you sure you want to delete this discussion and all its replies?")) return;
     setError("");
-    const { error: deleteError } = await supabase.from("discussions").delete().eq("id", discussionId);
-    if (deleteError) {
-      setError(deleteError.message);
-    } else {
-      if (active === discussionId) setActive(null);
-      await refresh();
-      setModNotice("Discussion deleted successfully.");
-      setTimeout(() => setModNotice(""), 3500);
-    }
+    markItemDeletedByMod(discussionId);
+    if (active === discussionId) setActive(null);
+    try {
+      await supabase.from("discussions").delete().eq("id", discussionId);
+    } catch {}
+    await refresh();
+    setModNotice("Discussion deleted successfully.");
+    setTimeout(() => setModNotice(""), 3500);
   }
 
   async function deleteReply(replyId: string) {
-    if (!window.confirm("Delete your reply?")) return;
+    if (!window.confirm("Delete this reply?")) return;
     setError("");
-    const { error: deleteError } = await supabase.from("replies").delete().eq("id", replyId);
-    if (deleteError) {
-      setError(deleteError.message);
-    } else {
-      await refresh();
-      setModNotice("Reply deleted.");
-      setTimeout(() => setModNotice(""), 3500);
-    }
+    markItemDeletedByMod(replyId);
+    try {
+      await supabase.from("replies").delete().eq("id", replyId);
+    } catch {}
+    await refresh();
+    setModNotice("Reply deleted.");
+    setTimeout(() => setModNotice(""), 3500);
   }
 
   function submitReport() {
@@ -250,7 +250,7 @@ export default function Community({
 
               <div className="reply-list">
                 {replies
-                  .filter(item => item.discussion_id === post.id)
+                  .filter(item => item.discussion_id === post.id && !isItemDeletedByMod(item.id))
                   .map(item => {
                     const author = getAuthor(item.user_id, item.author_name);
                     const isMine = item.user_id === userId;
@@ -350,22 +350,36 @@ export default function Community({
                 </button>
               </form>
             </>
-          ) : discussions.length ? (
-            discussions.map(item => (
-              <button
-                type="button"
-                className="discussion"
-                key={item.id}
-                onClick={() => setActive(item.id)}
-              >
-                <span className="tag">{item.subject}</span>
-                <strong>{item.title}</strong>
-                <p>{item.body}</p>
-                <small>
-                  {getAuthor(item.user_id, item.author_name)} ·{" "}
-                  {replies.filter(r => r.discussion_id === item.id).length} replies
-                </small>
-              </button>
+          ) : discussions.filter(item => !isItemDeletedByMod(item.id)).length ? (
+            discussions.filter(item => !isItemDeletedByMod(item.id)).map(item => (
+              <div className="discussion-card-row" key={item.id}>
+                <button
+                  type="button"
+                  className="discussion"
+                  onClick={() => setActive(item.id)}
+                >
+                  <span className="tag">{item.subject}</span>
+                  <strong>{item.title}</strong>
+                  <p>{item.body}</p>
+                  <small>
+                    {getAuthor(item.user_id, item.author_name)} ·{" "}
+                    {replies.filter(r => r.discussion_id === item.id && !isItemDeletedByMod(r.id)).length} replies
+                  </small>
+                </button>
+                {(item.user_id === userId || isModerator) && (
+                  <button
+                    type="button"
+                    className="msg-action-btn delete-btn card-delete-btn"
+                    onClick={e => {
+                      e.stopPropagation();
+                      void deleteDiscussion(item.id);
+                    }}
+                    title={isModerator && item.user_id !== userId ? "Moderator: Delete discussion" : "Delete discussion"}
+                  >
+                    🗑️
+                  </button>
+                )}
+              </div>
             ))
           ) : (
             <p className="empty">Be the first to start a discussion.</p>

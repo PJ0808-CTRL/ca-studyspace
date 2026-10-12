@@ -34,6 +34,25 @@ const focusPresets = [15, 25, 45, 60];
 const breakPresets = [5, 10, 15, 20];
 const today = () => new Date().toLocaleDateString("en-CA");
 
+const MOTIVATIONAL_QUOTES = [
+  { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
+  { text: "The difference between an ordinary student and a Chartered Accountant is discipline.", author: "CA Community" },
+  { text: "Balance sheets may not tally on the first attempt, but persistence always balances out.", author: "Foundation Mentor" },
+  { text: "Every concept and provision you master today brings you closer to the prefix 'CA'.", author: "Study Space" },
+  { text: "Do what is right, not what is easy. Master one concept at a time.", author: "Anonymous" },
+  { text: "You don't have to be extreme, just consistent. Deep focus compounds exponentially.", author: "Anonymous" },
+  { text: "The expert in anything was once a beginner. Keep turning the pages.", author: "Helen Hayes" },
+  { text: "Discipline is choosing between what you want now and what you want most.", author: "Abraham Lincoln" },
+  { text: "Your future self is depending on what you do in this exact 25-minute block.", author: "Anonymous" },
+  { text: "Clear your mind of doubt. Every adjustment and theory is learnable.", author: "Anonymous" },
+  { text: "Tough questions don't last, persistent aspirants do.", author: "Anonymous" },
+  { text: "Small disciplines repeated with consistency every day lead to great achievements.", author: "John C. Maxwell" },
+  { text: "Believe in your preparation. The exam hall rewards honest, quiet dedication.", author: "Anonymous" },
+  { text: "Fall in love with the process of learning, and results will follow naturally.", author: "Anonymous" },
+  { text: "Focus is saying no to distractions so your dreams can say yes.", author: "Anonymous" },
+  { text: "Energy flows where attention goes. Give this session your absolute best.", author: "Anonymous" },
+];
+
 export default function Pomodoro({
   supabase,
   userId,
@@ -62,6 +81,8 @@ export default function Pomodoro({
   const [ambientSound, setAmbientSound] = useState<AmbientSoundType>("none");
   const [soundEnabled, setSoundEnabled] = useState(true);
   const finishing = useRef(false);
+  const [quoteIndex, setQuoteIndex] = useState(() => Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length));
+  const lastQuoteInterval = useRef<number>(-1);
 
   useEffect(() => {
     try {
@@ -253,6 +274,29 @@ export default function Pomodoro({
     };
   }, [remaining, status]);
 
+  // Rotate motivational quote every 2 minutes (120s of elapsed focus time) while timer is running
+  useEffect(() => {
+    if (mode !== "focus" || status !== "running") {
+      lastQuoteInterval.current = -1;
+      return;
+    }
+    const elapsed = Math.max(0, focusMinutes * 60 - remaining);
+    const currentInterval = Math.floor(elapsed / 120);
+
+    if (lastQuoteInterval.current === -1) {
+      lastQuoteInterval.current = currentInterval;
+    } else if (currentInterval !== lastQuoteInterval.current) {
+      lastQuoteInterval.current = currentInterval;
+      setQuoteIndex(prev => {
+        let next = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
+        if (next === prev && MOTIVATIONAL_QUOTES.length > 1) {
+          next = (next + 1) % MOTIVATIONAL_QUOTES.length;
+        }
+        return next;
+      });
+    }
+  }, [mode, status, remaining, focusMinutes]);
+
   function startOrPause() {
     initAudio();
     setMessage("");
@@ -442,6 +486,21 @@ export default function Pomodoro({
               ))}
             </div>
           </div>
+
+          {/* 2-Minute Motivational Quote in Focus Mode */}
+          {mode === "focus" && (status === "running" || status === "paused") && (
+            <div className="pomodoro-motivation-card" role="status" aria-live="polite">
+              <span className="pomodoro-motivation-tag">
+                <span className="sparkle">✨</span> FOCUS MOTIVATION
+              </span>
+              <p className="pomodoro-quote-text">
+                “{MOTIVATIONAL_QUOTES[quoteIndex]?.text || MOTIVATIONAL_QUOTES[0].text}”
+              </p>
+              <span className="pomodoro-quote-author">
+                — {MOTIVATIONAL_QUOTES[quoteIndex]?.author || MOTIVATIONAL_QUOTES[0].author}
+              </span>
+            </div>
+          )}
         </section>
 
         {/* Session Plan & Settings Aside */}

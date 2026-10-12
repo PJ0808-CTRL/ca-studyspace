@@ -392,4 +392,26 @@ html[data-theme="dark"] .mod-passcode-field{background:#102b22;border-color:#2c5
 html[data-theme="dark"] .mod-secret-input{border-color:#429169!important;box-shadow:0 0 0 2px #1c4737!important}
 html[data-theme="dark"] .msg-action-btn.mod-delete-btn,html[data-theme="dark"] .msg-action-btn.mod-purge-btn{background:#411f1d;border-color:#6c302d;color:#ffa099}
 
+/* Discussion card row & quick delete */
+.discussion-card-row{position:relative;display:flex;align-items:stretch;gap:6px;width:100%}
+.discussion-card-row .discussion{flex:1;min-width:0}
+.discussion-card-row .card-delete-btn{align-self:flex-start;margin-top:14px;padding:6px 10px;border-radius:8px;background:var(--ground);border:1px solid var(--line);font-size:13px;opacity:.65;transition:all .15s ease}
+.discussion-card-row:hover .card-delete-btn{opacity:1}
+.discussion-card-row .card-delete-btn:hover{background:#faece8;border-color:#f2c7bd;color:#b3402d;transform:scale(1.1)}
+
+/* Pomodoro 2-minute motivational quotes */
+.pomodoro-motivation-card{background:linear-gradient(135deg,rgba(234,245,237,.9),rgba(244,249,245,.9));border:1px solid #c8e4d1;border-radius:12px;padding:14px 18px;margin:14px 0 6px;text-align:center;animation:fade-in .35s ease-out;box-shadow:0 2px 10px rgba(24,88,56,.04)}
+.pomodoro-motivation-tag{display:inline-flex;align-items:center;gap:5px;font-size:8.5px;font-weight:850;letter-spacing:1.2px;color:#1b6d49;text-transform:uppercase;margin-bottom:6px}
+.pomodoro-motivation-tag .sparkle{font-size:10px}
+.pomodoro-quote-text{font-family:'DM Serif Display',Georgia,serif;font-size:15px;color:var(--ink);line-height:1.45;margin:0 0 4px;font-style:italic;transition:all .25s ease}
+.pomodoro-quote-author{display:block;font-size:9.5px;color:var(--muted);font-weight:700;letter-spacing:.3px}
+
+html[data-theme="dark"] .discussion-card-row .card-delete-btn{background:#143429;border-color:#2a5746}
+html[data-theme="dark"] .discussion-card-row .card-delete-btn:hover{background:#431f1d;border-color:#6c302d;color:#ffa099}
+html[data-theme="dark"] .pomodoro-motivation-card{background:linear-gradient(135deg,#133529,#0d271e);border-color:#265c45;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+html[data-theme="dark"] .pomodoro-motivation-tag{color:#7ae0a7}
+html[data-theme="dark"] .pomodoro-quote-text{color:#e7f7ed}
+html[data-theme="dark"] .pomodoro-quote-author{color:#9abfa8}
+
+
 
