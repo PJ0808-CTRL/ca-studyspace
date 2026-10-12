@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import Auth from "@/components/Auth";
 import Landing from "@/components/Landing";
@@ -113,50 +113,57 @@ export default function Home() {
     }
   }, [profileMenuOpen]);
 
+  const refreshingRef = useRef(false);
+
   const refresh = useCallback(async () => {
     if (!supabase || !user) return;
+    if (refreshingRef.current) return;
+    refreshingRef.current = true;
     setLoadingData(true); setError("");
     try {
       let { data: found, error: profileError } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
-      if (profileError) throw profileError;
+      if (profileError && !profileError.message.includes("profiles_pkey") && !profileError.message.includes("duplicate key")) {
+        throw profileError;
+      }
+
+      const rawName = String(user.user_metadata?.display_name || user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split("@")[0] || "Aspirant").trim().slice(0, 50);
+      const safeName = rawName.length < 2 ? "Aspirant" : rawName;
+
       if (!found) {
-        const name = String(user.user_metadata?.display_name || user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split("@")[0] || "Aspirant").slice(0, 50);
-        const created = await supabase.from("profiles").insert({ id: user.id, display_name: name.length < 2 ? "Aspirant" : name }).select().single();
-        if (created.error) throw created.error;
-        found = created.data;
+        // Safe upsert prevents "duplicate key value violates unique constraint profiles_pkey"
+        const upsertRes = await supabase
+          .from("profiles")
+          .upsert({ id: user.id, display_name: safeName }, { onConflict: "id" })
+          .select()
+          .maybeSingle();
 
-        // Trigger welcome email for newly registered accounts
-        if (user.email) {
-          const sentKey = `ca_welcome_sent_${user.id}`;
-          if (typeof window !== "undefined" && !localStorage.getItem(sentKey)) {
-            localStorage.setItem(sentKey, "true");
-            void fetch("/api/welcome", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email: user.email, name }),
-            }).catch(() => {});
-          }
-        }
-      } else if (user.email) {
-        // Trigger welcome email for Google OAuth logins
-        const isGoogle =
-          user.app_metadata?.provider === "google" ||
-          (Array.isArray(user.app_metadata?.providers) && (user.app_metadata.providers as string[]).includes("google")) ||
-          user.identities?.some((id) => id.provider === "google");
-
-        if (isGoogle) {
-          const googleSentKey = `ca_welcome_google_sent_${user.id}`;
-          if (typeof window !== "undefined" && !localStorage.getItem(googleSentKey)) {
-            localStorage.setItem(googleSentKey, "true");
-            const name = String(found.display_name || user.user_metadata?.name || "Aspirant");
-            void fetch("/api/welcome", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email: user.email, name }),
-            }).catch(() => {});
-          }
+        if (upsertRes.data) {
+          found = upsertRes.data;
+        } else {
+          // Fallback refetch in case another process/trigger created the profile concurrently
+          const refetch = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
+          found = refetch.data || { id: user.id, display_name: safeName };
         }
       }
+
+      // Trigger welcome email whenever user is logged in (session-debounced to avoid duplicate emails on rapid page refresh)
+      if (user.email) {
+        const sessionKey = `ca_welcome_session_${user.id}`;
+        if (typeof window !== "undefined" && !sessionStorage.getItem(sessionKey)) {
+          sessionStorage.setItem(sessionKey, "true");
+          const displayName = String(found?.display_name || user.user_metadata?.name || safeName);
+          void fetch("/api/welcome", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: user.email, name: displayName }),
+          }).then(res => res.json()).then(data => {
+            console.log("[Welcome Email] Result:", data);
+          }).catch(err => {
+            console.warn("[Welcome Email] Failed:", err);
+          });
+        }
+      }
+
       setProfile(found as Profile);
       const [logResult, discussionResult, replyResult] = await Promise.all([
         supabase.from("study_logs").select("*").order("study_date", { ascending: false }).limit(100),
@@ -167,8 +174,15 @@ export default function Home() {
       setLogs((logResult.data || []) as StudyLog[]);
       setDiscussions((discussionResult.data || []) as Discussion[]);
       setReplies((replyResult.data || []) as Reply[]);
-    } catch (error) { setError((error as Error).message); }
-    finally { setLoadingData(false); }
+    } catch (error) {
+      const msg = (error as Error).message || "";
+      if (!msg.includes("profiles_pkey") && !msg.includes("duplicate key")) {
+        setError(msg);
+      }
+    } finally {
+      refreshingRef.current = false;
+      setLoadingData(false);
+    }
   }, [supabase, user]);
 
   useEffect(() => { if (user) void refresh(); else { setProfile(null); setLogs([]); } }, [user, refresh]);
