@@ -108,6 +108,31 @@ export default function Home() {
         const created = await supabase.from("profiles").insert({ id: user.id, display_name: name.length < 2 ? "Aspirant" : name }).select().single();
         if (created.error) throw created.error;
         found = created.data;
+
+        // Trigger welcome email for newly registered accounts
+        if (user.email) {
+          const sentKey = `ca_welcome_sent_${user.id}`;
+          if (typeof window !== "undefined" && !localStorage.getItem(sentKey)) {
+            localStorage.setItem(sentKey, "true");
+            void fetch("/api/welcome", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: user.email, name }),
+            }).catch(() => {});
+          }
+        }
+      } else if (user.email && user.app_metadata?.provider === "google") {
+        // Trigger welcome email for Google OAuth logins
+        const googleSentKey = `ca_welcome_google_sent_${user.id}`;
+        if (typeof window !== "undefined" && !localStorage.getItem(googleSentKey)) {
+          localStorage.setItem(googleSentKey, "true");
+          const name = String(found.display_name || user.user_metadata?.name || "Aspirant");
+          void fetch("/api/welcome", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: user.email, name }),
+          }).catch(() => {});
+        }
       }
       setProfile(found as Profile);
       const [logResult, discussionResult, replyResult] = await Promise.all([
