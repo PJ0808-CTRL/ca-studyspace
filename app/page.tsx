@@ -80,6 +80,22 @@ export default function Home() {
   useEffect(() => {
     if (!supabase) { setLoading(false); return; }
     let alive = true;
+
+    // Check for PKCE confirmation code in URL when user clicks email confirmation link
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+      if (code) {
+        supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
+          if (data?.session?.user && alive) {
+            setUser(data.session.user);
+            setLoading(false);
+          }
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }).catch(() => {});
+      }
+    }
+
     supabase.auth.getUser().then(({ data }) => { if (alive) { setUser(data.user); setLoading(false); } });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => { if (alive) { setUser(session?.user ?? null); setLoading(false); } });
     return () => { alive = false; listener.subscription.unsubscribe(); };
