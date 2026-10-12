@@ -13,7 +13,9 @@ import Community from "@/components/Community";
 import Resources from "@/components/Resources";
 import Settings from "@/components/Settings";
 import ThemeToggle from "@/components/ThemeToggle";
+import ModeratorAuth from "@/components/ModeratorAuth";
 import { getSupabase } from "@/lib/supabase";
+import { isModeratorActive, activateModeratorSession, deactivateModeratorSession, verifyModeratorPasscode } from "@/lib/moderation";
 import type { Discussion, Profile, Reply, StudyLog } from "@/lib/types";
 
 type View = "dashboard" | "plan" | "pomodoro" | "rooms" | "community" | "notes" | "resources" | "settings";
@@ -34,7 +36,11 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [loadingData, setLoadingData] = useState(false);
   const [authScreen, setAuthScreen] = useState(false);
-  const [authMode, setAuthMode] = useState<"login" | "signup">("signup");
+  const [authMode, setAuthMode] = useState<"login" | "signup" | "moderator">("signup");
+  const [isModerator, setIsModerator] = useState(false);
+  const [moderatorModalOpen, setModeratorModalOpen] = useState(false);
+  const [modPasscodeInput, setModPasscodeInput] = useState("");
+  const [modPasscodeError, setModPasscodeError] = useState("");
   const [error, setError] = useState("");
   const [view, setView] = useState<View>("dashboard");
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -43,6 +49,33 @@ export default function Home() {
   const [replies, setReplies] = useState<Reply[]>([]);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setIsModerator(isModeratorActive(user.id));
+    } else {
+      setIsModerator(false);
+    }
+  }, [user]);
+
+  function handleUnlockModerator(e: React.FormEvent) {
+    e.preventDefault();
+    if (verifyModeratorPasscode(modPasscodeInput)) {
+      activateModeratorSession(user?.id);
+      setIsModerator(true);
+      setModeratorModalOpen(false);
+      setModPasscodeInput("");
+      setModPasscodeError("");
+    } else {
+      setModPasscodeError("Invalid moderator security password. Access denied.");
+    }
+  }
+
+  function handleLockModerator() {
+    deactivateModeratorSession(user?.id);
+    setIsModerator(false);
+    setProfileMenuOpen(false);
+  }
 
   useEffect(() => {
     if (!supabase) { setLoading(false); return; }
@@ -94,7 +127,31 @@ export default function Home() {
 
   if (!supabase) return <main className="setup-page"><div className="setup-card"><div className="setup-theme"><ThemeToggle /></div><span className="wordmark">CA <span>Studyspace</span><i>.</i></span><p className="eyebrow">ONE SETUP STEP LEFT</p><h1>Connect your Supabase project.</h1><p>Copy <code>.env.local.example</code> to <code>.env.local</code>, paste your Project URL and publishable key, then restart <code>npm run dev</code>. Run <code>supabase/schema.sql</code> in the Supabase SQL Editor first.</p></div></main>;
   if (loading) return <div className="loading">Opening CA Studyspace…</div>;
-  if (!user) return authScreen ? <div className="auth-screen-wrap"><button className="auth-back" type="button" onClick={() => setAuthScreen(false)}>← Back to homepage</button><Auth key={authMode} supabase={supabase} initialMode={authMode} /></div> : <Landing onStart={() => { setAuthMode("signup"); setAuthScreen(true); }} onLogin={() => { setAuthMode("login"); setAuthScreen(true); }} />;
+  if (!user) {
+    return authScreen ? (
+      authMode === "moderator" ? (
+        <ModeratorAuth
+          supabase={supabase}
+          onBack={() => setAuthScreen(false)}
+          onAuthenticated={() => {
+            setIsModerator(true);
+            setAuthScreen(false);
+          }}
+        />
+      ) : (
+        <div className="auth-screen-wrap">
+          <button className="auth-back" type="button" onClick={() => setAuthScreen(false)}>← Back to homepage</button>
+          <Auth key={authMode} supabase={supabase} initialMode={authMode} />
+        </div>
+      )
+    ) : (
+      <Landing
+        onStart={() => { setAuthMode("signup"); setAuthScreen(true); }}
+        onLogin={() => { setAuthMode("login"); setAuthScreen(true); }}
+        onModerator={() => { setAuthMode("moderator"); setAuthScreen(true); }}
+      />
+    );
+  }
   if (!profile) return <div className="loading">{error || "Setting up your study space…"}</div>;
 
   return (
@@ -150,7 +207,13 @@ export default function Home() {
 
           <div className="topbar-actions">
             <ThemeToggle />
-            <span className="study-status"><i /> Your study space</span>
+            {isModerator ? (
+              <span className="moderator-active-pill" title="Moderation Mode Enabled">
+                <i>🛡️</i> Moderator
+              </span>
+            ) : (
+              <span className="study-status"><i /> Your study space</span>
+            )}
             <div className="profile-menu-container">
               <button
                 className="top-avatar"
@@ -164,7 +227,7 @@ export default function Home() {
                 <div className="profile-dropdown" role="menu">
                   <div className="profile-dropdown-header">
                     <strong>{profile.display_name}</strong>
-                    <small>CA Foundation aspirant</small>
+                    <small>{isModerator ? "🛡️ Verified Moderator" : "CA Foundation aspirant"}</small>
                   </div>
                   <div className="profile-dropdown-divider" />
                   <button
@@ -173,6 +236,22 @@ export default function Home() {
                   >
                     <span>⚙</span> My profile & target
                   </button>
+                  {isModerator ? (
+                    <button
+                      className="profile-dropdown-item"
+                      onClick={handleLockModerator}
+                      style={{ color: "#b3402d" }}
+                    >
+                      <span>🔒</span> Exit Moderator Mode
+                    </button>
+                  ) : (
+                    <button
+                      className="profile-dropdown-item"
+                      onClick={() => { setModeratorModalOpen(true); setProfileMenuOpen(false); }}
+                    >
+                      <span>🛡️</span> Moderator Login
+                    </button>
+                  )}
                   <button
                     className="profile-dropdown-item danger"
                     onClick={() => { setProfileMenuOpen(false); void supabase.auth.signOut(); }}
@@ -258,13 +337,69 @@ export default function Home() {
           <div hidden={view !== "pomodoro"}>
             <Pomodoro supabase={supabase} userId={user.id} refresh={refresh} />
           </div>
-          {view === "rooms" && <Rooms supabase={supabase} userId={user.id} profile={profile} />}
-          {view === "community" && <Community supabase={supabase} userId={user.id} profile={profile} discussions={discussions} replies={replies} refresh={refresh} />}
+          {view === "rooms" && <Rooms supabase={supabase} userId={user.id} profile={profile} isModerator={isModerator} />}
+          {view === "community" && <Community supabase={supabase} userId={user.id} profile={profile} discussions={discussions} replies={replies} refresh={refresh} isModerator={isModerator} />}
           {view === "notes" && <Notes supabase={supabase} userId={user.id} />}
           {view === "resources" && <Resources />}
           {view === "settings" && <Settings supabase={supabase} profile={profile} refresh={refresh} />}
           <footer>CA Studyspace is an independent study tool and is not affiliated with ICAI.</footer>
         </main>
+
+        {moderatorModalOpen && (
+          <div className="report-modal-overlay" onClick={() => setModeratorModalOpen(false)}>
+            <div className="report-modal-card mod-inapp-modal" onClick={e => e.stopPropagation()}>
+              <div className="report-modal-head">
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ fontSize: 22 }}>🛡️</span>
+                  <h3 style={{ margin: 0 }}>Unlock Moderator Mode</h3>
+                </div>
+                <button
+                  type="button"
+                  className="close-btn"
+                  onClick={() => setModeratorModalOpen(false)}
+                >
+                  ✕
+                </button>
+              </div>
+              <p className="fine" style={{ margin: "10px 0 16px" }}>
+                Enter the secret moderator security password to enable room moderation mode and message deletion.
+              </p>
+              <form onSubmit={handleUnlockModerator} className="form-stack">
+                <label>
+                  <span>🔑</span> Moderator Security Password
+                  <input
+                    type="password"
+                    value={modPasscodeInput}
+                    onChange={e => {
+                      setModPasscodeInput(e.target.value);
+                      setModPasscodeError("");
+                    }}
+                    placeholder="Enter moderator security password"
+                    autoFocus
+                    required
+                  />
+                </label>
+                {modPasscodeError && (
+                  <p className="notice error-text" style={{ margin: "4px 0" }}>
+                    {modPasscodeError}
+                  </p>
+                )}
+                <div className="report-modal-actions">
+                  <button
+                    type="button"
+                    className="back"
+                    onClick={() => setModeratorModalOpen(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button className="primary" style={{ minHeight: 38 }}>
+                    Verify & Unlock 🛡️
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

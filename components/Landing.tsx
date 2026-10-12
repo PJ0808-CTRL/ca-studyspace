@@ -3,7 +3,15 @@
 import { useState } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
 
-export default function Landing({ onStart, onLogin }: { onStart: () => void; onLogin: () => void }) {
+export default function Landing({
+  onStart,
+  onLogin,
+  onModerator,
+}: {
+  onStart: () => void;
+  onLogin: () => void;
+  onModerator: () => void;
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   function scrollTo(id: string) {
@@ -24,6 +32,9 @@ export default function Landing({ onStart, onLogin }: { onStart: () => void; onL
         </nav>
         <div className="landing-nav-actions">
           <ThemeToggle />
+          <button className="landing-mod-btn" onClick={onModerator} title="Moderator and Admin Access">
+            <span>🛡️</span> Moderator Portal
+          </button>
           <button className="landing-login" onClick={onLogin}>Log in</button>
           <button className="landing-start" onClick={onStart}>Start studying</button>
           <button
@@ -40,6 +51,9 @@ export default function Landing({ onStart, onLogin }: { onStart: () => void; onL
             <a href="#features" onClick={e => { e.preventDefault(); scrollTo("features"); }}>Features</a>
             <a href="#how-it-works" onClick={e => { e.preventDefault(); scrollTo("how-it-works"); }}>How it works</a>
             <a href="#subjects" onClick={e => { e.preventDefault(); scrollTo("subjects"); }}>Subjects</a>
+            <button className="landing-mod-btn mobile-item" onClick={onModerator}>
+              <span>🛡️</span> Moderator Portal
+            </button>
             <div className="landing-mobile-auth">
               <button className="landing-login mobile" onClick={onLogin}>Log in</button>
               <button className="landing-start mobile" onClick={onStart}>Start studying →</button>
@@ -206,6 +220,9 @@ export default function Landing({ onStart, onLogin }: { onStart: () => void; onL
         <div>
           <button onClick={onLogin}>Log in</button>
           <button onClick={onStart}>Create account</button>
+          <button className="landing-mod-footer-link" onClick={onModerator} title="Moderator Access">
+            <span>🛡️</span> Moderator Portal
+          </button>
         </div>
         <small>Independent study tool. Not affiliated with ICAI.</small>
       </footer>

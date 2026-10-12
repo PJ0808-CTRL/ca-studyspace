@@ -18,6 +18,7 @@ export default function Community({
   discussions,
   replies,
   refresh,
+  isModerator = false,
 }: {
   supabase: SupabaseClient;
   userId: string;
@@ -25,6 +26,7 @@ export default function Community({
   discussions: Discussion[];
   replies: Reply[];
   refresh: () => Promise<void>;
+  isModerator?: boolean;
 }) {
   const [subject, setSubject] = useState<Subject>("Accounting");
   const [title, setTitle] = useState("");
@@ -227,13 +229,13 @@ export default function Community({
                 <button type="button" className="back" onClick={() => setActive(null)}>
                   ← All discussions
                 </button>
-                {post.user_id === userId && (
+                {(post.user_id === userId || isModerator) && (
                   <button
                     type="button"
                     className="danger-link"
                     onClick={() => void deleteDiscussion(post.id)}
                   >
-                    Delete discussion
+                    {isModerator && post.user_id !== userId ? "🛡️ Moderator: Delete discussion" : "Delete discussion"}
                   </button>
                 )}
               </div>
@@ -271,7 +273,17 @@ export default function Community({
                               >
                                 🗑️
                               </button>
-                            ) : (
+                            ) : isModerator ? (
+                              <button
+                                type="button"
+                                className="msg-action-btn delete-btn mod-delete-btn"
+                                onClick={() => void deleteReply(item.id)}
+                                title="Moderator: Delete reply"
+                              >
+                                🗑️
+                              </button>
+                            ) : null}
+                            {!isMine && (
                               <button
                                 type="button"
                                 className="msg-action-btn report-btn"

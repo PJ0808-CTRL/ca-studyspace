@@ -15,10 +15,12 @@ export default function Rooms({
   supabase,
   userId,
   profile,
+  isModerator = false,
 }: {
   supabase: SupabaseClient;
   userId: string;
   profile: Profile;
+  isModerator?: boolean;
 }) {
   const [room, setRoom] = useState("General");
   const [messages, setMessages] = useState<RoomMessage[]>([]);
@@ -257,14 +259,16 @@ export default function Rooms({
               <p>Share explanations in your own words.</p>
             </div>
             <div className="room-head-actions">
-              <button
-                type="button"
-                className={`room-mod-pill ${modMode ? "active" : ""}`}
-                onClick={() => setModMode(prev => !prev)}
-                title="Toggle chat moderation controls"
-              >
-                <span>🛡️</span> {modMode ? "Moderation: ON" : "Moderation"}
-              </button>
+              {isModerator && (
+                <button
+                  type="button"
+                  className={`room-mod-pill ${modMode ? "active" : ""}`}
+                  onClick={() => setModMode(prev => !prev)}
+                  title="Toggle moderator controls"
+                >
+                  <span>🛡️</span> {modMode ? "Moderation: ON" : "Moderation"}
+                </button>
+              )}
               <button
                 type="button"
                 className="room-rules-pill"
@@ -310,12 +314,21 @@ export default function Rooms({
                         </strong>
 
                         <div className="message-actions">
-                          {isMine || modMode ? (
+                          {isMine ? (
                             <button
                               type="button"
                               className="msg-action-btn delete-btn"
                               onClick={() => void deleteMessage(message.id)}
-                              title={modMode && !isMine ? "Moderator: Delete message" : "Delete your message"}
+                              title="Delete your message"
+                            >
+                              🗑️
+                            </button>
+                          ) : isModerator && modMode ? (
+                            <button
+                              type="button"
+                              className="msg-action-btn delete-btn mod-purge-btn"
+                              onClick={() => void deleteMessage(message.id)}
+                              title="Moderator: Delete message"
                             >
                               🗑️
                             </button>

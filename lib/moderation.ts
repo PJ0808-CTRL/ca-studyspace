@@ -3,6 +3,47 @@ export interface ContentValidationResult {
   reason?: string;
 }
 
+// Secret password configured for moderator portal access
+export const MODERATOR_PASSCODE = "I am a moderator 123456";
+const MODERATOR_STORAGE_KEY = "ca_studyspace_moderator_session_active";
+
+export function verifyModeratorPasscode(candidate: string): boolean {
+  if (!candidate) return false;
+  return candidate.trim() === MODERATOR_PASSCODE;
+}
+
+export function activateModeratorSession(userId?: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(MODERATOR_STORAGE_KEY, "true");
+    if (userId) {
+      localStorage.setItem(`${MODERATOR_STORAGE_KEY}_${userId}`, "true");
+    }
+  } catch {}
+}
+
+export function deactivateModeratorSession(userId?: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(MODERATOR_STORAGE_KEY);
+    if (userId) {
+      localStorage.removeItem(`${MODERATOR_STORAGE_KEY}_${userId}`);
+    }
+  } catch {}
+}
+
+export function isModeratorActive(userId?: string): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    if (userId && localStorage.getItem(`${MODERATOR_STORAGE_KEY}_${userId}`) === "true") {
+      return true;
+    }
+    return localStorage.getItem(MODERATOR_STORAGE_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
 // Common patterns of abuse, harassment, and spam
 const BLOCKED_WORDS = [
   // Profanity & abuse
