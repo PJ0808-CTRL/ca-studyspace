@@ -254,7 +254,7 @@ export default function Home() {
                   )}
                   <button
                     className="profile-dropdown-item danger"
-                    onClick={() => { setProfileMenuOpen(false); void supabase.auth.signOut(); }}
+                    onClick={() => { setProfileMenuOpen(false); setIsModerator(false); void supabase.auth.signOut(); }}
                   >
                     <span>↗</span> Log out
                   </button>
@@ -320,7 +320,7 @@ export default function Home() {
                 </div>
                 <button
                   className="logout"
-                  onClick={() => { setMobileDrawerOpen(false); void supabase.auth.signOut(); }}
+                  onClick={() => { setMobileDrawerOpen(false); setIsModerator(false); void supabase.auth.signOut(); }}
                 >
                   Log out ↗
                 </button>

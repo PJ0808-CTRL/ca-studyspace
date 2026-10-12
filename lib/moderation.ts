@@ -7,18 +7,23 @@ export interface ContentValidationResult {
 export const MODERATOR_PASSCODE = "I am a moderator 123456";
 const MODERATOR_STORAGE_KEY = "ca_studyspace_moderator_session_active";
 
+// Automatically purge legacy un-scoped global moderator key if present
+if (typeof window !== "undefined") {
+  try {
+    localStorage.removeItem(MODERATOR_STORAGE_KEY);
+  } catch {}
+}
+
 export function verifyModeratorPasscode(candidate: string): boolean {
   if (!candidate) return false;
   return candidate.trim() === MODERATOR_PASSCODE;
 }
 
 export function activateModeratorSession(userId?: string): void {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !userId) return;
   try {
-    localStorage.setItem(MODERATOR_STORAGE_KEY, "true");
-    if (userId) {
-      localStorage.setItem(`${MODERATOR_STORAGE_KEY}_${userId}`, "true");
-    }
+    localStorage.setItem(`${MODERATOR_STORAGE_KEY}_${userId}`, "true");
+    localStorage.removeItem(MODERATOR_STORAGE_KEY);
   } catch {}
 }
 
@@ -33,12 +38,10 @@ export function deactivateModeratorSession(userId?: string): void {
 }
 
 export function isModeratorActive(userId?: string): boolean {
-  if (typeof window === "undefined") return false;
+  if (typeof window === "undefined" || !userId) return false;
   try {
-    if (userId && localStorage.getItem(`${MODERATOR_STORAGE_KEY}_${userId}`) === "true") {
-      return true;
-    }
-    return localStorage.getItem(MODERATOR_STORAGE_KEY) === "true";
+    // Strictly verify ONLY the specific user ID who unlocked moderator access
+    return localStorage.getItem(`${MODERATOR_STORAGE_KEY}_${userId}`) === "true";
   } catch {
     return false;
   }

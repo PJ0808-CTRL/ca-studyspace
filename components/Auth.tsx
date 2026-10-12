@@ -18,7 +18,7 @@ export default function Auth({ supabase, initialMode = "signup" }: { supabase: S
       if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { display_name: name.trim() }, emailRedirectTo: window.location.origin } });
         if (error) throw error;
-        setMessage(data.session ? "Account created. Opening your dashboard…" : "Check your email to confirm your account, then log in.");
+        setMessage(data.session ? "Account created! Opening your dashboard…" : "📨 Confirmation email sent! Please check your inbox (and spam folder) for an activation email from CA Studyspace to confirm your account, then log in.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
