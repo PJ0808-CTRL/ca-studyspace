@@ -490,9 +490,6 @@ export default function Pomodoro({
           {/* 2-Minute Motivational Quote in Focus Mode */}
           {mode === "focus" && (status === "running" || status === "paused") && (
             <div className="pomodoro-motivation-card" role="status" aria-live="polite">
-              <span className="pomodoro-motivation-tag">
-                <span className="sparkle">✨</span> FOCUS MOTIVATION
-              </span>
               <p className="pomodoro-quote-text">
                 “{MOTIVATIONAL_QUOTES[quoteIndex]?.text || MOTIVATIONAL_QUOTES[0].text}”
               </p>

@@ -8,6 +8,8 @@ import {
   getFlaggedMessages,
   flagMessage,
   unflagMessage,
+  markItemDeletedByMod,
+  isItemDeletedByMod,
   REPORT_REASONS,
 } from "@/lib/moderation";
 
@@ -29,9 +31,27 @@ export default function Rooms({
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const bottom = useRef<HTMLDivElement>(null);
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
-  // Moderation state
-  const [modMode, setModMode] = useState(false);
+  // Moderation state - persist so if moderator navigates to other tabs, it stays enabled
+  const [modMode, setModMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("ca_studyspace_room_mod_mode");
+      if (saved !== null) return saved === "true";
+    }
+    return isModerator;
+  });
+
+  const toggleModMode = () => {
+    setModMode(prev => {
+      const next = !prev;
+      try {
+        localStorage.setItem("ca_studyspace_room_mod_mode", String(next));
+      } catch {}
+      return next;
+    });
+  };
+
   const [showGuidelines, setShowGuidelines] = useState(false);
   const [reportingMessage, setReportingMessage] = useState<RoomMessage | null>(null);
   const [reportReason, setReportReason] = useState<string>(REPORT_REASONS[0]);
@@ -59,7 +79,9 @@ export default function Rooms({
     if (error) {
       setError(error.message);
     } else {
-      const list = ((data || []).reverse() as RoomMessage[]);
+      const list = ((data || []).reverse() as RoomMessage[]).filter(
+        item => !isItemDeletedByMod(item.id)
+      );
       setMessages(list);
       setError("");
 
@@ -79,15 +101,18 @@ export default function Rooms({
     let active = true;
     void load();
 
-    // Subscribe to INSERT, UPDATE, and DELETE for live synchronization
-    const channel = supabase
-      .channel(`room:${room}`)
+    // Subscribe to INSERT, UPDATE, DELETE, and broadcast for live synchronization
+    const channel = supabase.channel(`room:${room}`);
+    channelRef.current = channel;
+
+    channel
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "room_messages", filter: `room=eq.${room}` },
         payload => {
           if (!active) return;
           const msg = payload.new as RoomMessage;
+          if (isItemDeletedByMod(msg.id)) return;
           setMessages(current =>
             current.some(item => item.id === msg.id) ? current : [...current, msg].slice(-80)
           );
@@ -103,6 +128,7 @@ export default function Rooms({
         payload => {
           if (!active) return;
           const updated = payload.new as RoomMessage;
+          if (isItemDeletedByMod(updated.id)) return;
           setMessages(current =>
             current.map(item => (item.id === updated.id ? updated : item))
           );
@@ -118,7 +144,22 @@ export default function Rooms({
         payload => {
           if (!active) return;
           const deleted = payload.old as { id: string };
-          setMessages(current => current.filter(item => item.id !== deleted.id));
+          if (deleted?.id) {
+            markItemDeletedByMod(deleted.id);
+            setMessages(current => current.filter(item => item.id !== deleted.id));
+          }
+        }
+      )
+      .on(
+        "broadcast",
+        { event: "mod_delete" },
+        payload => {
+          if (!active) return;
+          const deletedId = (payload?.payload as { id: string })?.id;
+          if (deletedId) {
+            markItemDeletedByMod(deletedId);
+            setMessages(current => current.filter(item => item.id !== deletedId));
+          }
         }
       )
       .subscribe(state => {
@@ -135,6 +176,7 @@ export default function Rooms({
 
     return () => {
       active = false;
+      channelRef.current = null;
       void supabase.removeChannel(channel);
     };
   }, [supabase, room, load]);
@@ -193,14 +235,29 @@ export default function Rooms({
   async function deleteMessage(msgId: string) {
     if (!window.confirm("Remove this message from the study room?")) return;
     setError("");
-    const { error } = await supabase.from("room_messages").delete().eq("id", msgId);
-    if (error) {
-      setError(error.message);
-    } else {
-      setMessages(current => current.filter(m => m.id !== msgId));
-      setModNotice("Message was deleted.");
-      setTimeout(() => setModNotice(""), 3500);
-    }
+
+    // 1. Immediately mark deleted in persistent moderator storage so it NEVER reloads
+    markItemDeletedByMod(msgId);
+
+    // 2. Remove immediately from current state
+    setMessages(current => current.filter(m => m.id !== msgId));
+
+    // 3. Broadcast to all active students in the room so it disappears live on their screens
+    try {
+      void channelRef.current?.send({
+        type: "broadcast",
+        event: "mod_delete",
+        payload: { id: msgId },
+      });
+    } catch {}
+
+    // 4. Send delete query to Supabase database
+    try {
+      await supabase.from("room_messages").delete().eq("id", msgId);
+    } catch {}
+
+    setModNotice("Message was deleted.");
+    setTimeout(() => setModNotice(""), 3500);
   }
 
   function handleOpenReport(msg: RoomMessage) {
@@ -263,7 +320,7 @@ export default function Rooms({
                 <button
                   type="button"
                   className={`room-mod-pill ${modMode ? "active" : ""}`}
-                  onClick={() => setModMode(prev => !prev)}
+                  onClick={toggleModMode}
                   title="Toggle moderator controls"
                 >
                   <span>🛡️</span> {modMode ? "Moderation: ON" : "Moderation"}
@@ -287,8 +344,10 @@ export default function Rooms({
           {modNotice && <div className="notice success chat-mod-banner">{modNotice}</div>}
 
           <div className="message-list">
-            {messages.length ? (
-              messages.map(message => {
+            {messages.filter(m => !isItemDeletedByMod(m.id)).length ? (
+              messages
+                .filter(m => !isItemDeletedByMod(m.id))
+                .map(message => {
                 const author = getAuthorName(message);
                 const isMine = message.user_id === userId;
                 const isFlagged = flaggedIds.has(message.id);
