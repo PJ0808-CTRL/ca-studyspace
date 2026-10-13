@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Markdown from "markdown-to-jsx";
 
 interface Message {
   id: string;
@@ -8,7 +9,8 @@ interface Message {
   content: string;
   subject?: string;
   topic?: string;
-  source?: "gemini_llm" | "expert_knowledge_engine";
+  source?: string;
+  modelName?: string;
   examTips?: string[];
   suggestedFollowups?: string[];
   timestamp: string;
@@ -60,20 +62,20 @@ const PRESET_QUICK_PROMPTS = [
 const INITIAL_MESSAGE: Message = {
   id: "welcome-1",
   role: "assistant",
-  content: `### 👋 Welcome to your 100% Free AI CA Doubt Assistant!
-I am trained specifically on the **ICAI CA Foundation New Scheme Syllabus**:
+  content: `### 🎯 Welcome to your CA Foundation AIR Doubt Assistant!
+I am tuned specifically for the **ICAI New Scheme Syllabus** to provide high-clarity, ranker-standard exam solutions:
 * **Paper 1:** Principles & Practice of Accounting
-* **Paper 2:** Business Laws (Companies Act, Indian Contract Act, Sale of Goods, Partnership, LLP)
+* **Paper 2:** Business Laws (Companies Act 2013, Contract Act 1872, Sale of Goods, Partnership, LLP)
 * **Paper 3:** Quantitative Aptitude (Business Math, Logical Reasoning, Statistics)
 * **Paper 4:** Business Economics
 
-**How can I help your preparation today?**
-* Type any case study, journal entry, or math formula doubt.
-* Select an output format (ICAI Exam Presentation, Concept Explanation, or Step-by-Step Math).
-* Answers include statutory bare act provisions, ICAI exam presentation tips, and working notes!`,
+**How would you like to prepare today?**
+* Ask any case law doubt, journal entry, or math formula.
+* Every answer includes **Concept Snapshots, Statutory Sections, Step-by-Step ICAI Presentation, Trap Alerts, and Mnemonics**!`,
   timestamp: "Just now",
+  modelName: "Ranker Knowledge Engine (ICAI Aligned)",
   examTips: [
-    "Always state the legal provision/section or math formula first.",
+    "Always state the legal provision/section or math formula in your first two lines.",
     "Show explicit working notes for every calculation.",
   ],
   suggestedFollowups: [
@@ -108,9 +110,23 @@ export default function AIDoubtAssistant() {
   >("icai_exam");
   const [loading, setLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [apiKeyModalOpen, setApiKeyModalOpen] = useState(false);
+  const [customKeyInput, setCustomKeyInput] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("ca_custom_ai_key") || "";
+    }
+    return "";
+  });
+  const [activeModelLabel, setActiveModelLabel] = useState<string>(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("ca_custom_ai_key")) {
+      return "Gemini 2.0 / Custom Key Active";
+    }
+    return "ICAI Flagship Engine";
+  });
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Sync to local storage
+  // Sync history to local storage
   useEffect(() => {
     try {
       localStorage.setItem("ca-ai-doubt-history", JSON.stringify(messages));
@@ -123,6 +139,19 @@ export default function AIDoubtAssistant() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  function handleSaveKey(e: React.FormEvent) {
+    e.preventDefault();
+    const cleanKey = customKeyInput.trim();
+    if (cleanKey) {
+      localStorage.setItem("ca_custom_ai_key", cleanKey);
+      setActiveModelLabel(cleanKey.startsWith("AIza") ? "Gemini 2.0 Flash (Live)" : "Custom AI (Live)");
+    } else {
+      localStorage.removeItem("ca_custom_ai_key");
+      setActiveModelLabel("ICAI Flagship Engine");
+    }
+    setApiKeyModalOpen(false);
+  }
 
   async function handleSend(textToSend?: string) {
     const query = (textToSend || input).trim();
@@ -145,6 +174,8 @@ export default function AIDoubtAssistant() {
         content: m.content,
       }));
 
+      const customKey = typeof window !== "undefined" ? localStorage.getItem("ca_custom_ai_key") || "" : "";
+
       const res = await fetch("/api/ai-doubt", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -153,6 +184,7 @@ export default function AIDoubtAssistant() {
           subject: selectedSubject,
           formatStyle,
           history,
+          customApiKey: customKey || undefined,
         }),
       });
 
@@ -162,6 +194,10 @@ export default function AIDoubtAssistant() {
 
       const data = await res.json();
 
+      if (data.modelName) {
+        setActiveModelLabel(data.modelName);
+      }
+
       const assistantMessage: Message = {
         id: `a-${Date.now()}`,
         role: "assistant",
@@ -169,6 +205,7 @@ export default function AIDoubtAssistant() {
         subject: data.subject,
         topic: data.topic,
         source: data.source,
+        modelName: data.modelName || "ICAI Ranker Engine",
         examTips: data.examTips,
         suggestedFollowups: data.suggestedFollowups,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
@@ -216,8 +253,8 @@ export default function AIDoubtAssistant() {
           <div>
             <div className="ai-doubt-title-row">
               <h2>AI CA Doubt Solver</h2>
-              <span className="free-badge">100% FREE · NO CREDITS REQUIRED</span>
-              <span className="live-status">● Ready</span>
+              <span className="free-badge">100% FREE · CA FOUNDATION</span>
+              <span className="live-status">● {activeModelLabel}</span>
             </div>
             <p className="fine" style={{ margin: "2px 0 0" }}>
               Instant answers formatted to ICAI examination presentation standards for CA Foundation students.
@@ -226,6 +263,14 @@ export default function AIDoubtAssistant() {
         </div>
 
         <div className="ai-doubt-header-actions">
+          <button
+            type="button"
+            className="ai-settings-pill-btn"
+            onClick={() => setApiKeyModalOpen(true)}
+            title="Configure AI API Key / Model"
+          >
+            ⚙️ AI Settings
+          </button>
           <button
             type="button"
             className="text-button"
@@ -330,6 +375,7 @@ export default function AIDoubtAssistant() {
                 <span className="ai-author">
                   {msg.role === "user" ? "Your Doubt" : "CA Doubt Assistant"}
                 </span>
+                {msg.modelName && <span className="ai-model-tag">{msg.modelName}</span>}
                 {msg.subject && <span className="ai-subject-tag">{msg.subject}</span>}
                 <span className="ai-timestamp">{msg.timestamp}</span>
 
@@ -345,29 +391,9 @@ export default function AIDoubtAssistant() {
                 )}
               </div>
 
-              {/* Message Body */}
-              <div className="ai-content-body">
-                {msg.content.split("\n\n").map((para, idx) => {
-                  if (para.startsWith("### ")) {
-                    return <h3 key={idx}>{para.replace("### ", "")}</h3>;
-                  }
-                  if (para.startsWith("---")) {
-                    return <hr key={idx} className="ai-divider" />;
-                  }
-                  if (para.startsWith("* ") || para.startsWith("- ")) {
-                    const items = para.split("\n");
-                    return (
-                      <ul key={idx} className="ai-bullet-list">
-                        {items.map((it, iIdx) => (
-                          <li key={iIdx}>
-                            {it.replace(/^[\*\-]\s+/, "")}
-                          </li>
-                        ))}
-                      </ul>
-                    );
-                  }
-                  return <p key={idx}>{para}</p>;
-                })}
+              {/* Message Body with Clean Markdown Rendering */}
+              <div className="ai-content-body ai-markdown-content">
+                <Markdown>{msg.content}</Markdown>
               </div>
 
               {/* Exam Tips Box */}
@@ -454,7 +480,7 @@ export default function AIDoubtAssistant() {
                   ? "Ask about Time Value of Money, Annuity formulas, Standard Deviation, AP/GP..."
                   : selectedSubject === "economics"
                   ? "Ask about Elasticity of demand, Law of variable proportions, Market forms..."
-                  : "Type any CA Foundation doubt, question, or concept... (Press Enter to send)"
+                  : "Type any CA Foundation doubt, question, or concept... (Press Enter ↵ to send)"
               }
               rows={2}
               disabled={loading}
@@ -475,6 +501,77 @@ export default function AIDoubtAssistant() {
           </div>
         </form>
       </div>
+
+      {/* API Key / Engine Settings Modal */}
+      {apiKeyModalOpen && (
+        <div className="report-modal-overlay" onClick={() => setApiKeyModalOpen(false)}>
+          <div className="report-modal-card ai-settings-modal" onClick={e => e.stopPropagation()}>
+            <div className="report-modal-head">
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 22 }}>⚙️</span>
+                <h3 style={{ margin: 0 }}>AI Engine & API Settings</h3>
+              </div>
+              <button
+                type="button"
+                className="close-btn"
+                onClick={() => setApiKeyModalOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="fine" style={{ margin: "10px 0 14px", lineHeight: 1.6 }}>
+              The solver uses our <strong>Flagship ICAI AIR Knowledge Engine</strong> by default. If you have your own <strong>Google Gemini API Key</strong> (free at Google AI Studio) or <strong>OpenAI Key</strong>, you can paste it below to connect directly to <strong>Gemini 2.0 Flash</strong> or <strong>GPT-4o</strong>!
+            </p>
+
+            <form onSubmit={handleSaveKey} className="form-stack">
+              <label>
+                <span>🔑</span> Google Gemini / OpenAI API Key (Optional)
+                <input
+                  type="password"
+                  value={customKeyInput}
+                  onChange={e => setCustomKeyInput(e.target.value)}
+                  placeholder="Paste your Gemini AI Studio API key (AIzaSy...)"
+                />
+              </label>
+
+              <div className="ai-settings-hint-box">
+                <small>
+                  💡 <strong>How to get a free Google Gemini key:</strong> Visit <a href="https://aistudio.google.com" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline", color: "var(--green)" }}>aistudio.google.com</a> &rarr; Click &ldquo;Get API key&rdquo; (takes 30 seconds). Leave blank to use the built-in ICAI engine!
+                </small>
+              </div>
+
+              <div className="report-modal-actions" style={{ marginTop: 14 }}>
+                <button
+                  type="button"
+                  className="back"
+                  onClick={() => setApiKeyModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                {customKeyInput.trim() && (
+                  <button
+                    type="button"
+                    className="danger-button"
+                    style={{ minHeight: 38 }}
+                    onClick={() => {
+                      setCustomKeyInput("");
+                      localStorage.removeItem("ca_custom_ai_key");
+                      setActiveModelLabel("ICAI Flagship Engine");
+                      setApiKeyModalOpen(false);
+                    }}
+                  >
+                    Clear Key
+                  </button>
+                )}
+                <button type="submit" className="primary" style={{ minHeight: 38 }}>
+                  Save & Apply ↗
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
