@@ -218,29 +218,54 @@ export default function Dashboard({
         </div>
       </section>
 
-      {/* Dedicated AI CA Doubt Assistant Feature Banner */}
+      {/* Dedicated AI CA Doubt Assistant Feature Card */}
       <section className="card ai-doubt-dashboard-card">
-        <div className="ai-doubt-dash-content">
-          <div className="ai-doubt-dash-badge">✦</div>
-          <div className="ai-doubt-dash-text">
-            <div className="ai-doubt-dash-heading">
-              <strong>Need help with a concept, case law, or journal entry?</strong>
-              <span className="free-badge">100% FREE</span>
+        <div className="ai-dash-top">
+          <div className="ai-dash-left">
+            <span className="ai-dash-monogram">AI</span>
+            <div>
+              <div className="ai-dash-title-row">
+                <strong className="ai-dash-title">CA Doubt Assistant</strong>
+                <span className="ai-dash-badge">100% Free · ICAI Aligned</span>
+              </div>
+              <p className="ai-dash-desc">
+                Instant answers with bare act sections, case laws, journal entries, and step-by-step math workings.
+              </p>
             </div>
-            <p className="subtle">
-              Ask our dedicated AI CA Doubt Assistant for instant ICAI-formatted solutions, bare act provisions, and step-by-step math workings.
-            </p>
           </div>
           {onNavigate && (
             <button
               type="button"
-              className="primary ai-doubt-dash-btn"
+              className="primary ai-dash-btn"
               onClick={() => onNavigate("ai_doubt")}
             >
-              Ask AI Doubt Solver ↗
+              Ask Doubt ↗
             </button>
           )}
         </div>
+
+        {onNavigate && (
+          <div className="ai-dash-prompts">
+            <span className="ai-dash-prompt-label">Explore:</span>
+            <div className="ai-dash-pills">
+              <button type="button" onClick={() => onNavigate("ai_doubt")}>
+                ⚖️ Salomon & Corporate Veil
+              </button>
+              <button type="button" onClick={() => onNavigate("ai_doubt")}>
+                📜 Minor's Contract (Mohori Bibee)
+              </button>
+              <button type="button" onClick={() => onNavigate("ai_doubt")}>
+                🔄 BRS Adjustment Rules
+              </button>
+              <button type="button" onClick={() => onNavigate("ai_doubt")}>
+                🔢 TVM Master Formulas
+              </button>
+              <button type="button" onClick={() => onNavigate("ai_doubt")}>
+                📈 Elasticity of Demand
+              </button>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Exam Countdown & Target Attempt Milestone Banner */}

@@ -112,8 +112,8 @@ export default function LegalLayout({
                 <strong>Legal & Compliance</strong>
                 <Link href="/privacy">Privacy Policy</Link>
                 <Link href="/terms">Terms of Service</Link>
-                <a href="mailto:support@castudyspace.in">Student Support</a>
-                <a href="mailto:legal@castudyspace.in">Legal Inquiries</a>
+                <a href="mailto:castudyspace-support@gmail.com">Student Support</a>
+                <a href="mailto:castudyspace-support@gmail.com">Legal Inquiries</a>
               </div>
             </div>
           </div>
@@ -122,7 +122,6 @@ export default function LegalLayout({
             <span>© {new Date().getFullYear()} CA Studyspace. All rights reserved. Free educational initiative.</span>
             <div className="legal-bottom-pills">
               <span className="pill">100% Free For Students</span>
-              <span className="pill">AdSense Compliant</span>
               <span className="pill">Independent Initiative</span>
             </div>
           </div>

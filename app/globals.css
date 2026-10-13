@@ -2658,60 +2658,129 @@ html[data-theme="dark"] .community-mobile-tabs button.active {
   text-decoration: underline;
 }
 
-/* Dashboard AI Doubt Quick Banner */
+/* Dashboard AI Doubt Assistant Card */
 .ai-doubt-dashboard-card {
-  padding: 18px 24px;
-  background: linear-gradient(135deg, rgba(18, 106, 82, 0.08) 0%, rgba(18, 106, 82, 0.02) 100%);
-  border-color: rgba(18, 106, 82, 0.22);
+  padding: 18px 22px;
+  background: linear-gradient(145deg, rgba(18, 106, 82, 0.05) 0%, rgba(18, 106, 82, 0.01) 100%);
+  border: 1px solid rgba(18, 106, 82, 0.18);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.ai-doubt-dash-content {
+.ai-dash-top {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
 }
 
-.ai-doubt-dash-badge {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+.ai-dash-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ai-dash-monogram {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
   background: var(--green);
   color: #fff;
   display: grid;
   place-items: center;
-  font-size: 22px;
-  font-weight: 800;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.5px;
   flex: none;
-  box-shadow: 0 6px 16px rgba(18, 106, 82, 0.25);
+  box-shadow: 0 4px 12px rgba(18, 106, 82, 0.18);
 }
 
-.ai-doubt-dash-text {
-  flex: 1;
-  min-width: 0;
-}
-
-.ai-doubt-dash-heading {
+.ai-dash-title-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
-.ai-doubt-dash-heading strong {
+.ai-dash-title {
   font-size: 13.5px;
+  font-weight: 800;
   color: var(--ink);
 }
 
-.ai-doubt-dash-text p {
-  margin: 3px 0 0;
-  font-size: 11.5px;
+.ai-dash-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  background: rgba(18, 106, 82, 0.1);
+  color: var(--green);
+  padding: 2px 7px;
+  border-radius: 5px;
 }
 
-.ai-doubt-dash-btn {
-  flex: none;
-  min-height: 38px;
-  padding: 0 16px;
+.ai-dash-desc {
   font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--muted);
+  margin: 2px 0 0;
+}
+
+.ai-dash-btn {
+  flex: none;
+  min-height: 35px;
+  padding: 0 15px;
+  font-size: 11px;
+  border-radius: 8px;
+}
+
+.ai-dash-prompts {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(18, 106, 82, 0.15);
+  overflow-x: auto;
+}
+
+.ai-dash-prompt-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.ai-dash-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ai-dash-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.ai-dash-pills button {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ai-dash-pills button:hover {
+  background: rgba(18, 106, 82, 0.08);
+  border-color: var(--green);
+  color: var(--green);
+  transform: translateY(-1px);
 }
 
 /* ==========================================================================
@@ -2727,7 +2796,7 @@ html[data-theme="dark"] .community-mobile-tabs button.active {
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 14px;
-  padding: 20px 24px;
+  padding: 18px 22px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2737,20 +2806,22 @@ html[data-theme="dark"] .community-mobile-tabs button.active {
 .ai-doubt-header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .ai-doubt-icon-badge {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #18775c, #0e4e3b);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--green);
   color: #fff;
   display: grid;
   place-items: center;
-  font-size: 22px;
+  font-size: 13px;
+  font-weight: 850;
+  letter-spacing: 0.5px;
   flex: none;
-  box-shadow: 0 8px 20px rgba(18, 106, 82, 0.25);
+  box-shadow: 0 4px 12px rgba(18, 106, 82, 0.18);
 }
 
 .ai-doubt-title-row {
@@ -2926,16 +2997,22 @@ html[data-theme="dark"] .community-mobile-tabs button.active {
 }
 
 .ai-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
   background: rgba(18, 106, 82, 0.12);
   color: var(--green);
   display: grid;
   place-items: center;
-  font-size: 16px;
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.5px;
   flex: none;
+}
+
+.ai-message-wrapper.user-side .ai-avatar {
+  background: #174e3d;
+  color: #a4dfbe;
 }
 
 .ai-avatar.pulse {
@@ -3243,7 +3320,8 @@ html[data-theme="dark"] .ai-exam-tips-box {
 }
 
 html[data-theme="dark"] .ai-format-selector select,
-html[data-theme="dark"] .ai-starter-pill {
+html[data-theme="dark"] .ai-starter-pill,
+html[data-theme="dark"] .ai-dash-pills button {
   background: #102720;
   border-color: var(--line);
   color: var(--ink);

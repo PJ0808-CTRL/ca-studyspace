@@ -183,7 +183,7 @@ export default function Landing({
               <div className="paper-tags"><span>Question papers</span><span>RTP</span><span>MTP</span><span>Answers</span></div>
             </article>
             <article className="feature-card feature-ai-doubt">
-              <div className="feature-icon">✦</div>
+              <div className="feature-icon">⌘</div>
               <span>100% FREE AI CA DOUBT ASSISTANT</span>
               <h3>Instant clarity for every case problem.</h3>
               <p>Get ICAI-formatted answers with bare act provisions, journal entries, working notes, and step-by-step math formulas.</p>

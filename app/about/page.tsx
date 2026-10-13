@@ -79,7 +79,7 @@ export default function AboutUsPage() {
             </div>
 
             <div className="about-pillar-row">
-              <div className="about-pillar-icon">✦</div>
+              <div className="about-pillar-icon">⌘</div>
               <div className="about-pillar-content">
                 <h3>3. Dedicated AI CA Doubt Assistant (100% Free)</h3>
                 <p>

@@ -212,7 +212,7 @@ export default function AIDoubtAssistant() {
       {/* Top Banner / Header */}
       <div className="ai-doubt-header">
         <div className="ai-doubt-header-left">
-          <div className="ai-doubt-icon-badge">✦</div>
+          <div className="ai-doubt-icon-badge">AI</div>
           <div>
             <div className="ai-doubt-title-row">
               <h2>AI CA Doubt Solver</h2>
@@ -322,7 +322,7 @@ export default function AIDoubtAssistant() {
             className={`ai-message-wrapper ${msg.role === "user" ? "user-side" : "ai-side"}`}
           >
             <div className="ai-avatar">
-              {msg.role === "user" ? "👨‍🎓" : "✦"}
+              {msg.role === "user" ? "You" : "AI"}
             </div>
 
             <div className="ai-message-card">
@@ -409,7 +409,7 @@ export default function AIDoubtAssistant() {
 
         {loading && (
           <div className="ai-message-wrapper ai-side">
-            <div className="ai-avatar pulse">✦</div>
+            <div className="ai-avatar pulse">AI</div>
             <div className="ai-message-card loading-card">
               <div className="ai-loading-dots">
                 <span />
@@ -462,7 +462,7 @@ export default function AIDoubtAssistant() {
             />
             <div className="ai-input-controls">
               <span className="fine ai-free-tag">
-                ✦ 100% Free · No Tokens Required
+                100% Free for CA Aspirants · No Tokens Required
               </span>
               <button
                 type="submit"

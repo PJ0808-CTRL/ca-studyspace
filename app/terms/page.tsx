@@ -191,8 +191,8 @@ export default function TermsOfServicePage() {
           </p>
           <div className="legal-contact-card">
             <strong>CA Studyspace Legal & Community Compliance</strong>
-            <p>Email: <a href="mailto:legal@castudyspace.in">legal@castudyspace.in</a></p>
-            <p>Website: <Link href="/">castudyspace.in</Link></p>
+            <p>Email: <a href="mailto:castudyspace-support@gmail.com">castudyspace-support@gmail.com</a></p>
+            <p>Website: <Link href="/">castudyspace.vercel.app</Link></p>
           </div>
         </section>
       </div>

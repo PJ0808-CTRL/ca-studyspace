@@ -27,7 +27,7 @@ const navigation: { id: View; label: string; icon: string }[] = [
   { id: "dashboard", label: "Dashboard", icon: "▦" },
   { id: "plan", label: "Study plan", icon: "◫" },
   { id: "pomodoro", label: "Pomodoro", icon: "◷" },
-  { id: "ai_doubt", label: "AI Doubt Solver", icon: "✦" },
+  { id: "ai_doubt", label: "AI Doubt Solver", icon: "⌘" },
   { id: "leaderboard", label: "Leaderboard", icon: "◈" },
   { id: "rooms", label: "Live rooms", icon: "◉" },
   { id: "community", label: "Discussions", icon: "☷" },
