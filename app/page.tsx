@@ -16,18 +16,16 @@ import ThemeToggle from "@/components/ThemeToggle";
 import ModeratorAuth from "@/components/ModeratorAuth";
 import Leaderboard from "@/components/Leaderboard";
 import RankEmblem from "@/components/RankEmblem";
-import AIDoubtAssistant from "@/components/AIDoubtAssistant";
 import { getGamificationData, getRankTier, type Badge, type RankTier } from "@/lib/gamification";
 import { getSupabase } from "@/lib/supabase";
 import { isModeratorActive, activateModeratorSession, deactivateModeratorSession, verifyModeratorPasscode } from "@/lib/moderation";
 import type { Discussion, Profile, Reply, StudyLog } from "@/lib/types";
 
-type View = "dashboard" | "plan" | "pomodoro" | "ai_doubt" | "leaderboard" | "rooms" | "community" | "notes" | "resources" | "settings";
+type View = "dashboard" | "plan" | "pomodoro" | "leaderboard" | "rooms" | "community" | "notes" | "resources" | "settings";
 const navigation: { id: View; label: string; icon: string }[] = [
   { id: "dashboard", label: "Dashboard", icon: "▦" },
   { id: "plan", label: "Study plan", icon: "◫" },
   { id: "pomodoro", label: "Pomodoro", icon: "◷" },
-  { id: "ai_doubt", label: "AI Doubt Solver", icon: "⌘" },
   { id: "leaderboard", label: "Leaderboard", icon: "◈" },
   { id: "rooms", label: "Live rooms", icon: "◉" },
   { id: "community", label: "Discussions", icon: "☷" },
@@ -460,7 +458,6 @@ export default function Home() {
             <Pomodoro supabase={supabase} userId={user.id} refresh={refresh} />
           </div>
           {view === "leaderboard" && <Leaderboard supabase={supabase} userId={user.id} profile={profile} />}
-          {view === "ai_doubt" && <AIDoubtAssistant />}
           {view === "rooms" && <Rooms supabase={supabase} userId={user.id} profile={profile} isModerator={isModerator} />}
           {view === "community" && <Community supabase={supabase} userId={user.id} profile={profile} discussions={discussions} replies={replies} refresh={refresh} isModerator={isModerator} />}
           {view === "notes" && <Notes supabase={supabase} userId={user.id} isModerator={isModerator} />}

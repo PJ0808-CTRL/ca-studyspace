@@ -12,7 +12,7 @@ export default function AboutUsPage() {
   return (
     <LegalLayout
       title="About CA Studyspace"
-      subtitle="Built by aspirants, for aspirants. Giving every CA Foundation student a focused, distraction-free study desk and free AI guidance."
+      subtitle="Built by aspirants, for aspirants. Giving every CA Foundation student a focused, distraction-free study desk and structured progress tools."
       lastUpdated="October 13, 2026"
       activePath="/about"
     >
@@ -22,7 +22,7 @@ export default function AboutUsPage() {
           <span className="about-kicker">OUR CORE MISSION</span>
           <h2>A dedicated digital study room for the toughest examination journey in India.</h2>
           <p>
-            Preparing for CA Foundation requires hundreds of hours of solitary discipline. CA Studyspace was built to replace aimless scrolling and loneliness with deep focus, transparent progress tracking, verified motivation, and free academic support.
+            Preparing for CA Foundation requires hundreds of hours of solitary discipline. CA Studyspace was built to replace aimless scrolling and loneliness with deep focus, transparent progress tracking, verified motivation, and structured academic productivity.
           </p>
         </div>
 
@@ -45,18 +45,18 @@ export default function AboutUsPage() {
             </div>
             <div className="about-challenge-card">
               <span className="about-challenge-num">03</span>
-              <strong>Costly Paywalled Doubt Solvers</strong>
-              <p>Many private ed-tech apps charge thousands of rupees per month for doubt solving, locking out deserving students.</p>
+              <strong>Unstructured Study Tracking</strong>
+              <p>Without disciplined milestone tracking and peer benchmarks, it is easy to lose track of syllabus completion targets.</p>
             </div>
           </div>
           <p style={{ marginTop: "16px" }}>
-            We created <strong>CA Studyspace</strong> to fix this: an all-in-one, clean, elegant web workspace with zero distractions, authentic peer study rooms, verified gamified ranks, and a 100% free AI CA Doubt Assistant.
+            We created <strong>CA Studyspace</strong> to fix this: an all-in-one, clean, elegant web workspace with zero distractions, authentic peer study rooms, verified gamified ranks, and a centralized library of ICAI resources.
           </p>
         </section>
 
         {/* Section 2: Core Platform Pillars */}
         <section className="legal-section">
-          <h2>2. The Four Pillars of Our Platform</h2>
+          <h2>2. The Three Pillars of Our Platform</h2>
           <div className="about-pillars-stack">
             <div className="about-pillar-row">
               <div className="about-pillar-icon">◷</div>
@@ -79,19 +79,9 @@ export default function AboutUsPage() {
             </div>
 
             <div className="about-pillar-row">
-              <div className="about-pillar-icon">⌘</div>
-              <div className="about-pillar-content">
-                <h3>3. Dedicated AI CA Doubt Assistant (100% Free)</h3>
-                <p>
-                  Get immediate, ICAI-formatted explanations for complex Business Law case problems (Section provisions ➔ Facts ➔ Conclusion), Accounting journal entries with working notes, and Quantitative Aptitude formulas—without spending a single rupee.
-                </p>
-              </div>
-            </div>
-
-            <div className="about-pillar-row">
               <div className="about-pillar-icon">↗</div>
               <div className="about-pillar-content">
-                <h3>4. Curated Notes & Official ICAI Materials Index</h3>
+                <h3>3. Curated Notes & Official ICAI Materials Index</h3>
                 <p>
                   Direct, one-click access to official ICAI question papers, Revision Test Papers (RTPs), Mock Test Papers (MTPs), suggested answers, and student-shared summaries in one centralized library.
                 </p>
@@ -104,7 +94,7 @@ export default function AboutUsPage() {
         <section className="legal-section highlight-box">
           <h2>3. Our Commitment: Free Education, Supported by Non-Intrusive Ads</h2>
           <p>
-            We believe that every aspiring Chartered Accountant—whether studying in a metro city or a small village—deserves equal access to premium productivity tools and doubt-clearing assistance.
+            We believe that every aspiring Chartered Accountant—whether studying in a metro city or a small village—deserves equal access to premium productivity and focus tools.
           </p>
           <div className="legal-notice-box">
             <strong>Why there is NO subscription paywall on CA Studyspace:</strong>
@@ -112,9 +102,9 @@ export default function AboutUsPage() {
               Rather than locking features behind expensive recurring subscriptions, CA Studyspace is supported through minimal, clean third-party advertisements (such as Google AdSense). This ensures:
             </p>
             <ul>
-              <li><strong>Zero Cost for Students:</strong> Every tool, timer, mock test, and AI solver feature remains accessible to all.</li>
+              <li><strong>Zero Cost for Students:</strong> Every tool, timer, mock test, and shared note feature remains accessible to all.</li>
               <li><strong>Clean Study Focus:</strong> Advertisements are non-intrusive and never interrupt active Pomodoro focus cycles.</li>
-              <li><strong>Continuous Maintenance:</strong> Ad revenue directly funds our database servers, cloud hosting, and AI inference costs.</li>
+              <li><strong>Continuous Maintenance:</strong> Ad revenue directly funds our database servers, file storage, and cloud hosting.</li>
             </ul>
           </div>
         </section>

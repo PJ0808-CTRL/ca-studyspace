@@ -182,18 +182,6 @@ export default function Landing({
               <p>Browse official question papers, MCQ keys, RTPs, MTPs, and suggested answers from one searchable library.</p>
               <div className="paper-tags"><span>Question papers</span><span>RTP</span><span>MTP</span><span>Answers</span></div>
             </article>
-            <article className="feature-card feature-ai-doubt">
-              <div className="feature-icon">⌘</div>
-              <span>100% FREE AI CA DOUBT ASSISTANT</span>
-              <h3>Instant clarity for every case problem.</h3>
-              <p>Get ICAI-formatted answers with bare act provisions, journal entries, working notes, and step-by-step math formulas.</p>
-              <div className="ai-preview-chips">
-                <span>Companies Act 2013</span>
-                <span>Contract Act 1872</span>
-                <span>Consignment & BRS</span>
-                <span>Time Value of Money</span>
-              </div>
-            </article>
           </div>
         </section>
         <section className="landing-process" id="how-it-works">

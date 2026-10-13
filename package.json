@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.0.0",
-    "markdown-to-jsx": "^9.10.3",
     "next": "^16.4.0",
     "nodemailer": "^10.1.0",
     "react": "19.2.6",
