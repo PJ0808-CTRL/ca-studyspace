@@ -6,6 +6,7 @@ import { foundationSyllabus, syllabusSource } from "@/lib/syllabus";
 import { subjects, type Flashcard, type RevisionSchedule, type StudyTask, type SyllabusProgress } from "@/lib/types";
 import type { Subject } from "@/lib/subjects";
 import MockTests from "./MockTests";
+import { awardVerifiedXP } from "@/lib/gamification";
 
 type Tab = "today" | "syllabus" | "revisions" | "flashcards" | "mock_tests";
 type ChapterStatus = SyllabusProgress["status"];
@@ -92,7 +93,19 @@ export default function StudyPlan({ supabase, userId }: { supabase: SupabaseClie
     const nextStage = revision.stage + 1;
     const finished = nextStage >= revisionIntervals.length;
     const { error: saveError } = await supabase.from("revision_schedules").update({ stage: nextStage, active: !finished, next_review_date: finished ? revision.next_review_date : addDays(revisionIntervals[nextStage]), last_reviewed_at: new Date().toISOString() }).eq("id", revision.id);
-    if (saveError) setError(saveError.message); else await load();
+    if (saveError) {
+      setError(saveError.message);
+    } else {
+      void awardVerifiedXP({
+        userId,
+        baseXp: 25,
+        reason: `Spaced Revision (${revision.subject}: ${revision.topic})`,
+        subject: revision.subject,
+        supabase,
+        isSpacedRevision: true,
+      });
+      await load();
+    }
   }
 
   async function createFlashcard(event: React.FormEvent) {

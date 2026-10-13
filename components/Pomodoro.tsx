@@ -11,6 +11,13 @@ import {
   stopAmbientSound,
   type AmbientSoundType,
 } from "@/lib/sound";
+import {
+  awardVerifiedXP,
+  getGamificationData,
+  getRankProgress,
+  getStreakMultiplier,
+  type GamificationState,
+} from "@/lib/gamification";
 
 type Mode = "focus" | "break";
 type Status = "idle" | "running" | "paused" | "saving";
@@ -84,6 +91,19 @@ export default function Pomodoro({
   const [quoteIndex, setQuoteIndex] = useState(() => Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length));
   const [quoteVisible, setQuoteVisible] = useState(true);
   const lastQuoteInterval = useRef<number>(-1);
+
+  const [gameState, setGameState] = useState<GamificationState>(() => getGamificationData(userId));
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setGameState(getGamificationData(userId));
+    };
+    window.addEventListener("ca-gamification-updated", handleUpdate);
+    return () => window.removeEventListener("ca-gamification-updated", handleUpdate);
+  }, [userId]);
+
+  const streakInfo = getStreakMultiplier(gameState.streak);
+  const rankProgress = getRankProgress(gameState.xp);
 
   useEffect(() => {
     try {
@@ -219,6 +239,16 @@ export default function Pomodoro({
       }
     }
 
+    // Award verified XP for completing actual live timer focus session
+    const xpResult = await awardVerifiedXP({
+      userId,
+      baseXp: Math.round(focusMinutes * 1.5),
+      reason: `${focusMinutes}m Pomodoro Focus (${subject})`,
+      subject,
+      focusMinutes,
+      supabase,
+    });
+
     setCompletedCount(count => count + 1);
     setMode("break");
     setRemaining(breakMinutes * 60);
@@ -226,9 +256,9 @@ export default function Pomodoro({
     setLogId(null);
     setTaskId(null);
     setMessage(
-      `${focusMinutes} focused minutes saved${
+      `🎉 +${xpResult.addedXp} XP! ${focusMinutes} focused minutes saved${
         linkedTask ? " and added to your planned task" : " to your dashboard"
-      }. Take a short break.`
+      }${xpResult.leveledUp ? ` 🌟 RANK UP! You reached ${xpResult.newTier.badge} ${xpResult.newTier.name} Tier!` : ""}. Take a short break.`
     );
     await refresh();
     await loadTasks();
@@ -512,6 +542,13 @@ export default function Pomodoro({
               ))}
             </div>
           </div>
+
+          {mode === "focus" && (
+            <div className="pomodoro-xp-pill">
+              <span>⚡ Verified Session: Earn <b>+{Math.round(focusMinutes * 1.5 * streakInfo.multiplier)} XP</b> on timer finish</span>
+              <span className="pomodoro-streak-badge">🔥 {streakInfo.multiplier}x Boost</span>
+            </div>
+          )}
         </section>
 
         {/* Session Plan & Settings Aside */}

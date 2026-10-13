@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { MockTest } from "@/lib/types";
+import { awardVerifiedXP } from "@/lib/gamification";
 
 const STORAGE_PREFIX = "ca-studyspace-mock-tests-";
 
@@ -98,13 +99,19 @@ export default function MockTests({ userId }: { userId: string }) {
     };
 
     saveList([newTest, ...tests]);
+    void awardVerifiedXP({
+      userId,
+      baseXp: 50,
+      reason: `Mock Exam Logged (${title.trim()})`,
+      isMockTest: true,
+    });
     setTitle("");
     setAccounting("");
     setBusinessLaws("");
     setQuantitativeAptitude("");
     setBusinessEconomics("");
     setNotes("");
-    setFeedbackMsg("Mock test logged successfully!");
+    setFeedbackMsg("Mock test logged successfully! (+50 Verified XP Earned)");
     setTimeout(() => setFeedbackMsg(""), 3500);
   }
 

@@ -1,13 +1,33 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { subjects, type Profile, type StudyLog } from "@/lib/types";
 import type { Subject } from "@/lib/subjects";
+import {
+  getGamificationData,
+  getRankProgress,
+  getStreakMultiplier,
+  type GamificationState,
+} from "@/lib/gamification";
 
 const today = () => new Date().toLocaleDateString("en-CA");
 
-export default function Dashboard({ supabase, userId, profile, logs, refresh }: { supabase: SupabaseClient; userId: string; profile: Profile; logs: StudyLog[]; refresh: () => Promise<void> }) {
+export default function Dashboard({
+  supabase,
+  userId,
+  profile,
+  logs,
+  refresh,
+  onNavigate,
+}: {
+  supabase: SupabaseClient;
+  userId: string;
+  profile: Profile;
+  logs: StudyLog[];
+  refresh: () => Promise<void>;
+  onNavigate?: (view: string) => void;
+}) {
   const [subject, setSubject] = useState<Subject>("Accounting");
   const [topic, setTopic] = useState("");
   const [minutes, setMinutes] = useState(60);
@@ -15,6 +35,18 @@ export default function Dashboard({ supabase, userId, profile, logs, refresh }: 
   const [error, setError] = useState("");
   const [editingExamDate, setEditingExamDate] = useState(false);
   const [customExamDate, setCustomExamDate] = useState(profile.exam_date || "");
+  const [gameState, setGameState] = useState<GamificationState>(() => getGamificationData(userId));
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setGameState(getGamificationData(userId));
+    };
+    window.addEventListener("ca-gamification-updated", handleUpdate);
+    return () => window.removeEventListener("ca-gamification-updated", handleUpdate);
+  }, [userId]);
+
+  const rankProgress = getRankProgress(gameState.xp);
+  const streakInfo = getStreakMultiplier(gameState.streak);
 
   const todayMinutes = logs.filter(item => item.study_date === today()).reduce((sum, item) => sum + item.minutes, 0);
   const week = Array.from({ length: 7 }, (_, i) => {
@@ -117,6 +149,75 @@ export default function Dashboard({ supabase, userId, profile, logs, refresh }: 
         <h1>Good to see you, {profile.display_name.split(" ")[0]}.</h1>
         <p>Kal par mat chhod, ladle</p>
       </header>
+
+      {/* Gamification & Aspirant Rank Tier Card */}
+      <section className="card dashboard-rank-card" style={{ borderLeft: `4px solid ${rankProgress.currentTier.color}` }}>
+        <div className="rank-card-header">
+          <div className="rank-card-identity">
+            <span className="rank-card-badge" style={{ backgroundColor: `${rankProgress.currentTier.color}22`, borderColor: rankProgress.currentTier.color }}>
+              {rankProgress.currentTier.badge}
+            </span>
+            <div>
+              <div className="rank-card-title-row">
+                <span className="rank-card-tier-name" style={{ color: rankProgress.currentTier.color }}>
+                  {rankProgress.currentTier.name} Tier
+                </span>
+                <span className="rank-streak-pill">
+                  🔥 {gameState.streak} Days Streak ({streakInfo.multiplier}x XP)
+                </span>
+              </div>
+              <small className="rank-tagline">{rankProgress.currentTier.tagline} · {gameState.xp.toLocaleString()} Total XP</small>
+            </div>
+          </div>
+
+          <div className="rank-card-actions">
+            {onNavigate && (
+              <>
+                <button
+                  type="button"
+                  className="preset-btn"
+                  onClick={() => onNavigate("leaderboard")}
+                >
+                  🏆 View Leaderboard
+                </button>
+                <button
+                  type="button"
+                  className="preset-btn outline"
+                  onClick={() => onNavigate("leaderboard")}
+                >
+                  🎖️ Trophy Case ({gameState.unlockedBadgeIds.length})
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="rank-card-progress">
+          <div className="rank-progress-text">
+            <span>
+              {rankProgress.nextTier ? (
+                <>Next: <b>{rankProgress.nextTier.badge} {rankProgress.nextTier.name} Tier</b></>
+              ) : (
+                <b>Peak Grandmaster Achieved! ⚡</b>
+              )}
+            </span>
+            <span>
+              {rankProgress.nextTier
+                ? `${rankProgress.xpNeededForNext.toLocaleString()} XP to Rank Up (${rankProgress.progressPercent}%)`
+                : "All-India Rank Calibre"}
+            </span>
+          </div>
+          <div className="rank-progress-bar-track">
+            <div
+              className="rank-progress-bar-fill"
+              style={{
+                width: `${rankProgress.progressPercent}%`,
+                backgroundColor: rankProgress.currentTier.color,
+              }}
+            />
+          </div>
+        </div>
+      </section>
 
       {/* Exam Countdown & Target Attempt Milestone Banner */}
       <section className="card exam-ticker-card">
@@ -229,6 +330,9 @@ export default function Dashboard({ supabase, userId, profile, logs, refresh }: 
               <p className="eyebrow">BUILD THE HABIT</p>
               <h3>Log study time</h3>
             </div>
+          </div>
+          <div className="anti-cheat-mini-notice">
+            <span>🔒 <b>Anti-Cheat Rule:</b> Manual logs update your syllabus analytics only. XP and Rank Tiers are earned exclusively through verified live Pomodoro sessions and active recall drills to prevent fake XP generation.</span>
           </div>
           <form className="form-stack" onSubmit={saveLog}>
             <label>

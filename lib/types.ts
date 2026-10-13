@@ -1,6 +1,14 @@
 import type { Subject } from "./subjects";
 
-export type Profile = { id: string; display_name: string; exam_date: string | null; goal_minutes: number };
+export type Profile = {
+  id: string;
+  display_name: string;
+  exam_date: string | null;
+  goal_minutes: number;
+  xp?: number;
+  streak?: number;
+  rank_tier?: string;
+};
 export type StudyLog = { id: string; user_id: string; subject: Subject; topic: string; minutes: number; study_date: string; created_at: string };
 export type Note = { id: string; user_id: string; subject: Subject; title: string; content: string; shared: boolean; file_path: string | null; file_name: string | null; file_mime: string | null; file_size: number | null; created_at: string };
 export type Discussion = { id: string; user_id: string; author_name: string; subject: Subject; title: string; body: string; created_at: string };

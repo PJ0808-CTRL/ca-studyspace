@@ -8,8 +8,15 @@ create table if not exists public.profiles (
   display_name text not null check (char_length(display_name) between 2 and 50),
   exam_date date,
   goal_minutes integer not null default 120 check (goal_minutes between 15 and 720),
+  xp integer not null default 0,
+  streak integer not null default 0,
+  rank_tier text not null default 'Plastic',
   created_at timestamptz not null default now()
 );
+
+alter table public.profiles add column if not exists xp integer not null default 0;
+alter table public.profiles add column if not exists streak integer not null default 0;
+alter table public.profiles add column if not exists rank_tier text not null default 'Plastic';
 
 create table if not exists public.study_logs (
   id uuid primary key default gen_random_uuid(),

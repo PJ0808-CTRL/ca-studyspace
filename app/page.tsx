@@ -14,15 +14,18 @@ import Resources from "@/components/Resources";
 import Settings from "@/components/Settings";
 import ThemeToggle from "@/components/ThemeToggle";
 import ModeratorAuth from "@/components/ModeratorAuth";
+import Leaderboard from "@/components/Leaderboard";
+import { getGamificationData, getRankTier, type Badge, type RankTier } from "@/lib/gamification";
 import { getSupabase } from "@/lib/supabase";
 import { isModeratorActive, activateModeratorSession, deactivateModeratorSession, verifyModeratorPasscode } from "@/lib/moderation";
 import type { Discussion, Profile, Reply, StudyLog } from "@/lib/types";
 
-type View = "dashboard" | "plan" | "pomodoro" | "rooms" | "community" | "notes" | "resources" | "settings";
+type View = "dashboard" | "plan" | "pomodoro" | "leaderboard" | "rooms" | "community" | "notes" | "resources" | "settings";
 const navigation: { id: View; label: string; icon: string }[] = [
   { id: "dashboard", label: "Dashboard", icon: "▦" },
   { id: "plan", label: "Study plan", icon: "◫" },
   { id: "pomodoro", label: "Pomodoro", icon: "◷" },
+  { id: "leaderboard", label: "Leaderboard", icon: "🏆" },
   { id: "rooms", label: "Live rooms", icon: "◉" },
   { id: "community", label: "Discussions", icon: "☷" },
   { id: "notes", label: "Notes", icon: "▤" },
@@ -49,6 +52,42 @@ export default function Home() {
   const [replies, setReplies] = useState<Reply[]>([]);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [gameState, setGameState] = useState(() => getGamificationData(user?.id || ""));
+  const [xpToast, setXpToast] = useState<{
+    addedXp: number;
+    reason: string;
+    multiplier?: number;
+    leveledUp?: boolean;
+    newTier?: RankTier;
+    newlyUnlockedBadges?: Badge[];
+  } | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      setGameState(getGamificationData(user.id));
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const handleGamification = () => {
+      if (user) setGameState(getGamificationData(user.id));
+    };
+    const handleToast = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail) {
+        setXpToast(detail);
+        setTimeout(() => setXpToast(null), 4500);
+      }
+    };
+    window.addEventListener("ca-gamification-updated", handleGamification);
+    window.addEventListener("ca-xp-toast", handleToast);
+    return () => {
+      window.removeEventListener("ca-gamification-updated", handleGamification);
+      window.removeEventListener("ca-xp-toast", handleToast);
+    };
+  }, [user]);
+
+  const userTier = getRankTier(gameState.xp);
 
   useEffect(() => {
     if (user) {
@@ -269,6 +308,18 @@ export default function Home() {
 
           <div className="topbar-actions">
             <ThemeToggle />
+            {user && (
+              <button
+                type="button"
+                className="topbar-rank-pill"
+                onClick={() => setView("leaderboard")}
+                title="View All-India Leaderboard & Trophies"
+              >
+                <span>{userTier.badge}</span>
+                <b>{userTier.name}</b>
+                <small>{gameState.xp.toLocaleString()} XP</small>
+              </button>
+            )}
             {isModerator ? (
               <span className="moderator-active-pill" title="Moderation Mode Enabled">
                 <i>🛡️</i> Moderator
@@ -289,9 +340,15 @@ export default function Home() {
                 <div className="profile-dropdown" role="menu">
                   <div className="profile-dropdown-header">
                     <strong>{profile.display_name}</strong>
-                    <small>{isModerator ? "🛡️ Verified Moderator" : "CA Foundation aspirant"}</small>
+                    <small>{isModerator ? "🛡️ Verified Moderator" : `${userTier.badge} ${userTier.name} Tier Aspirant`}</small>
                   </div>
                   <div className="profile-dropdown-divider" />
+                  <button
+                    className="profile-dropdown-item"
+                    onClick={() => { setView("leaderboard"); setProfileMenuOpen(false); }}
+                  >
+                    <span>🏆</span> Leaderboard & Trophies
+                  </button>
                   <button
                     className="profile-dropdown-item"
                     onClick={() => { setView("settings"); setProfileMenuOpen(false); }}
@@ -394,17 +451,45 @@ export default function Home() {
         <main className="main-content">
           {error && <div className="notice error-text">{error} <button onClick={() => void refresh()}>Retry</button></div>}
           {loadingData && <div className="sync">Syncing your data…</div>}
-          {view === "dashboard" && <Dashboard supabase={supabase} userId={user.id} profile={profile} logs={logs} refresh={refresh} />}
+          {view === "dashboard" && <Dashboard supabase={supabase} userId={user.id} profile={profile} logs={logs} refresh={refresh} onNavigate={target => setView(target as View)} />}
           {view === "plan" && <StudyPlan supabase={supabase} userId={user.id} />}
           <div hidden={view !== "pomodoro"}>
             <Pomodoro supabase={supabase} userId={user.id} refresh={refresh} />
           </div>
+          {view === "leaderboard" && <Leaderboard supabase={supabase} userId={user.id} profile={profile} />}
           {view === "rooms" && <Rooms supabase={supabase} userId={user.id} profile={profile} isModerator={isModerator} />}
           {view === "community" && <Community supabase={supabase} userId={user.id} profile={profile} discussions={discussions} replies={replies} refresh={refresh} isModerator={isModerator} />}
           {view === "notes" && <Notes supabase={supabase} userId={user.id} isModerator={isModerator} />}
           {view === "resources" && <Resources />}
           {view === "settings" && <Settings supabase={supabase} profile={profile} refresh={refresh} />}
           <footer>CA Studyspace is an independent study tool and is not affiliated with ICAI.</footer>
+
+          {/* Real-time Floating XP & Rank Toast */}
+          {xpToast && (
+            <div className={`global-xp-toast ${xpToast.leveledUp ? "level-up" : ""}`}>
+              <div className="xp-toast-icon">
+                {xpToast.leveledUp ? "🎉" : xpToast.newlyUnlockedBadges && xpToast.newlyUnlockedBadges.length > 0 ? "🎖️" : "⚡"}
+              </div>
+              <div className="xp-toast-body">
+                {xpToast.leveledUp ? (
+                  <>
+                    <strong>RANK UP! Reached {xpToast.newTier?.badge} {xpToast.newTier?.name} Tier!</strong>
+                    <span>+{xpToast.addedXp} XP · {xpToast.reason}</span>
+                  </>
+                ) : (
+                  <>
+                    <strong>+{xpToast.addedXp} Verified XP Earned!</strong>
+                    <span>{xpToast.reason}</span>
+                  </>
+                )}
+                {xpToast.newlyUnlockedBadges && xpToast.newlyUnlockedBadges.length > 0 && (
+                  <small className="toast-badge-notice">
+                    🎖️ Unlocked: {xpToast.newlyUnlockedBadges.map(b => b.name).join(", ")}
+                  </small>
+                )}
+              </div>
+            </div>
+          )}
         </main>
 
         {moderatorModalOpen && (
