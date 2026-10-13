@@ -218,6 +218,31 @@ export default function Dashboard({
         </div>
       </section>
 
+      {/* Dedicated AI CA Doubt Assistant Feature Banner */}
+      <section className="card ai-doubt-dashboard-card">
+        <div className="ai-doubt-dash-content">
+          <div className="ai-doubt-dash-badge">✦</div>
+          <div className="ai-doubt-dash-text">
+            <div className="ai-doubt-dash-heading">
+              <strong>Need help with a concept, case law, or journal entry?</strong>
+              <span className="free-badge">100% FREE</span>
+            </div>
+            <p className="subtle">
+              Ask our dedicated AI CA Doubt Assistant for instant ICAI-formatted solutions, bare act provisions, and step-by-step math workings.
+            </p>
+          </div>
+          {onNavigate && (
+            <button
+              type="button"
+              className="primary ai-doubt-dash-btn"
+              onClick={() => onNavigate("ai_doubt")}
+            >
+              Ask AI Doubt Solver ↗
+            </button>
+          )}
+        </div>
+      </section>
+
       {/* Exam Countdown & Target Attempt Milestone Banner */}
       <section className="card exam-ticker-card">
         {examInfo ? (

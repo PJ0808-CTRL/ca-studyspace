@@ -29,6 +29,7 @@ export default function Landing({
           <a href="#features" onClick={e => { e.preventDefault(); scrollTo("features"); }}>Features</a>
           <a href="#how-it-works" onClick={e => { e.preventDefault(); scrollTo("how-it-works"); }}>How it works</a>
           <a href="#subjects" onClick={e => { e.preventDefault(); scrollTo("subjects"); }}>Subjects</a>
+          <a href="/about">About</a>
         </nav>
         <div className="landing-nav-actions">
           <ThemeToggle />
@@ -52,6 +53,9 @@ export default function Landing({
             <a href="#features" onClick={e => { e.preventDefault(); scrollTo("features"); }}>Features</a>
             <a href="#how-it-works" onClick={e => { e.preventDefault(); scrollTo("how-it-works"); }}>How it works</a>
             <a href="#subjects" onClick={e => { e.preventDefault(); scrollTo("subjects"); }}>Subjects</a>
+            <a href="/about">About Us</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
             <button className="landing-mod-btn mobile-item" onClick={onModerator}>
               <span>🛡️</span> Moderator Portal
             </button>
@@ -178,6 +182,18 @@ export default function Landing({
               <p>Browse official question papers, MCQ keys, RTPs, MTPs, and suggested answers from one searchable library.</p>
               <div className="paper-tags"><span>Question papers</span><span>RTP</span><span>MTP</span><span>Answers</span></div>
             </article>
+            <article className="feature-card feature-ai-doubt">
+              <div className="feature-icon">✦</div>
+              <span>100% FREE AI CA DOUBT ASSISTANT</span>
+              <h3>Instant clarity for every case problem.</h3>
+              <p>Get ICAI-formatted answers with bare act provisions, journal entries, working notes, and step-by-step math formulas.</p>
+              <div className="ai-preview-chips">
+                <span>Companies Act 2013</span>
+                <span>Contract Act 1872</span>
+                <span>Consignment & BRS</span>
+                <span>Time Value of Money</span>
+              </div>
+            </article>
           </div>
         </section>
         <section className="landing-process" id="how-it-works">
@@ -216,16 +232,31 @@ export default function Landing({
         </section>
       </main>
       <footer className="landing-footer">
-        <a className="landing-brand" href="#top"><span>CA</span> Studyspace</a>
-        <p>Built for CA Foundation aspirants.</p>
-        <div>
-          <button onClick={onLogin}>Log in</button>
-          <button onClick={onStart}>Create account</button>
-          <button className="landing-mod-footer-link" onClick={onModerator} title="Moderator Access">
-            <span>🛡️</span> Moderator Portal
-          </button>
+        <div className="landing-footer-brand-col">
+          <a className="landing-brand" href="#top"><span>CA</span> Studyspace</a>
+          <p>The all-in-one focus and study platform for CA Foundation aspirants.</p>
+          <small className="landing-footer-disclaimer">
+            Statutory Disclaimer: Independent study tool. Not affiliated with, endorsed by, or sponsored by the Institute of Chartered Accountants of India (ICAI).
+          </small>
         </div>
-        <small>Independent study tool. Not affiliated with ICAI.</small>
+        <div className="landing-footer-nav-cols">
+          <div className="landing-footer-nav-col">
+            <strong>Platform</strong>
+            <button onClick={onStart}>Create account</button>
+            <button onClick={onLogin}>Log in</button>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How it works</a>
+          </div>
+          <div className="landing-footer-nav-col">
+            <strong>Policies & Info</strong>
+            <a href="/about">About Us</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <button className="landing-mod-footer-link" onClick={onModerator} title="Moderator Access">
+              <span>🛡️</span> Moderator Portal
+            </button>
+          </div>
+        </div>
       </footer>
     </div>
   );
