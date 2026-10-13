@@ -647,7 +647,7 @@ export type LeaderboardEntry = {
   isCurrentUser?: boolean;
 };
 
-// Generates competitive benchmark aspirants alongside current user
+// Real users leaderboard without fake/seeded users
 export function generateLeaderboard(
   currentUser: { id: string; name: string },
   userState: GamificationState
@@ -663,31 +663,5 @@ export function generateLeaderboard(
     isCurrentUser: true,
   };
 
-  // Benchmark active aspirants to create an inspiring competitive atmosphere
-  const benchmarks: Omit<LeaderboardEntry, "tier">[] = [
-    { id: "peer-1", name: "Priya S. (AIR Aspirant)", xp: 6240, streak: 21, verifiedHours: 84.5 },
-    { id: "peer-2", name: "Aarav Sharma", xp: 4890, streak: 15, verifiedHours: 65.2 },
-    { id: "peer-3", name: "Meera Patel", xp: 3750, streak: 12, verifiedHours: 49.0 },
-    { id: "peer-4", name: "Rohan Mehta", xp: 2680, streak: 9, verifiedHours: 35.8 },
-    { id: "peer-5", name: "Aditya K.", xp: 1940, streak: 8, verifiedHours: 26.0 },
-    { id: "peer-6", name: "Kavya Iyer", xp: 1250, streak: 6, verifiedHours: 17.5 },
-    { id: "peer-7", name: "Ananya Gupta", xp: 820, streak: 4, verifiedHours: 11.2 },
-    { id: "peer-8", name: "Tanmay Deshmukh", xp: 540, streak: 3, verifiedHours: 7.5 },
-    { id: "peer-9", name: "Vikram Rathore", xp: 310, streak: 2, verifiedHours: 4.2 },
-    { id: "peer-10", name: "Sneha Nair", xp: 160, streak: 1, verifiedHours: 2.1 },
-  ];
-
-  const fullList: LeaderboardEntry[] = [
-    userEntry,
-    ...benchmarks.map(b => ({
-      ...b,
-      tier: getRankTier(b.xp),
-      isCurrentUser: false,
-    })),
-  ];
-
-  // Sort by XP descending
-  fullList.sort((a, b) => b.xp - a.xp);
-
-  return fullList;
+  return [userEntry];
 }

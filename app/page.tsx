@@ -15,6 +15,7 @@ import Settings from "@/components/Settings";
 import ThemeToggle from "@/components/ThemeToggle";
 import ModeratorAuth from "@/components/ModeratorAuth";
 import Leaderboard from "@/components/Leaderboard";
+import RankEmblem from "@/components/RankEmblem";
 import { getGamificationData, getRankTier, type Badge, type RankTier } from "@/lib/gamification";
 import { getSupabase } from "@/lib/supabase";
 import { isModeratorActive, activateModeratorSession, deactivateModeratorSession, verifyModeratorPasscode } from "@/lib/moderation";
@@ -25,7 +26,7 @@ const navigation: { id: View; label: string; icon: string }[] = [
   { id: "dashboard", label: "Dashboard", icon: "▦" },
   { id: "plan", label: "Study plan", icon: "◫" },
   { id: "pomodoro", label: "Pomodoro", icon: "◷" },
-  { id: "leaderboard", label: "Leaderboard", icon: "🏆" },
+  { id: "leaderboard", label: "Leaderboard", icon: "◈" },
   { id: "rooms", label: "Live rooms", icon: "◉" },
   { id: "community", label: "Discussions", icon: "☷" },
   { id: "notes", label: "Notes", icon: "▤" },
@@ -315,7 +316,7 @@ export default function Home() {
                 onClick={() => setView("leaderboard")}
                 title="View All-India Leaderboard & Trophies"
               >
-                <span>{userTier.badge}</span>
+                <RankEmblem tier={userTier.id} size={18} />
                 <b>{userTier.name}</b>
                 <small>{gameState.xp.toLocaleString()} XP</small>
               </button>
@@ -340,14 +341,14 @@ export default function Home() {
                 <div className="profile-dropdown" role="menu">
                   <div className="profile-dropdown-header">
                     <strong>{profile.display_name}</strong>
-                    <small>{isModerator ? "🛡️ Verified Moderator" : `${userTier.badge} ${userTier.name} Tier Aspirant`}</small>
+                    <small>{isModerator ? "Verified Moderator" : `${userTier.name} Tier Aspirant`}</small>
                   </div>
                   <div className="profile-dropdown-divider" />
                   <button
                     className="profile-dropdown-item"
                     onClick={() => { setView("leaderboard"); setProfileMenuOpen(false); }}
                   >
-                    <span>🏆</span> Leaderboard & Trophies
+                    <span>◈</span> Leaderboard & Trophies
                   </button>
                   <button
                     className="profile-dropdown-item"
@@ -468,23 +469,23 @@ export default function Home() {
           {xpToast && (
             <div className={`global-xp-toast ${xpToast.leveledUp ? "level-up" : ""}`}>
               <div className="xp-toast-icon">
-                {xpToast.leveledUp ? "🎉" : xpToast.newlyUnlockedBadges && xpToast.newlyUnlockedBadges.length > 0 ? "🎖️" : "⚡"}
+                <RankEmblem tier={xpToast.newTier?.id || userTier.id} size={28} />
               </div>
               <div className="xp-toast-body">
                 {xpToast.leveledUp ? (
                   <>
-                    <strong>RANK UP! Reached {xpToast.newTier?.badge} {xpToast.newTier?.name} Tier!</strong>
+                    <strong>Rank Up: Reached {xpToast.newTier?.name} Tier</strong>
                     <span>+{xpToast.addedXp} XP · {xpToast.reason}</span>
                   </>
                 ) : (
                   <>
-                    <strong>+{xpToast.addedXp} Verified XP Earned!</strong>
+                    <strong>+{xpToast.addedXp} Verified XP Earned</strong>
                     <span>{xpToast.reason}</span>
                   </>
                 )}
                 {xpToast.newlyUnlockedBadges && xpToast.newlyUnlockedBadges.length > 0 && (
                   <small className="toast-badge-notice">
-                    🎖️ Unlocked: {xpToast.newlyUnlockedBadges.map(b => b.name).join(", ")}
+                    Unlocked: {xpToast.newlyUnlockedBadges.map(b => b.name).join(", ")}
                   </small>
                 )}
               </div>

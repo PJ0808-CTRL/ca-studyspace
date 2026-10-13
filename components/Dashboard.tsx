@@ -10,6 +10,7 @@ import {
   getStreakMultiplier,
   type GamificationState,
 } from "@/lib/gamification";
+import RankEmblem from "./RankEmblem";
 
 const today = () => new Date().toLocaleDateString("en-CA");
 
@@ -154,16 +155,14 @@ export default function Dashboard({
       <section className="card dashboard-rank-card" style={{ borderLeft: `4px solid ${rankProgress.currentTier.color}` }}>
         <div className="rank-card-header">
           <div className="rank-card-identity">
-            <span className="rank-card-badge" style={{ backgroundColor: `${rankProgress.currentTier.color}22`, borderColor: rankProgress.currentTier.color }}>
-              {rankProgress.currentTier.badge}
-            </span>
+            <RankEmblem tier={rankProgress.currentTier.id} size={46} />
             <div>
               <div className="rank-card-title-row">
                 <span className="rank-card-tier-name" style={{ color: rankProgress.currentTier.color }}>
                   {rankProgress.currentTier.name} Tier
                 </span>
                 <span className="rank-streak-pill">
-                  🔥 {gameState.streak} Days Streak ({streakInfo.multiplier}x XP)
+                  {gameState.streak} Days Streak ({streakInfo.multiplier}x XP)
                 </span>
               </div>
               <small className="rank-tagline">{rankProgress.currentTier.tagline} · {gameState.xp.toLocaleString()} Total XP</small>
@@ -175,17 +174,17 @@ export default function Dashboard({
               <>
                 <button
                   type="button"
-                  className="preset-btn"
+                  className="rank-btn-primary"
                   onClick={() => onNavigate("leaderboard")}
                 >
-                  🏆 View Leaderboard
+                  View Leaderboard
                 </button>
                 <button
                   type="button"
-                  className="preset-btn outline"
+                  className="rank-btn-ghost"
                   onClick={() => onNavigate("leaderboard")}
                 >
-                  🎖️ Trophy Case ({gameState.unlockedBadgeIds.length})
+                  Trophy Case ({gameState.unlockedBadgeIds.length})
                 </button>
               </>
             )}
@@ -196,9 +195,9 @@ export default function Dashboard({
           <div className="rank-progress-text">
             <span>
               {rankProgress.nextTier ? (
-                <>Next: <b>{rankProgress.nextTier.badge} {rankProgress.nextTier.name} Tier</b></>
+                <>Next: <b>{rankProgress.nextTier.name} Tier</b></>
               ) : (
-                <b>Peak Grandmaster Achieved! ⚡</b>
+                <b>Peak Grandmaster Achieved</b>
               )}
             </span>
             <span>
@@ -331,9 +330,9 @@ export default function Dashboard({
               <h3>Log study time</h3>
             </div>
           </div>
-          <div className="anti-cheat-mini-notice">
-            <span>🔒 <b>Anti-Cheat Rule:</b> Manual logs update your syllabus analytics only. XP and Rank Tiers are earned exclusively through verified live Pomodoro sessions and active recall drills to prevent fake XP generation.</span>
-          </div>
+          <p className="anti-cheat-micro-text">
+            * Manual logs record syllabus progress only. XP and ranks are earned via verified Pomodoro timers.
+          </p>
           <form className="form-stack" onSubmit={saveLog}>
             <label>
               Subject

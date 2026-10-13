@@ -15,6 +15,7 @@ import {
   type LeaderboardEntry,
 } from "@/lib/gamification";
 import type { Profile } from "@/lib/types";
+import RankEmblem from "./RankEmblem";
 
 export default function Leaderboard({
   supabase,
@@ -26,9 +27,10 @@ export default function Leaderboard({
   profile: Profile;
 }) {
   const [gameState, setGameState] = useState<GamificationState>(() => getGamificationData(userId));
-  const [tab, setTab] = useState<"all" | "hierarchy" | "trophy">("all");
+  const [tab, setTab] = useState<"standings" | "trophy" | "hierarchy">("standings");
   const [trophyCategory, setTrophyCategory] = useState<string>("all");
   const [remoteProfiles, setRemoteProfiles] = useState<LeaderboardEntry[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -38,15 +40,16 @@ export default function Leaderboard({
     return () => window.removeEventListener("ca-gamification-updated", handleUpdate);
   }, [userId]);
 
-  // Fetch real profiles from Supabase if available
+  // Fetch only real profiles from Supabase database
   useEffect(() => {
     let alive = true;
     void (async () => {
+      setLoadingUsers(true);
       try {
         const { data, error } = await supabase
           .from("profiles")
           .select("id, display_name, xp, streak, rank_tier")
-          .limit(50);
+          .limit(100);
 
         if (!error && data && data.length > 0 && alive) {
           const mapped: LeaderboardEntry[] = data
@@ -66,7 +69,9 @@ export default function Leaderboard({
           setRemoteProfiles(mapped);
         }
       } catch {
-        // Fall back gracefully to local benchmarking
+        // Fall back gracefully
+      } finally {
+        if (alive) setLoadingUsers(false);
       }
     })();
     return () => {
@@ -74,19 +79,18 @@ export default function Leaderboard({
     };
   }, [supabase, userId]);
 
+  // Base leaderboard contains ONLY the current real user
   const baseLeaderboard = generateLeaderboard(
     { id: userId, name: profile.display_name },
     gameState
   );
 
-  // Merge remote profiles if present
+  // Merge real remote users with current user - zero fake/seeded users
   const mergedLeaderboard = (() => {
-    if (remoteProfiles.length === 0) return baseLeaderboard;
-    const currentEntry = baseLeaderboard.find(e => e.isCurrentUser);
+    const currentEntry = baseLeaderboard[0];
     const combined = [
-      ...(currentEntry ? [currentEntry] : []),
-      ...remoteProfiles,
-      ...baseLeaderboard.filter(e => !e.isCurrentUser && !remoteProfiles.some(r => r.name === e.name)),
+      currentEntry,
+      ...remoteProfiles.filter(r => r.id !== userId),
     ];
     combined.sort((a, b) => b.xp - a.xp);
     return combined;
@@ -109,32 +113,14 @@ export default function Leaderboard({
     <>
       <header className="page-head">
         <p className="eyebrow">COMPETITIVE ASPIRANT ARENA · VERIFIED FOCUS ONLY</p>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
-          <div>
-            <h1>All-India Aspirant Leaderboard</h1>
-            <p>Compete with dedicated CA Foundation aspirants. Ranks are powered exclusively by verified Pomodoro focus and active revision drills.</p>
-          </div>
-          <div className="leaderboard-header-actions">
-            <button
-              className={`preset-btn ${tab === "trophy" ? "active" : ""}`}
-              onClick={() => setTab("trophy")}
-            >
-              🎖️ Trophy Case ({gameState.unlockedBadgeIds.length}/{ALL_BADGES.length})
-            </button>
-            <button
-              className={`preset-btn outline ${tab === "hierarchy" ? "active" : ""}`}
-              onClick={() => setTab("hierarchy")}
-            >
-              ℹ️ Rank Hierarchy Guide
-            </button>
-          </div>
-        </div>
+        <h1>All-India Aspirant Leaderboard</h1>
+        <p>Compete with fellow CA Foundation aspirants. Standings are determined strictly by verified Pomodoro focus and active revision mastery.</p>
       </header>
 
       {/* User Standing Strip */}
       <section className="card user-standing-strip">
-        <div className="standing-tier-badge" style={{ borderColor: rankProgress.currentTier.color }}>
-          <span className="standing-icon">{rankProgress.currentTier.badge}</span>
+        <div className="standing-tier-badge" style={{ borderColor: `${rankProgress.currentTier.color}44` }}>
+          <RankEmblem tier={rankProgress.currentTier.id} size={54} />
           <div>
             <div className="standing-tier-name" style={{ color: rankProgress.currentTier.color }}>
               {rankProgress.currentTier.name} Tier
@@ -154,7 +140,7 @@ export default function Leaderboard({
           </div>
           <div className="standing-stat-item">
             <span>ACTIVE STREAK</span>
-            <strong className="flame-text">🔥 {gameState.streak} Days ({streakInfo.multiplier}x)</strong>
+            <strong className="flame-text">{gameState.streak} Days ({streakInfo.multiplier}x)</strong>
           </div>
           <div className="standing-stat-item">
             <span>VERIFIED FOCUS TIME</span>
@@ -165,14 +151,12 @@ export default function Leaderboard({
         <div className="standing-progress-box">
           <div className="progress-label-row">
             <span>
-              {rankProgress.nextTier
-                ? `Next: ${rankProgress.nextTier.badge} ${rankProgress.nextTier.name}`
-                : "Max Rank Achieved"}
+              {rankProgress.nextTier ? `Next: ${rankProgress.nextTier.name} Tier` : "Peak Grandmaster"}
             </span>
             <span>
               {rankProgress.nextTier
                 ? `${rankProgress.xpNeededForNext.toLocaleString()} XP needed`
-                : "Legendary Status"}
+                : "All-India Rank Calibre"}
             </span>
           </div>
           <div className="rank-progress-track">
@@ -187,92 +171,110 @@ export default function Leaderboard({
         </div>
       </section>
 
-      {/* Anti-Cheat Transparency Pill */}
-      <div className="anti-cheat-banner">
-        <span>🛡️ <b>Fair Play Guarantee:</b> Manual study logs do not grant XP. Rank tiers and leaderboards are earned strictly via verified Pomodoro sessions and recall drills to prevent false logging.</span>
-      </div>
-
-      {/* Navigation sub-tabs */}
-      <div className="community-tabs" style={{ marginTop: 16, marginBottom: 20 }}>
+      {/* Sleek Modern Segmented Navigation Tabs */}
+      <nav className="leaderboard-segmented-nav" aria-label="Leaderboard views">
         <button
-          className={tab === "all" ? "active" : ""}
-          onClick={() => setTab("all")}
+          type="button"
+          className={`leaderboard-nav-tab ${tab === "standings" ? "active" : ""}`}
+          onClick={() => setTab("standings")}
         >
-          🏆 Aspirant Rankings
+          Aspirants Standings
         </button>
         <button
-          className={tab === "trophy" ? "active" : ""}
+          type="button"
+          className={`leaderboard-nav-tab ${tab === "trophy" ? "active" : ""}`}
           onClick={() => setTab("trophy")}
         >
-          🎖️ Trophy Case ({gameState.unlockedBadgeIds.length} Unlocked)
+          Trophy Case ({gameState.unlockedBadgeIds.length}/{ALL_BADGES.length})
         </button>
         <button
-          className={tab === "hierarchy" ? "active" : ""}
+          type="button"
+          className={`leaderboard-nav-tab ${tab === "hierarchy" ? "active" : ""}`}
           onClick={() => setTab("hierarchy")}
         >
-          🔰 Rank Hierarchy (Plastic ➔ Grandmaster)
+          Rank Hierarchy Guide
         </button>
-      </div>
+      </nav>
 
-      {tab === "all" && (
-        <>
-          {/* Top 3 Podium */}
-          <div className="podium-container">
-            {top3[1] && (
-              <div className="podium-card podium-silver">
-                <div className="podium-crown">🥈 2nd Place</div>
-                <div className="podium-avatar">{top3[1].name.charAt(0)}</div>
-                <strong className="podium-name">{top3[1].name}</strong>
-                <span className="tier-tag" style={{ color: top3[1].tier.color, borderColor: top3[1].tier.color }}>
-                  {top3[1].tier.badge} {top3[1].tier.name}
-                </span>
-                <span className="podium-xp">{top3[1].xp.toLocaleString()} XP</span>
-                <small className="podium-time">{top3[1].verifiedHours}h verified focus</small>
+      {tab === "standings" && (
+        <div className="leaderboard-content-section">
+          {/* Top 3 Podium (renders when multiple real users exist) */}
+          {mergedLeaderboard.length >= 2 ? (
+            <div className="podium-container">
+              {top3[1] && (
+                <div className="podium-card podium-silver">
+                  <div className="podium-crown">Rank #2</div>
+                  <div className="podium-emblem-wrap">
+                    <RankEmblem tier={top3[1].tier.id} size={44} />
+                  </div>
+                  <strong className="podium-name">{top3[1].name}</strong>
+                  <span className="tier-tag" style={{ color: top3[1].tier.color, borderColor: top3[1].tier.color }}>
+                    {top3[1].tier.name}
+                  </span>
+                  <span className="podium-xp">{top3[1].xp.toLocaleString()} XP</span>
+                  <small className="podium-time">{top3[1].verifiedHours}h focus</small>
+                </div>
+              )}
+
+              {top3[0] && (
+                <div className="podium-card podium-gold">
+                  <div className="podium-crown">Rank #1 Leader</div>
+                  <div className="podium-emblem-wrap gold-glow">
+                    <RankEmblem tier={top3[0].tier.id} size={56} />
+                  </div>
+                  <strong className="podium-name">{top3[0].name}</strong>
+                  <span className="tier-tag" style={{ color: top3[0].tier.color, borderColor: top3[0].tier.color }}>
+                    {top3[0].tier.name}
+                  </span>
+                  <span className="podium-xp">{top3[0].xp.toLocaleString()} XP</span>
+                  <small className="podium-time">{top3[0].verifiedHours}h focus</small>
+                </div>
+              )}
+
+              {top3[2] && (
+                <div className="podium-card podium-bronze">
+                  <div className="podium-crown">Rank #3</div>
+                  <div className="podium-emblem-wrap">
+                    <RankEmblem tier={top3[2].tier.id} size={44} />
+                  </div>
+                  <strong className="podium-name">{top3[2].name}</strong>
+                  <span className="tier-tag" style={{ color: top3[2].tier.color, borderColor: top3[2].tier.color }}>
+                    {top3[2].tier.name}
+                  </span>
+                  <span className="podium-xp">{top3[2].xp.toLocaleString()} XP</span>
+                  <small className="podium-time">{top3[2].verifiedHours}h focus</small>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="leaderboard-solo-card card">
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                <RankEmblem tier={rankProgress.currentTier.id} size={42} />
+                <div>
+                  <strong>You are holding Rank #1 on the leaderboard</strong>
+                  <p className="subtle" style={{ margin: "2px 0 0" }}>
+                    Verified hours from your Pomodoro sessions and revision tests will keep your rank updated as new aspirants join.
+                  </p>
+                </div>
               </div>
-            )}
+            </div>
+          )}
 
-            {top3[0] && (
-              <div className="podium-card podium-gold">
-                <div className="podium-crown">👑 1st Champion</div>
-                <div className="podium-avatar gold-glow">{top3[0].name.charAt(0)}</div>
-                <strong className="podium-name">{top3[0].name}</strong>
-                <span className="tier-tag" style={{ color: top3[0].tier.color, borderColor: top3[0].tier.color }}>
-                  {top3[0].tier.badge} {top3[0].tier.name}
-                </span>
-                <span className="podium-xp">{top3[0].xp.toLocaleString()} XP</span>
-                <small className="podium-time">{top3[0].verifiedHours}h verified focus</small>
-              </div>
-            )}
-
-            {top3[2] && (
-              <div className="podium-card podium-bronze">
-                <div className="podium-crown">🥉 3rd Place</div>
-                <div className="podium-avatar">{top3[2].name.charAt(0)}</div>
-                <strong className="podium-name">{top3[2].name}</strong>
-                <span className="tier-tag" style={{ color: top3[2].tier.color, borderColor: top3[2].tier.color }}>
-                  {top3[2].tier.badge} {top3[2].tier.name}
-                </span>
-                <span className="podium-xp">{top3[2].xp.toLocaleString()} XP</span>
-                <small className="podium-time">{top3[2].verifiedHours}h verified focus</small>
-              </div>
-            )}
-          </div>
-
-          {/* Full Leaderboard Table */}
+          {/* Full Standings Table */}
           <section className="card leaderboard-table-card">
             <div className="section-title split">
               <div>
                 <p className="eyebrow">ALL-INDIA STANDINGS</p>
                 <h3>Verified Aspirant Standings</h3>
               </div>
-              <span className="fine">Updated live from verified study records</span>
+              <span className="fine">Authentic registered student records</span>
             </div>
 
             <div className="table-responsive">
               <table className="leaderboard-table">
                 <thead>
                   <tr>
-                    <th style={{ width: 60 }}>Rank</th>
+                    <th style={{ width: 64 }}>Rank</th>
                     <th>Aspirant</th>
                     <th>Rank Tier</th>
                     <th>Verified Focus</th>
@@ -287,7 +289,7 @@ export default function Leaderboard({
                     return (
                       <tr key={entry.id} className={isUser ? "current-user-row" : ""}>
                         <td className="rank-cell">
-                          {rankNum === 1 ? "🥇 1" : rankNum === 2 ? "🥈 2" : rankNum === 3 ? "🥉 3" : `#${rankNum}`}
+                          #{rankNum}
                         </td>
                         <td>
                           <div className="aspirant-cell">
@@ -303,16 +305,17 @@ export default function Leaderboard({
                             className="tier-pill"
                             style={{
                               color: entry.tier.color,
-                              borderColor: `${entry.tier.color}66`,
+                              borderColor: `${entry.tier.color}44`,
                               backgroundColor: `${entry.tier.color}15`,
                             }}
                           >
-                            <i>{entry.tier.badge}</i> {entry.tier.name}
+                            <RankEmblem tier={entry.tier.id} size={16} />
+                            <span>{entry.tier.name}</span>
                           </span>
                         </td>
                         <td>{entry.verifiedHours} hrs</td>
                         <td>
-                          <span className="streak-cell">🔥 {entry.streak}d</span>
+                          <span className="streak-cell">{entry.streak}d</span>
                         </td>
                         <td style={{ textAlign: "right" }}>
                           <strong className="xp-cell">{entry.xp.toLocaleString()} XP</strong>
@@ -324,122 +327,137 @@ export default function Leaderboard({
               </table>
             </div>
           </section>
-        </>
+        </div>
       )}
 
       {tab === "trophy" && (
-        <section className="card trophy-case-card">
-          <div className="section-title split">
-            <div>
-              <p className="eyebrow">YOUR ACHIEVEMENT SHOWCASE</p>
-              <h3>CA Studyspace Trophy Case</h3>
-              <p className="subtle">Collect badges by maintaining consistency, mastering subjects, and completing verified focus blocks.</p>
+        <div className="leaderboard-content-section">
+          <section className="card trophy-case-card">
+            <div className="section-title split">
+              <div>
+                <p className="eyebrow">ACHIEVEMENT SHOWCASE</p>
+                <h3>CA Studyspace Trophy Case</h3>
+                <p className="subtle">Unlock badges through consistent Pomodoro focus blocks, subject mastery, and disciplined revisions.</p>
+              </div>
+              <div className="trophy-filter-strip">
+                <button
+                  type="button"
+                  className={`trophy-chip ${trophyCategory === "all" ? "active" : ""}`}
+                  onClick={() => setTrophyCategory("all")}
+                >
+                  All ({ALL_BADGES.length})
+                </button>
+                <button
+                  type="button"
+                  className={`trophy-chip ${trophyCategory === "unlocked" ? "active" : ""}`}
+                  onClick={() => setTrophyCategory("unlocked")}
+                >
+                  Unlocked ({gameState.unlockedBadgeIds.length})
+                </button>
+                <button
+                  type="button"
+                  className={`trophy-chip ${trophyCategory === "focus" ? "active" : ""}`}
+                  onClick={() => setTrophyCategory("focus")}
+                >
+                  Focus
+                </button>
+                <button
+                  type="button"
+                  className={`trophy-chip ${trophyCategory === "streak" ? "active" : ""}`}
+                  onClick={() => setTrophyCategory("streak")}
+                >
+                  Streaks
+                </button>
+                <button
+                  type="button"
+                  className={`trophy-chip ${trophyCategory === "subject" ? "active" : ""}`}
+                  onClick={() => setTrophyCategory("subject")}
+                >
+                  Subjects
+                </button>
+              </div>
             </div>
-            <div className="badge-filter-buttons">
-              <button
-                className={`mini-filter-btn ${trophyCategory === "all" ? "active" : ""}`}
-                onClick={() => setTrophyCategory("all")}
-              >
-                All ({ALL_BADGES.length})
-              </button>
-              <button
-                className={`mini-filter-btn ${trophyCategory === "unlocked" ? "active" : ""}`}
-                onClick={() => setTrophyCategory("unlocked")}
-              >
-                Unlocked ({gameState.unlockedBadgeIds.length})
-              </button>
-              <button
-                className={`mini-filter-btn ${trophyCategory === "focus" ? "active" : ""}`}
-                onClick={() => setTrophyCategory("focus")}
-              >
-                Focus
-              </button>
-              <button
-                className={`mini-filter-btn ${trophyCategory === "streak" ? "active" : ""}`}
-                onClick={() => setTrophyCategory("streak")}
-              >
-                Streaks
-              </button>
-              <button
-                className={`mini-filter-btn ${trophyCategory === "subject" ? "active" : ""}`}
-                onClick={() => setTrophyCategory("subject")}
-              >
-                Subjects
-              </button>
-            </div>
-          </div>
 
-          <div className="badges-grid">
-            {filteredBadges.map(badge => {
-              const isUnlocked = unlockedBadgesSet.has(badge.id);
-              return (
-                <div key={badge.id} className={`badge-card ${isUnlocked ? "unlocked" : "locked"}`}>
-                  <div className="badge-icon-wrap">
-                    <span className="badge-emoji">{badge.icon}</span>
-                    {isUnlocked ? (
-                      <span className="badge-check-icon">✓</span>
-                    ) : (
-                      <span className="badge-lock-icon">🔒</span>
-                    )}
+            <div className="badges-grid">
+              {filteredBadges.map(badge => {
+                const isUnlocked = unlockedBadgesSet.has(badge.id);
+                return (
+                  <div key={badge.id} className={`badge-card ${isUnlocked ? "unlocked" : "locked"}`}>
+                    <div className="badge-icon-wrap">
+                      <span className="badge-glyph-wrap">
+                        {badge.id.startsWith("tier_") ? (
+                          <RankEmblem tier={badge.id.replace("tier_", "")} size={28} />
+                        ) : (
+                          <span className="badge-symbol-core">◈</span>
+                        )}
+                      </span>
+                      {isUnlocked ? (
+                        <span className="badge-status-pill unlocked">Unlocked</span>
+                      ) : (
+                        <span className="badge-status-pill locked">Locked</span>
+                      )}
+                    </div>
+                    <strong className="badge-title">{badge.name}</strong>
+                    <p className="badge-desc">{badge.description}</p>
+                    {!isUnlocked && <span className="badge-hint">{badge.hint}</span>}
                   </div>
-                  <strong className="badge-title">{badge.name}</strong>
-                  <p className="badge-desc">{badge.description}</p>
-                  {!isUnlocked && <span className="badge-hint">{badge.hint}</span>}
-                </div>
-              );
-            })}
-          </div>
-        </section>
+                );
+              })}
+            </div>
+          </section>
+        </div>
       )}
 
       {tab === "hierarchy" && (
-        <section className="card rank-hierarchy-card">
-          <div className="section-title">
-            <div>
-              <p className="eyebrow">RANK PROGRESSION SYSTEM</p>
-              <h3>The 9 CA Studyspace Rank Tiers</h3>
-              <p className="subtle">Every tier reflects actual verified hours, deep Pomodoro focus, and recall discipline.</p>
+        <div className="leaderboard-content-section">
+          <section className="card rank-hierarchy-card">
+            <div className="section-title">
+              <div>
+                <p className="eyebrow">RANK PROGRESSION SYSTEM</p>
+                <h3>The 9 CA Studyspace Rank Tiers</h3>
+                <p className="subtle">Each tier represents verified focus stamina and consistency. Progress through the tiers by completing live Pomodoro focus blocks and spaced revisions.</p>
+              </div>
             </div>
-          </div>
 
-          <div className="hierarchy-list">
-            {RANK_TIERS.map((tier, idx) => {
-              const isCurrent = tier.id === rankProgress.currentTier.id;
-              const isPassed = gameState.xp >= tier.minXp;
-              return (
-                <div
-                  key={tier.id}
-                  className={`hierarchy-tier-card ${isCurrent ? "current" : ""} ${isPassed ? "passed" : ""}`}
-                  style={{ borderLeftColor: tier.color }}
-                >
-                  <div className="tier-card-left">
-                    <span className="tier-rank-number">#{idx + 1}</span>
-                    <span className="tier-large-badge">{tier.badge}</span>
-                    <div>
-                      <div className="tier-title-row">
-                        <h4 style={{ color: tier.color }}>{tier.name}</h4>
-                        {isCurrent && <span className="current-badge-pill">YOUR CURRENT RANK</span>}
+            <div className="hierarchy-list">
+              {RANK_TIERS.map((tier, idx) => {
+                const isCurrent = tier.id === rankProgress.currentTier.id;
+                const isPassed = gameState.xp >= tier.minXp;
+                return (
+                  <div
+                    key={tier.id}
+                    className={`hierarchy-tier-card ${isCurrent ? "current" : ""} ${isPassed ? "passed" : ""}`}
+                    style={{ borderLeftColor: tier.color }}
+                  >
+                    <div className="tier-card-left">
+                      <span className="tier-rank-number">0{idx + 1}</span>
+                      <RankEmblem tier={tier.id} size={44} />
+                      <div>
+                        <div className="tier-title-row">
+                          <h4 style={{ color: tier.color }}>{tier.name} Tier</h4>
+                          {isCurrent && <span className="current-badge-pill">YOUR CURRENT RANK</span>}
+                        </div>
+                        <span className="tier-subtitle">{tier.tagline}</span>
                       </div>
-                      <span className="tier-subtitle">{tier.tagline}</span>
                     </div>
-                  </div>
 
-                  <div className="tier-card-right">
-                    <div className="tier-threshold">
-                      <strong>
-                        {tier.maxXp === Infinity
-                          ? `${tier.minXp.toLocaleString()}+ XP`
-                          : `${tier.minXp.toLocaleString()} - ${tier.maxXp.toLocaleString()} XP`}
-                      </strong>
-                      <small>Required Threshold</small>
+                    <div className="tier-card-right">
+                      <div className="tier-threshold">
+                        <strong>
+                          {tier.maxXp === Infinity
+                            ? `${tier.minXp.toLocaleString()}+ XP`
+                            : `${tier.minXp.toLocaleString()} – ${tier.maxXp.toLocaleString()} XP`}
+                        </strong>
+                        <small>Threshold</small>
+                      </div>
+                      <p className="tier-perk-desc">{tier.perks}</p>
                     </div>
-                    <p className="tier-perk-desc">{tier.perks}</p>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+                );
+              })}
+            </div>
+          </section>
+        </div>
       )}
     </>
   );

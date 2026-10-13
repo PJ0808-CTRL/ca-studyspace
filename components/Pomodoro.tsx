@@ -256,9 +256,9 @@ export default function Pomodoro({
     setLogId(null);
     setTaskId(null);
     setMessage(
-      `🎉 +${xpResult.addedXp} XP! ${focusMinutes} focused minutes saved${
+      `+${xpResult.addedXp} XP: ${focusMinutes} focused minutes saved${
         linkedTask ? " and added to your planned task" : " to your dashboard"
-      }${xpResult.leveledUp ? ` 🌟 RANK UP! You reached ${xpResult.newTier.badge} ${xpResult.newTier.name} Tier!` : ""}. Take a short break.`
+      }${xpResult.leveledUp ? ` · Rank Up: You reached ${xpResult.newTier.name} Tier!` : ""}. Take a short break.`
     );
     await refresh();
     await loadTasks();
@@ -545,8 +545,8 @@ export default function Pomodoro({
 
           {mode === "focus" && (
             <div className="pomodoro-xp-pill">
-              <span>⚡ Verified Session: Earn <b>+{Math.round(focusMinutes * 1.5 * streakInfo.multiplier)} XP</b> on timer finish</span>
-              <span className="pomodoro-streak-badge">🔥 {streakInfo.multiplier}x Boost</span>
+              <span>Verified Session: Earn <b>+{Math.round(focusMinutes * 1.5 * streakInfo.multiplier)} XP</b> on timer finish</span>
+              <span className="pomodoro-streak-badge">{streakInfo.multiplier}x Boost</span>
             </div>
           )}
         </section>
