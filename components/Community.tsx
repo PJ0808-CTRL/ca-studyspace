@@ -125,8 +125,13 @@ export default function Community({
     markItemDeletedByMod(discussionId);
     if (active === discussionId) setActive(null);
     try {
-      await supabase.from("discussions").delete().eq("id", discussionId);
-    } catch {}
+      const { error } = await supabase.from("discussions").delete().eq("id", discussionId);
+      if (error) {
+        console.warn("[Community] Delete discussion warning:", error);
+      }
+    } catch (err) {
+      console.error("Failed to delete discussion:", err);
+    }
     await refresh();
     setModNotice("Discussion deleted successfully.");
     setTimeout(() => setModNotice(""), 3500);
@@ -137,8 +142,13 @@ export default function Community({
     setError("");
     markItemDeletedByMod(replyId);
     try {
-      await supabase.from("replies").delete().eq("id", replyId);
-    } catch {}
+      const { error } = await supabase.from("replies").delete().eq("id", replyId);
+      if (error) {
+        console.warn("[Community] Delete reply warning:", error);
+      }
+    } catch (err) {
+      console.error("Failed to delete reply:", err);
+    }
     await refresh();
     setModNotice("Reply deleted.");
     setTimeout(() => setModNotice(""), 3500);

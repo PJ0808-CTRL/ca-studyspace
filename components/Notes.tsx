@@ -117,21 +117,57 @@ export default function Notes({
       : `Delete “${note.title}”?`;
     if (!window.confirm(confirmMessage)) return;
     setListError("");
-    if (note.file_path) {
+    setBusy(true);
+
+    try {
+      // 1. First attempt deletion via server API route (if server admin key is configured)
+      let deletedViaApi = false;
       try {
-        await supabase.storage.from(BUCKET).remove([note.file_path]);
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData?.session?.access_token;
+        const res = await fetch("/api/notes/delete", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ noteId: note.id, filePath: note.file_path }),
+        });
+        if (res.ok) {
+          deletedViaApi = true;
+        }
       } catch {
-        // Continue if storage permissions restrict cross-user storage removal
+        // Fall back to direct client deletion
       }
-    }
-    const { error } = await supabase.from("notes").delete().eq("id", note.id);
-    // Mark as locally deleted by moderator so it disappears immediately even if remote RLS restricts delete
-    markItemDeletedByMod(note.id);
-    setItems(previous => previous.filter(item => item.id !== note.id));
-    if (error && error.code !== "PGRST116") {
-      // Still filtered out locally
-    } else {
+
+      // 2. If not deleted via server API, perform direct Supabase deletion
+      if (!deletedViaApi) {
+        if (note.file_path) {
+          try {
+            await supabase.storage.from(BUCKET).remove([note.file_path]);
+          } catch {
+            // Continue if storage permissions restrict cross-user storage removal
+          }
+        }
+        const { error } = await supabase.from("notes").delete().eq("id", note.id);
+        if (error) {
+          throw error;
+        }
+      }
+
+      // 3. Mark as locally deleted and synchronize list from database
+      markItemDeletedByMod(note.id);
+      setItems(previous => previous.filter(item => item.id !== note.id));
       resetList();
+    } catch (cause) {
+      const msg = (cause as Error).message || "Failed to delete note.";
+      setListError(
+        msg.includes("row-level security") || msg.includes("policy")
+          ? "Database permission notice: Delete restricted by Supabase RLS. Run the SQL migration (20261014_fix_notes_and_moderation_deletion.sql) in your Supabase SQL editor to enable moderator deletion."
+          : `Delete failed: ${msg}`
+      );
+    } finally {
+      setBusy(false);
     }
   }
 
