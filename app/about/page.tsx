@@ -128,10 +128,10 @@ export default function AboutUsPage() {
           <h2>Ready to transform your CA Foundation prep?</h2>
           <p>Join thousands of aspirants building disciplined, daily focus routines on CA Studyspace today.</p>
           <div className="about-cta-actions">
-            <Link href="/" className="primary" style={{ minHeight: 44, padding: "0 24px", fontSize: 13 }}>
+            <Link href="/" className="primary about-cta-desk-btn">
               Open CA Studyspace Desk ↗
             </Link>
-            <Link href="/privacy" className="text-button" style={{ color: "var(--ink)" }}>
+            <Link href="/privacy" className="about-cta-privacy-btn">
               Read Privacy Policy
             </Link>
           </div>

@@ -56,6 +56,28 @@ export default function LegalLayout({
             </Link>
           </div>
         </div>
+
+        {/* Mobile Legal Navigation Strip */}
+        <nav className="legal-mobile-subnav" aria-label="Legal documents">
+          <Link
+            href="/about"
+            className={`legal-mobile-subnav-link ${activePath === "/about" ? "active" : ""}`}
+          >
+            About Us
+          </Link>
+          <Link
+            href="/privacy"
+            className={`legal-mobile-subnav-link ${activePath === "/privacy" ? "active" : ""}`}
+          >
+            Privacy Policy
+          </Link>
+          <Link
+            href="/terms"
+            className={`legal-mobile-subnav-link ${activePath === "/terms" ? "active" : ""}`}
+          >
+            Terms of Service
+          </Link>
+        </nav>
       </header>
 
       {/* Hero Banner */}
