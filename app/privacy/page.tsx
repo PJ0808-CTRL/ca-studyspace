@@ -195,7 +195,7 @@ export default function PrivacyPolicyPage() {
           </p>
           <div className="legal-contact-card">
             <strong>CA Studyspace Privacy & Compliance Desk</strong>
-            <p>Email: <a href="mailto:castudyspace-support@gmail.com">castudyspace-support@gmail.com</a></p>
+            <p>Email: <a href="mailto:castudyspacesupport@gmail.com">castudyspacesupport@gmail.com</a></p>
             <p>Platform: <Link href="/">castudyspace.vercel.app</Link></p>
             <p>Response Time: Typically within 24–48 business hours</p>
           </div>

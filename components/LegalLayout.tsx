@@ -134,8 +134,8 @@ export default function LegalLayout({
                 <strong>Legal & Compliance</strong>
                 <Link href="/privacy">Privacy Policy</Link>
                 <Link href="/terms">Terms of Service</Link>
-                <a href="mailto:castudyspace-support@gmail.com">Student Support</a>
-                <a href="mailto:castudyspace-support@gmail.com">Legal Inquiries</a>
+                <a href="mailto:castudyspacesupport@gmail.com">Student Support</a>
+                <a href="mailto:castudyspacesupport@gmail.com">Legal Inquiries</a>
               </div>
             </div>
           </div>
