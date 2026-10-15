@@ -3,6 +3,87 @@
 import { useState } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
 
+const TICKER_ITEMS = [
+  {
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    ),
+    label: "Live Study Rooms:",
+    desc: "Realtime study accountability",
+  },
+  {
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="3" y="3" width="7" height="7" rx="1.5" />
+        <rect x="14" y="3" width="7" height="7" rx="1.5" />
+        <rect x="14" y="14" width="7" height="7" rx="1.5" />
+        <rect x="3" y="14" width="7" height="7" rx="1.5" />
+      </svg>
+    ),
+    label: "GitHub Study Heatmap:",
+    desc: "365-day visual consistency grid",
+  },
+  {
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="2" y="7" width="20" height="14" rx="2" />
+        <path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z" />
+      </svg>
+    ),
+    label: "Spaced Flashcards:",
+    desc: "Scientific 1-3-7-15-30 day recall",
+  },
+  {
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="12" cy="13" r="8" />
+        <polyline points="12 9 12 13 15 15" />
+        <path d="M10 2h4" />
+      </svg>
+    ),
+    label: "Pomodoro Focus Studio:",
+    desc: "Ambient soundscapes & auto-logs",
+  },
+  {
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      </svg>
+    ),
+    label: "ICAI Papers Library:",
+    desc: "Official MTPs, RTPs & answers",
+  },
+  {
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+        <path d="M4 22h16" />
+        <path d="M10 14.66V17c0 .55-.45 1-1 1H8v4h8v-4h-1c-.55 0-1-.45-1-1v-2.34" />
+        <path d="M6 4h12v7a6 6 0 0 1-12 0V4z" />
+      </svg>
+    ),
+    label: "All-India XP Leaderboard:",
+    desc: "9 rank tiers & trophy case",
+  },
+  {
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        <polyline points="9 12 11 14 15 10" />
+      </svg>
+    ),
+    label: "100% Free Forever:",
+    desc: "Zero paywalls, zero waitlists",
+  },
+];
+
 export default function Landing({
   onStart,
   onLogin,
@@ -34,7 +115,9 @@ export default function Landing({
         <div className="landing-nav-actions">
           <ThemeToggle />
           <button className="landing-mod-btn" onClick={onModerator} title="Moderator Portal" aria-label="Moderator Portal">
-            <span className="mod-shield-icon">🛡️</span>
+            <span className="mod-shield-icon">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+            </span>
             <span className="mod-text">Moderator Portal</span>
           </button>
           <button className="landing-login" onClick={onLogin}>Log in</button>
@@ -57,7 +140,9 @@ export default function Landing({
             <a href="/privacy">Privacy Policy</a>
             <a href="/terms">Terms of Service</a>
             <button className="landing-mod-btn mobile-item" onClick={onModerator}>
-              <span>🛡️</span> Moderator Portal
+              <span style={{ display: "inline-flex", alignItems: "center" }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+              </span> Moderator Portal
             </button>
             <div className="landing-mobile-auth">
               <button className="landing-login mobile" onClick={onLogin}>Log in</button>
@@ -135,21 +220,11 @@ export default function Landing({
         {/* Animated Feature Marquee Ticker */}
         <div className="landing-ticker-strip" aria-hidden="true">
           <div className="landing-ticker-track">
-            <span className="landing-ticker-item"><i>🟢</i> <strong>Live Study Rooms:</strong> Realtime study accountability</span>
-            <span className="landing-ticker-item"><i>📊</i> <strong>GitHub Study Heatmap:</strong> 365-day visual consistency grid</span>
-            <span className="landing-ticker-item"><i>🧠</i> <strong>Spaced Flashcards:</strong> Scientific 1-3-7-15-30 day recall</span>
-            <span className="landing-ticker-item"><i>⏱️</i> <strong>Pomodoro Focus Studio:</strong> Ambient soundscapes & auto-logs</span>
-            <span className="landing-ticker-item"><i>📚</i> <strong>ICAI Papers Library:</strong> Official MTPs, RTPs & answers</span>
-            <span className="landing-ticker-item"><i>🏆</i> <strong>All-India XP Leaderboard:</strong> 9 rank tiers & trophy case</span>
-            <span className="landing-ticker-item"><i>🎓</i> <strong>100% Free Forever:</strong> Zero paywalls, zero waitlists</span>
-            {/* Duplicated for seamless loop */}
-            <span className="landing-ticker-item"><i>🟢</i> <strong>Live Study Rooms:</strong> Realtime study accountability</span>
-            <span className="landing-ticker-item"><i>📊</i> <strong>GitHub Study Heatmap:</strong> 365-day visual consistency grid</span>
-            <span className="landing-ticker-item"><i>🧠</i> <strong>Spaced Flashcards:</strong> Scientific 1-3-7-15-30 day recall</span>
-            <span className="landing-ticker-item"><i>⏱️</i> <strong>Pomodoro Focus Studio:</strong> Ambient soundscapes & auto-logs</span>
-            <span className="landing-ticker-item"><i>📚</i> <strong>ICAI Papers Library:</strong> Official MTPs, RTPs & answers</span>
-            <span className="landing-ticker-item"><i>🏆</i> <strong>All-India XP Leaderboard:</strong> 9 rank tiers & trophy case</span>
-            <span className="landing-ticker-item"><i>🎓</i> <strong>100% Free Forever:</strong> Zero paywalls, zero waitlists</span>
+            {TICKER_ITEMS.concat(TICKER_ITEMS).map((item, index) => (
+              <span className="landing-ticker-item" key={index}>
+                <i>{item.icon}</i> <strong>{item.label}</strong> {item.desc}
+              </span>
+            ))}
           </div>
         </div>
         <section className="landing-section" id="features">
@@ -262,7 +337,10 @@ export default function Landing({
             <a href="/privacy">Privacy Policy</a>
             <a href="/terms">Terms of Service</a>
             <button className="landing-mod-footer-link" onClick={onModerator} title="Moderator Access">
-              <span>🛡️</span> Moderator Portal
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ marginRight: 6 }}>
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+              Moderator Portal
             </button>
           </div>
         </div>
