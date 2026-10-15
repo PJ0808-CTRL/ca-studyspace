@@ -213,7 +213,7 @@ export default function StudyHeatmap({ logs, className = "" }: StudyHeatmapProps
           </div>
         </div>
         <div className="heatmap-metric">
-          <span className="heatmap-metric-icon">⚡</span>
+          <span className="heatmap-metric-icon">🏆</span>
           <div>
             <strong>{stats.longestStreak} {stats.longestStreak === 1 ? "day" : "days"}</strong>
             <small>Longest Streak</small>

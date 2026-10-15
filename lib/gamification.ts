@@ -118,7 +118,7 @@ export const RANK_TIERS: RankTier[] = [
   {
     id: "grandmaster",
     name: "Grandmaster",
-    badge: "⚡",
+    badge: "👑",
     minXp: 25000,
     maxXp: Infinity,
     color: "#ec4899",
@@ -183,7 +183,7 @@ export const ALL_BADGES: Badge[] = [
   {
     id: "streak_7",
     name: "Iron Discipline",
-    icon: "⚡",
+    icon: "🛡️",
     category: "streak",
     description: "Maintained a 7-day verified study streak.",
     hint: "Study 7 consecutive days to unlock.",
