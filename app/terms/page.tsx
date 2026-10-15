@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms of Service and user agreement for CA Studyspace, governing acceptable use, anti-cheat policies, community conduct, and legal disclaimers.",
+  description: "Terms of Service and user agreement for CA Orbit, governing acceptable use, anti-cheat policies, community conduct, and legal disclaimers.",
   alternates: { canonical: "/terms" },
 };
 
@@ -12,8 +12,8 @@ export default function TermsOfServicePage() {
   return (
     <LegalLayout
       title="Terms of Service"
-      subtitle="The conditions, community standards, and fair-play policies that govern your use of the CA Studyspace platform."
-      lastUpdated="October 13, 2026"
+      subtitle="The conditions, community standards, and fair-play policies that govern your use of the CA Orbit platform."
+      lastUpdated="October 15, 2026"
       activePath="/terms"
     >
       <div className="legal-article">
@@ -23,7 +23,7 @@ export default function TermsOfServicePage() {
           <div>
             <strong>Mandatory Statutory Notice regarding ICAI:</strong>
             <p>
-              CA Studyspace is an independent student platform created for educational preparation purposes. CA Studyspace is <strong>NOT</strong> affiliated with, endorsed by, sponsored by, or connected to the Institute of Chartered Accountants of India (ICAI). ICAI does not endorse or review any user content, mock tests, or study summaries hosted on this platform.
+              CA Orbit is an independent student platform created for educational preparation purposes. CA Orbit is <strong>NOT</strong> affiliated with, endorsed by, sponsored by, or connected to the Institute of Chartered Accountants of India (ICAI). ICAI does not endorse or review any user content, mock tests, or study summaries hosted on this platform.
             </p>
           </div>
         </div>
@@ -32,7 +32,7 @@ export default function TermsOfServicePage() {
         <section className="legal-section">
           <h2>1. Acceptance of Terms</h2>
           <p>
-            By accessing, browsing, registering for, or utilizing CA Studyspace (the &ldquo;Service&rdquo; or &ldquo;Platform&rdquo;), you acknowledge that you have read, understood, and agree to be bound by these Terms of Service (&ldquo;Terms&rdquo;) and our Privacy Policy. If you do not agree with any part of these Terms, you must discontinue using the platform immediately.
+            By accessing, browsing, registering for, or utilizing CA Orbit (the &ldquo;Service&rdquo; or &ldquo;Platform&rdquo;), you acknowledge that you have read, understood, and agree to be bound by these Terms of Service (&ldquo;Terms&rdquo;) and our Privacy Policy. If you do not agree with any part of these Terms, you must discontinue using the platform immediately.
           </p>
         </section>
 
@@ -56,7 +56,7 @@ export default function TermsOfServicePage() {
         <section className="legal-section">
           <h2>3. Community Conduct & Content Standards</h2>
           <p>
-            CA Studyspace hosts interactive community areas including live study rooms, discussion forums, and shared notes. When participating, you strictly agree NOT to:
+            CA Orbit hosts interactive community areas including live study rooms, discussion forums, and shared notes. When participating, you strictly agree NOT to:
           </p>
           <div className="legal-rules-grid">
             <div className="legal-rule-card">
@@ -85,7 +85,7 @@ export default function TermsOfServicePage() {
         <section className="legal-section highlight-box">
           <h2>4. Gamification, XP & Anti-Cheat Fair Play Policy</h2>
           <p>
-            The CA Studyspace gamification hierarchy (spanning from Plastic up through Grandmaster) exists to motivate consistent, disciplined daily study habits.
+            The CA Orbit gamification hierarchy (spanning from Plastic up through Grandmaster) exists to motivate consistent, disciplined daily study habits.
           </p>
           <div className="legal-notice-box">
             <strong>Anti-Cheat Rules:</strong>
@@ -107,7 +107,7 @@ export default function TermsOfServicePage() {
         <section className="legal-section">
           <h2>5. Platform Monetization & Advertisements</h2>
           <p>
-            To provide this entire suite of tools—including live rooms, Pomodoro timers, study trackers, and notes libraries—at zero cost to students, CA Studyspace may display unobtrusive third-party advertisements (such as Google AdSense).
+            To provide this entire suite of tools—including live rooms, Pomodoro timers, study trackers, and notes libraries—at zero cost to students, CA Orbit may display unobtrusive third-party advertisements (such as Google AdSense).
           </p>
           <p>
             By using the platform, you agree to the display of these advertisements. You agree not to employ automated tools to artificially click or inflate ad impressions.
@@ -119,10 +119,10 @@ export default function TermsOfServicePage() {
           <h2>6. Intellectual Property</h2>
           <ul>
             <li>
-              <strong>Platform Property:</strong> The CA Studyspace interface design, logo, emblem illustrations, code, algorithms, and features are the exclusive intellectual property of CA Studyspace.
+              <strong>Platform Property:</strong> The CA Orbit interface design, logo, emblem illustrations, code, algorithms, and features are the exclusive intellectual property of CA Orbit.
             </li>
             <li>
-              <strong>User Content:</strong> You retain ownership of the study notes and summaries you create. By uploading them to the public library, you grant CA Studyspace a non-exclusive license to display them to other students on the platform.
+              <strong>User Content:</strong> You retain ownership of the study notes and summaries you create. By uploading them to the public library, you grant CA Orbit a non-exclusive license to display them to other students on the platform.
             </li>
             <li>
               <strong>Third-Party Trademarks:</strong> &ldquo;ICAI&rdquo;, &ldquo;Chartered Accountant&rdquo;, &ldquo;CA Foundation&rdquo;, and official course titles are registered trademarks of their respective owners and are mentioned herein strictly under descriptive fair use.
@@ -134,14 +134,14 @@ export default function TermsOfServicePage() {
         <section className="legal-section">
           <h2>7. Disclaimer of Warranties & Limitation of Liability</h2>
           <p>
-            The Service is provided on an &ldquo;AS IS&rdquo; and &ldquo;AS AVAILABLE&rdquo; basis. CA Studyspace makes no representations or warranties that:
+            The Service is provided on an &ldquo;AS IS&rdquo; and &ldquo;AS AVAILABLE&rdquo; basis. CA Orbit makes no representations or warranties that:
           </p>
           <ol>
             <li>The service will be uninterrupted, error-free, or completely secure at all times.</li>
             <li>Using this platform will guarantee passing marks, ranks, or examination results in ICAI CA Foundation or any subsequent level.</li>
           </ol>
           <p>
-            To the maximum extent permitted by applicable law, CA Studyspace shall not be liable for any direct, indirect, incidental, consequential, or punitive damages arising out of your access or inability to access the platform.
+            To the maximum extent permitted by applicable law, CA Orbit shall not be liable for any direct, indirect, incidental, consequential, or punitive damages arising out of your access or inability to access the platform.
           </p>
         </section>
 
@@ -168,9 +168,9 @@ export default function TermsOfServicePage() {
             For legal inquiries, copyright notices, or community grievances, please reach out to:
           </p>
           <div className="legal-contact-card">
-            <strong>CA Studyspace Legal & Community Compliance</strong>
-            <p>Email: <a href="mailto:castudyspacesupport@gmail.com">castudyspacesupport@gmail.com</a></p>
-            <p>Website: <Link href="/">castudyspace.vercel.app</Link></p>
+            <strong>CA Orbit Legal & Community Compliance</strong>
+            <p>Email: <a href="mailto:caorbitsupport@gmail.com">caorbitsupport@gmail.com</a></p>
+            <p>Website: <Link href="/">caorbit.vercel.app</Link></p>
           </div>
         </section>
       </div>

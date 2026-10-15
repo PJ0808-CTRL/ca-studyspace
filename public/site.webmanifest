@@ -1,7 +1,7 @@
 {
-  "name": "CA Studyspace",
-  "short_name": "CA Studyspace",
-  "description": "A focused study space for CA Foundation aspirants.",
+  "name": "CA Orbit",
+  "short_name": "CA Orbit",
+  "description": "A focused study and focus platform for CA Foundation aspirants.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f7f9f5",

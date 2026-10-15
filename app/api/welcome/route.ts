@@ -11,13 +11,13 @@ export async function POST(req: Request) {
     }
 
     const recipientName = typeof name === "string" && name ? name : "Aspirant";
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ca-studyspace.vercel.app";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://caorbit.vercel.app";
     const html = getWelcomeEmailHtml(recipientName, siteUrl);
-    const subject = "Welcome to CA Studyspace! 🎓 Your study desk is ready";
+    const subject = "Welcome to CA Orbit! 🎓 Your study desk is ready";
 
     // 1. Try Resend if RESEND_API_KEY is available
     if (process.env.RESEND_API_KEY) {
-      const fromAddress = process.env.RESEND_FROM || "CA Studyspace <onboarding@resend.dev>";
+      const fromAddress = process.env.RESEND_FROM || "CA Orbit <onboarding@resend.dev>";
       const resendRes = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
       });
 
       await transporter.sendMail({
-        from: `"CA Studyspace" <${smtpUser}>`,
+        from: `"CA Orbit" <${smtpUser}>`,
         to: email,
         subject,
         html,

@@ -227,8 +227,8 @@ export default function Home() {
 
   useEffect(() => { if (user) void refresh(); else { setProfile(null); setLogs([]); } }, [user, refresh]);
 
-  if (!supabase) return <main className="setup-page"><div className="setup-card"><div className="setup-theme"><ThemeToggle /></div><span className="wordmark">CA <span>Studyspace</span><i>.</i></span><p className="eyebrow">ONE SETUP STEP LEFT</p><h1>Connect your Supabase project.</h1><p>Copy <code>.env.local.example</code> to <code>.env.local</code>, paste your Project URL and publishable key, then restart <code>npm run dev</code>. Run <code>supabase/schema.sql</code> in the Supabase SQL Editor first.</p></div></main>;
-  if (loading) return <div className="loading">Opening CA Studyspace…</div>;
+  if (!supabase) return <main className="setup-page"><div className="setup-card"><div className="setup-theme"><ThemeToggle /></div><span className="wordmark">CA <span>Orbit</span><i>.</i></span><p className="eyebrow">ONE SETUP STEP LEFT</p><h1>Connect your Supabase project.</h1><p>Copy <code>.env.local.example</code> to <code>.env.local</code>, paste your Project URL and publishable key, then restart <code>npm run dev</code>. Run <code>supabase/schema.sql</code> in the Supabase SQL Editor first.</p></div></main>;
+  if (loading) return <div className="loading">Opening CA Orbit…</div>;
   if (!user) {
     return authScreen ? (
       authMode === "moderator" ? (
@@ -260,7 +260,7 @@ export default function Home() {
     <div className="app-shell">
       <aside className="sidebar">
         <div className="logo">
-          <span>CA</span><strong>Studyspace<i>.</i></strong>
+          <span>CA</span><strong>Orbit<i>.</i></strong>
           <small>FOUNDATION</small>
         </div>
         <p className="side-label">WORKSPACE</p>
@@ -303,7 +303,7 @@ export default function Home() {
               <span>☰</span>
             </button>
             <span className="topbar-breadcrumb">
-              CA Studyspace <b>/ {navigation.find(item => item.id === view)?.label}</b>
+              CA Orbit <b>/ {navigation.find(item => item.id === view)?.label}</b>
             </span>
           </div>
 
@@ -402,7 +402,7 @@ export default function Home() {
             <aside className="mobile-drawer" onClick={e => e.stopPropagation()}>
               <div className="mobile-drawer-head">
                 <div className="logo">
-                  <span>CA</span><strong>Studyspace<i>.</i></strong>
+                  <span>CA</span><strong>Orbit<i>.</i></strong>
                   <small>FOUNDATION</small>
                 </div>
                 <button
@@ -465,7 +465,7 @@ export default function Home() {
           {view === "settings" && <Settings supabase={supabase} profile={profile} refresh={refresh} />}
           <footer>
             <div className="app-footer-bar">
-              <span>CA Studyspace is an independent study tool and is not affiliated with ICAI.</span>
+              <span>CA Orbit is an independent study tool and is not affiliated with ICAI.</span>
               <div className="app-legal-footer-links">
                 <a href="/about" target="_blank" rel="noopener noreferrer">About Us</a>
                 <span>·</span>

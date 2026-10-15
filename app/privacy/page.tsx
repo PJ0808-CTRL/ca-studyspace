@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Learn how CA Studyspace collects, protects, and manages user information, cookies, and privacy rights in compliance with industry standards and Google AdSense policies.",
+  description: "Learn how CA Orbit collects, protects, and manages user information, cookies, and privacy rights in compliance with industry standards and Google AdSense policies.",
   alternates: { canonical: "/privacy" },
 };
 
@@ -12,8 +12,8 @@ export default function PrivacyPolicyPage() {
   return (
     <LegalLayout
       title="Privacy Policy"
-      subtitle="How CA Studyspace collects, safeguards, and respects your personal study data, authentication credentials, and privacy rights."
-      lastUpdated="October 13, 2026"
+      subtitle="How CA Orbit collects, safeguards, and respects your personal study data, authentication credentials, and privacy rights."
+      lastUpdated="October 15, 2026"
       activePath="/privacy"
     >
       <div className="legal-article">
@@ -32,10 +32,10 @@ export default function PrivacyPolicyPage() {
         <section className="legal-section">
           <h2>1. Introduction & Scope</h2>
           <p>
-            Welcome to CA Studyspace (referred to herein as &ldquo;CA Studyspace&rdquo;, &ldquo;we&rdquo;, &ldquo;our&rdquo;, or &ldquo;the Platform&rdquo;). We are committed to protecting your privacy and ensuring transparency regarding how your data is handled while you prepare for your Chartered Accountancy examinations.
+            Welcome to CA Orbit (referred to herein as &ldquo;CA Orbit&rdquo;, &ldquo;we&rdquo;, &ldquo;our&rdquo;, or &ldquo;the Platform&rdquo;). We are committed to protecting your privacy and ensuring transparency regarding how your data is handled while you prepare for your Chartered Accountancy examinations.
           </p>
           <p>
-            This Privacy Policy applies to all services, features, Pomodoro tools, discussion boards, study rooms, notes libraries, and resources available at <strong>castudyspace.vercel.app</strong> and its subdomains.
+            This Privacy Policy applies to all services, features, Pomodoro tools, discussion boards, study rooms, notes libraries, and resources available at <strong>caorbit.vercel.app</strong> and its subdomains.
           </p>
         </section>
 
@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
           <p>We collect information to provide a personalized, uninterrupted study environment:</p>
           <ul>
             <li>
-              <strong>Account & Profile Information:</strong> When you register on CA Studyspace, we collect your email address, securely hashed password (managed via Supabase Authentication), chosen display name, target CA Foundation exam attempt (e.g., May/November), and optional profile notes.
+              <strong>Account & Profile Information:</strong> When you register on CA Orbit, we collect your email address, securely hashed password (managed via Supabase Authentication), chosen display name, target CA Foundation exam attempt (e.g., May/November), and optional profile notes.
             </li>
             <li>
               <strong>Study Activity & Focus Data:</strong> To help you monitor syllabus progress, we collect session durations, chosen subjects (Accounting, Business Laws, Quantitative Aptitude, Business Economics), Pomodoro timers completed, streak days, mock test completions, and earned experience points (XP).
@@ -76,7 +76,7 @@ export default function PrivacyPolicyPage() {
         <section className="legal-section">
           <h2>4. Cookies & Local Storage Technologies</h2>
           <p>
-            CA Studyspace uses standard browser storage mechanisms—predominantly <code>localStorage</code>—to ensure a seamless user experience. We use these technologies to:
+            CA Orbit uses standard browser storage mechanisms—predominantly <code>localStorage</code>—to ensure a seamless user experience. We use these technologies to:
           </p>
           <ul>
             <li>Remember your selected interface theme (Light Mode vs. Dark Mode) across page refreshes.</li>
@@ -93,7 +93,7 @@ export default function PrivacyPolicyPage() {
         <section className="legal-section highlight-box">
           <h2>5. Third-Party Advertising & Google AdSense Compliance</h2>
           <p>
-            To keep CA Studyspace <strong>100% free of charge</strong> for all CA aspirants and eliminate subscription paywalls, we partner with third-party advertising networks, including <strong>Google AdSense</strong>, to serve advertisements on the site.
+            To keep CA Orbit <strong>100% free of charge</strong> for all CA aspirants and eliminate subscription paywalls, we partner with third-party advertising networks, including <strong>Google AdSense</strong>, to serve advertisements on the site.
           </p>
           <div className="legal-notice-box">
             <strong>Disclosure regarding Google AdSense & Cookies:</strong>
@@ -102,7 +102,7 @@ export default function PrivacyPolicyPage() {
                 Third-party vendors, including Google, use cookies to serve ads based on a user&apos;s prior visits to our website or other websites on the Internet.
               </li>
               <li>
-                Google&apos;s use of advertising cookies enables it and its partners to serve personalized ads to users based on their visits to CA Studyspace and/or other sites across the World Wide Web.
+                Google&apos;s use of advertising cookies enables it and its partners to serve personalized ads to users based on their visits to CA Orbit and/or other sites across the World Wide Web.
               </li>
               <li>
                 <strong>Opt-out options:</strong> You may opt out of personalized advertising by visiting the official Google Ad Settings at{" "}
@@ -161,7 +161,7 @@ export default function PrivacyPolicyPage() {
         <section className="legal-section">
           <h2>8. Children&apos;s & Student Privacy</h2>
           <p>
-            CA Studyspace is designed for senior secondary students and college/professional aspirants preparing for the CA Foundation exam (typically ages 16 and above). We do not knowingly collect personal identifiable information from children under the age of 13.
+            CA Orbit is designed for senior secondary students and college/professional aspirants preparing for the CA Foundation exam (typically ages 16 and above). We do not knowingly collect personal identifiable information from children under the age of 13.
           </p>
         </section>
 
@@ -173,7 +173,7 @@ export default function PrivacyPolicyPage() {
             <div>
               <strong>Non-Affiliation Notice:</strong>
               <p>
-                CA Studyspace is an independent student initiative. It is not affiliated with, endorsed by, sponsored by, or connected to the Institute of Chartered Accountants of India (ICAI). All official ICAI study materials and publications remain the intellectual property of ICAI.
+                CA Orbit is an independent student initiative. It is not affiliated with, endorsed by, sponsored by, or connected to the Institute of Chartered Accountants of India (ICAI). All official ICAI study materials and publications remain the intellectual property of ICAI.
               </p>
             </div>
           </div>
@@ -194,9 +194,9 @@ export default function PrivacyPolicyPage() {
             If you have questions, feedback, or privacy-related requests regarding this Privacy Policy, please reach out to:
           </p>
           <div className="legal-contact-card">
-            <strong>CA Studyspace Privacy & Compliance Desk</strong>
-            <p>Email: <a href="mailto:castudyspacesupport@gmail.com">castudyspacesupport@gmail.com</a></p>
-            <p>Platform: <Link href="/">castudyspace.vercel.app</Link></p>
+            <strong>CA Orbit Privacy & Compliance Desk</strong>
+            <p>Email: <a href="mailto:caorbitsupport@gmail.com">caorbitsupport@gmail.com</a></p>
+            <p>Platform: <Link href="/">caorbit.vercel.app</Link></p>
             <p>Response Time: Typically within 24–48 business hours</p>
           </div>
         </section>

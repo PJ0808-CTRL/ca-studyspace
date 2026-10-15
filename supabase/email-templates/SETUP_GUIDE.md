@@ -1,6 +1,6 @@
-# CA Studyspace Email Setup Guide
+# CA Orbit Email Setup Guide
 
-To customize your emails so they appear professionally branded from **CA Studyspace** instead of default "Supabase":
+To customize your emails so they appear professionally branded from **CA Orbit** instead of default "Supabase":
 
 ---
 
@@ -12,7 +12,7 @@ To customize your emails so they appear professionally branded from **CA Studysp
 4. Click on **Confirm signup**.
 5. Set the **Subject** field to:
    ```text
-   Welcome to CA Studyspace — Confirm your email
+   Welcome to CA Orbit — Confirm your email
    ```
 6. Replace the existing HTML in the **Message body** box with the code inside:
    [`supabase/email-templates/confirm-signup.html`](./confirm-signup.html)
@@ -23,23 +23,23 @@ To customize your emails so they appear professionally branded from **CA Studysp
 ### Step 2: (Optional) Set Custom Sender Name
 
 By default, Supabase's built-in testing service sends from `noreply@mail.app.supabase.io`.
-To change the sender name to **CA Studyspace**:
+To change the sender name to **CA Orbit**:
 
 1. In Supabase Dashboard, go to **Authentication** &rarr; **Email Templates**.
 2. Set **Sender Name** to:
    ```text
-   CA Studyspace
+   CA Orbit
    ```
-3. To send from your own domain (e.g. `support@castudyspace.com` or custom address) without any Supabase references:
+3. To send from your own domain (e.g. `caorbitsupport@gmail.com` or custom address) without any Supabase references:
    - Go to **Project Settings** &rarr; **Authentication** &rarr; **SMTP Settings**.
    - Enable **Custom SMTP**.
    - Enter credentials from any free transactional email provider (such as [Resend](https://resend.com), [Brevo/Sendinblue](https://brevo.com), or [SendGrid]).
-   - **Sender email**: `no-reply@castudyspace.com`
-   - **Sender name**: `CA Studyspace`
+   - **Sender email**: `no-reply@caorbit.vercel.app`
+   - **Sender name**: `CA Orbit`
 
 ---
 
 ### Step 3: Password Reset & Magic Link (Optional)
 If you also want branded password reset emails:
 - In **Authentication** &rarr; **Email Templates** &rarr; **Reset Password**, paste the code from [`supabase/email-templates/reset-password.html`](./reset-password.html).
-- Set subject to: `Reset your CA Studyspace Password`.
+- Set subject to: `Reset your CA Orbit Password`.

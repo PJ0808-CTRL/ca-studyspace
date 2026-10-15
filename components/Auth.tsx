@@ -68,7 +68,7 @@ export default function Auth({ supabase, initialMode = "signup" }: { supabase: S
   return (
     <div className="auth-page">
       <div className="auth-story">
-        <span className="wordmark">CA <span>Studyspace</span></span>
+        <span className="wordmark">CA <span>Orbit</span></span>
         <p className="eyebrow">FOR CA FOUNDATION ASPIRANTS</p>
         <h1>Your preparation has a place now.</h1>
         <p>Track the hours. Share useful notes. Find official papers. Solve doubts with students studying the same subjects.</p>
@@ -81,7 +81,7 @@ export default function Auth({ supabase, initialMode = "signup" }: { supabase: S
       <div className="auth-side">
         <div className="auth-card">
           <div className="auth-theme"><ThemeToggle /></div>
-          <p className="eyebrow">WELCOME TO CA STUDYSPACE</p>
+          <p className="eyebrow">WELCOME TO CA ORBIT</p>
           <h2>{mode === "signup" ? "Create your account" : "Welcome back"}</h2>
           <p className="subtle">{mode === "signup" ? "Your study space starts here." : "Pick up where you left off."}</p>
           <button className="google-button" type="button" onClick={() => void signInWithGoogle()} disabled={busy}>

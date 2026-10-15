@@ -296,12 +296,12 @@ export default function Pomodoro({
     if (status === "running") {
       document.title = `${String(Math.floor(remaining / 60)).padStart(2, "0")}:${String(
         remaining % 60
-      ).padStart(2, "0")} · CA Studyspace`;
+      ).padStart(2, "0")} · CA Orbit`;
     } else {
-      document.title = "CA Studyspace — Study better together";
+      document.title = "CA Orbit — Study better together";
     }
     return () => {
-      document.title = "CA Studyspace — Study better together";
+      document.title = "CA Orbit — Study better together";
     };
   }, [remaining, status]);
 

@@ -79,7 +79,7 @@ export default function ModeratorAuth({
     <div className="auth-page mod-auth-page">
       <div className="auth-story mod-auth-story">
         <span className="wordmark">
-          CA <span>Studyspace</span>
+          CA <span>Orbit</span>
         </span>
         <div className="mod-portal-badge">
           <span>🛡️</span>
@@ -87,7 +87,7 @@ export default function ModeratorAuth({
         </div>
         <h1>Study Space Moderation Hub.</h1>
         <p>
-          Restricted access for CA Studyspace verified community moderators. Supervise live rooms, enforce academic guidelines, purge disruptive spam, and maintain a focused study atmosphere.
+          Restricted access for CA Orbit verified community moderators. Supervise live rooms, enforce academic guidelines, purge disruptive spam, and maintain a focused study atmosphere.
         </p>
         <div className="auth-features">
           <span>01 <strong>Purge disruptive spam</strong></span>

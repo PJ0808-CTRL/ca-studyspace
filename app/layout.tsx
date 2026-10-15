@@ -17,24 +17,24 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "CA Studyspace — Study better together",
-    template: "%s | CA Studyspace",
+    default: "CA Orbit — Study better together",
+    template: "%s | CA Orbit",
   },
-  description: "The all-in-one study space for CA Foundation aspirants: progress tracking, Pomodoro sessions, shared notes, live rooms, discussions, and official ICAI papers.",
-  applicationName: "CA Studyspace",
-  keywords: ["CA Foundation", "CA study app", "ICAI papers", "CA notes", "Pomodoro", "CA aspirants"],
+  description: "The all-in-one focus and study platform for CA Foundation aspirants: progress tracking, Pomodoro sessions, shared notes, live rooms, discussions, and official ICAI papers.",
+  applicationName: "CA Orbit",
+  keywords: ["CA Foundation", "CA study app", "ICAI papers", "CA notes", "Pomodoro", "CA aspirants", "CA Orbit"],
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_IN",
     url: "/",
-    siteName: "CA Studyspace",
-    title: "CA Studyspace — Study better together",
+    siteName: "CA Orbit",
+    title: "CA Orbit — Study better together",
     description: "Plan your CA Foundation preparation, track progress, focus with Pomodoro sessions, share notes, and study with other aspirants.",
   },
   twitter: {
     card: "summary",
-    title: "CA Studyspace — Study better together",
+    title: "CA Orbit — Study better together",
     description: "One focused space for CA Foundation preparation, notes, progress, discussions, and official ICAI papers.",
   },
   icons: {
@@ -52,8 +52,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   const websiteData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "CA Studyspace",
-    alternateName: "CA Study Space",
+    name: "CA Orbit",
+    alternateName: "CA Orbit Study Platform",
     url: siteUrl,
     description: metadata.description,
   };

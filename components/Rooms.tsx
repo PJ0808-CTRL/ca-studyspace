@@ -476,7 +476,7 @@ export default function Rooms({
               </button>
             </div>
             <p className="fine">
-              Help keep CA Studyspace a safe and constructive study environment.
+              Help keep CA Orbit a safe and constructive study environment.
             </p>
             <div className="reported-snippet">
               <strong>{reportingMessage.author_name}:</strong>

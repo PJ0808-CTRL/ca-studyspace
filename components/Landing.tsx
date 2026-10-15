@@ -22,8 +22,8 @@ export default function Landing({
   return (
     <div className="landing-page">
       <header className="landing-nav">
-        <a className="landing-brand" href="#top" aria-label="CA Studyspace home">
-          <span>CA</span> Studyspace
+        <a className="landing-brand" href="#top" aria-label="CA Orbit home">
+          <span>CA</span> Orbit
         </a>
         <nav className="landing-desktop-nav" aria-label="Homepage navigation">
           <a href="#features" onClick={e => { e.preventDefault(); scrollTo("features"); }}>Features</a>
@@ -73,7 +73,7 @@ export default function Landing({
             <h1>Study with <em>clarity.</em><br />Grow with consistency.</h1>
             <p>One focused space to plan your day, run Pomodoro sessions, share notes, discuss difficult concepts, and find official ICAI papers.</p>
             <div className="hero-cta">
-              <button className="landing-start large" onClick={onStart}>Create your free studyspace <span>↗</span></button>
+              <button className="landing-start large" onClick={onStart}>Launch your free study orbit <span>↗</span></button>
               <button className="hero-link" onClick={() => scrollTo("features")}>Explore the workspace ↓</button>
             </div>
             <div className="hero-trust">
@@ -81,11 +81,11 @@ export default function Landing({
               <span><b>✓</b> Your progress stays private</span>
             </div>
           </div>
-          <div className="hero-visual" aria-label="Animated preview of CA Studyspace">
+          <div className="hero-visual" aria-label="Animated preview of CA Orbit">
             <div className="visual-glow" />
             <div className="preview-window">
               <div className="preview-top">
-                <span className="preview-mark">CA <b>Studyspace.</b></span>
+                <span className="preview-mark">CA <b>Orbit.</b></span>
                 <div><i /><i /><i /></div>
               </div>
               <div className="preview-body">
@@ -221,7 +221,7 @@ export default function Landing({
       </main>
       <footer className="landing-footer">
         <div className="landing-footer-brand-col">
-          <a className="landing-brand" href="#top"><span>CA</span> Studyspace</a>
+          <a className="landing-brand" href="#top"><span>CA</span> Orbit</a>
           <p>The all-in-one focus and study platform for CA Foundation aspirants.</p>
           <small className="landing-footer-disclaimer">
             Statutory Disclaimer: Independent study tool. Not affiliated with, endorsed by, or sponsored by the Institute of Chartered Accountants of India (ICAI).

@@ -336,7 +336,7 @@ export default function Leaderboard({
             <div className="section-title split">
               <div>
                 <p className="eyebrow">ACHIEVEMENT SHOWCASE</p>
-                <h3>CA Studyspace Trophy Case</h3>
+                <h3>CA Orbit Trophy Case</h3>
                 <p className="subtle">Unlock badges through consistent Pomodoro focus blocks, subject mastery, and disciplined revisions.</p>
               </div>
               <div className="trophy-filter-strip">
@@ -414,7 +414,7 @@ export default function Leaderboard({
             <div className="section-title">
               <div>
                 <p className="eyebrow">RANK PROGRESSION SYSTEM</p>
-                <h3>The 9 CA Studyspace Rank Tiers</h3>
+                <h3>The 9 CA Orbit Rank Tiers</h3>
                 <p className="subtle">Each tier represents verified focus stamina and consistency. Progress through the tiers by completing live Pomodoro focus blocks and spaced revisions.</p>
               </div>
             </div>

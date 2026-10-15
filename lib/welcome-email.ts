@@ -1,12 +1,12 @@
 export function getWelcomeEmailHtml(name: string, siteUrl: string): string {
   const safeName = name ? name.split(" ")[0] : "Aspirant";
-  const deskUrl = siteUrl || "https://ca-studyspace.vercel.app";
+  const deskUrl = siteUrl || "https://caorbit.vercel.app";
 
   return `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Welcome to CA Studyspace!</title>
+  <title>Welcome to CA Orbit!</title>
 </head>
 <body style="margin:0;padding:24px 12px;background:#f3f7f4;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#162a22;">
   <div style="max-width:540px;margin:0 auto;background:#ffffff;border-radius:14px;border:1px solid #d9e8dc;overflow:hidden;box-shadow:0 8px 24px rgba(24,88,56,0.06);">
@@ -14,7 +14,7 @@ export function getWelcomeEmailHtml(name: string, siteUrl: string): string {
     <!-- Header -->
     <div style="background:linear-gradient(135deg,#185838 0%,#103d27 100%);padding:26px 28px;text-align:center;">
       <span style="display:inline-block;background:#ffffff;color:#185838;font-weight:900;font-size:14px;padding:4px 8px;border-radius:5px;vertical-align:middle;">CA</span>
-      <span style="font-family:Georgia,serif;font-size:24px;font-weight:700;color:#ffffff;margin-left:7px;vertical-align:middle;">Studyspace</span>
+      <span style="font-family:Georgia,serif;font-size:24px;font-weight:700;color:#ffffff;margin-left:7px;vertical-align:middle;">Orbit</span>
       <div style="margin-top:8px;">
         <span style="font-size:10px;font-weight:800;color:#b6f0ce;letter-spacing:1.2px;text-transform:uppercase;">CA FOUNDATION ASPIRANT DESK</span>
       </div>
@@ -26,7 +26,7 @@ export function getWelcomeEmailHtml(name: string, siteUrl: string): string {
         Welcome to your study desk, ${safeName}!
       </h2>
       <p style="font-size:14.5px;line-height:1.6;color:#435e50;margin:0 0 20px 0;">
-        Your CA Studyspace account is live and ready. Whether you are balancing ledgers in Accounting, memorizing provisions in Business Laws, tackling Quantitative Aptitude, or studying Economics, you now have a dedicated space to prepare with fellow aspirants.
+        Your CA Orbit account is live and ready. Whether you are balancing ledgers in Accounting, memorizing provisions in Business Laws, tackling Quantitative Aptitude, or studying Economics, you now have a dedicated space to prepare with fellow aspirants.
       </p>
 
       <!-- Key Features Box -->
@@ -60,7 +60,7 @@ export function getWelcomeEmailHtml(name: string, siteUrl: string): string {
     <!-- Footer -->
     <div style="background:#f8fbf8;border-top:1px solid #e2ede4;padding:16px 28px;text-align:center;">
       <p style="font-size:11px;font-weight:700;color:#185838;margin:0;">
-        &copy; 2026 CA Studyspace &bull; Study Better Together
+        &copy; 2026 CA Orbit &bull; Study Better Together
       </p>
     </div>
 

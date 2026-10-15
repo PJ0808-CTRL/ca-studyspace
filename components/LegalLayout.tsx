@@ -23,9 +23,9 @@ export default function LegalLayout({
       {/* Top Navigation Bar */}
       <header className="legal-topbar">
         <div className="legal-topbar-inner">
-          <Link href="/" className="legal-brand" title="Back to CA Studyspace Home">
+          <Link href="/" className="legal-brand" title="Back to CA Orbit Home">
             <span className="legal-brand-badge">CA</span>
-            <strong>Studyspace</strong>
+            <strong>Orbit</strong>
           </Link>
 
           <nav className="legal-nav-links">
@@ -83,7 +83,7 @@ export default function LegalLayout({
       {/* Hero Banner */}
       <section className="legal-hero">
         <div className="legal-hero-inner">
-          <div className="legal-kicker">CA STUDYSPACE · OFFICIAL POLICIES</div>
+          <div className="legal-kicker">CA ORBIT · OFFICIAL POLICIES</div>
           <h1>{title}</h1>
           <p className="legal-subtitle">{subtitle}</p>
           {lastUpdated && (
@@ -111,13 +111,13 @@ export default function LegalLayout({
             <div className="legal-footer-info">
               <Link href="/" className="legal-brand">
                 <span className="legal-brand-badge">CA</span>
-                <strong>Studyspace</strong>
+                <strong>Orbit</strong>
               </Link>
               <p>
                 An independent, community-driven study workspace built for CA Foundation aspirants across India.
               </p>
               <small className="legal-icai-notice">
-                Statutory Disclaimer: CA Studyspace is an independent student initiative and is not affiliated with, endorsed by, or sponsored by the Institute of Chartered Accountants of India (ICAI).
+                Statutory Disclaimer: CA Orbit is an independent student initiative and is not affiliated with, endorsed by, or sponsored by the Institute of Chartered Accountants of India (ICAI).
               </small>
             </div>
 
@@ -125,7 +125,7 @@ export default function LegalLayout({
               <div className="legal-col">
                 <strong>Platform Navigation</strong>
                 <Link href="/">Home & App</Link>
-                <Link href="/about">About CA Studyspace</Link>
+                <Link href="/about">About CA Orbit</Link>
                 <a href="/#features">Platform Features</a>
                 <a href="/#how-it-works">How Pomodoro Works</a>
               </div>
@@ -134,14 +134,14 @@ export default function LegalLayout({
                 <strong>Legal & Compliance</strong>
                 <Link href="/privacy">Privacy Policy</Link>
                 <Link href="/terms">Terms of Service</Link>
-                <a href="mailto:castudyspacesupport@gmail.com">Student Support</a>
-                <a href="mailto:castudyspacesupport@gmail.com">Legal Inquiries</a>
+                <a href="mailto:caorbitsupport@gmail.com">Student Support</a>
+                <a href="mailto:caorbitsupport@gmail.com">Legal Inquiries</a>
               </div>
             </div>
           </div>
 
           <div className="legal-footer-bottom">
-            <span>© {new Date().getFullYear()} CA Studyspace. All rights reserved. Free educational initiative.</span>
+            <span>© {new Date().getFullYear()} CA Orbit. All rights reserved. Free educational initiative.</span>
             <div className="legal-bottom-pills">
               <span className="pill">100% Free For Students</span>
               <span className="pill">Independent Initiative</span>

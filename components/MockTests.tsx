@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import type { MockTest } from "@/lib/types";
 import { awardVerifiedXP } from "@/lib/gamification";
 
-const STORAGE_PREFIX = "ca-studyspace-mock-tests-";
+const STORAGE_PREFIX = "ca-orbit-mock-tests-";
+const LEGACY_STORAGE_PREFIX = "ca-studyspace-mock-tests-";
 
 const presetTitles = [
   "ICAI MTP Series 1",
@@ -43,7 +44,7 @@ export default function MockTests({ userId }: { userId: string }) {
   // Load from localStorage
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(storageKey);
+      const stored = localStorage.getItem(storageKey) || localStorage.getItem(`${LEGACY_STORAGE_PREFIX}${userId}`);
       if (stored) {
         const parsed = JSON.parse(stored) as MockTest[];
         if (Array.isArray(parsed)) {
@@ -54,7 +55,7 @@ export default function MockTests({ userId }: { userId: string }) {
       console.warn("Failed to read mock tests from localStorage", err);
     }
     setHydrated(true);
-  }, [storageKey]);
+  }, [storageKey, userId]);
 
   // Persist helper
   function saveList(newList: MockTest[]) {

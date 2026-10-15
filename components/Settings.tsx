@@ -63,7 +63,7 @@ export default function Settings({ supabase, profile, refresh }: { supabase: Sup
             <h3>Sign out</h3>
           </div>
         </div>
-        <p className="subtle" style={{ marginTop: 8, marginBottom: 16 }}>Sign out of your CA Studyspace account on this device.</p>
+        <p className="subtle" style={{ marginTop: 8, marginBottom: 16 }}>Sign out of your CA Orbit account on this device.</p>
         <button type="button" className="danger-button" onClick={() => void supabase.auth.signOut()}>Log out of your account ↗</button>
       </section>
     </>

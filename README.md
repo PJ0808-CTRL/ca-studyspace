@@ -1,6 +1,6 @@
-# CA Studyspace (Next.js + Supabase)
+# CA Orbit (Next.js + Supabase)
 
-This is the new standalone project in `D:\ca studyspace`. The code is already in place; you do not need to recreate the React files.
+This is the platform workspace. The code is already in place; you do not need to recreate the React files.
 
 ## Files that matter
 
@@ -60,7 +60,7 @@ This is the new standalone project in `D:\ca studyspace`. The code is already in
 2. Add `http://localhost:3000` to **Authorized JavaScript origins**. Under **Authorized redirect URIs**, paste the **Callback URL** shown in **Supabase → Authentication → Providers → Google**. For a hosted Supabase project it has the form `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback`. The Google redirect goes to Supabase, not directly to localhost.
 3. Copy the Google **Client ID** and **Client secret** into the same Supabase Google provider page, enable the provider, and save. Keep the client secret in Supabase; do not put it in `.env.local` or Git.
 4. In **Supabase → Authentication → URL Configuration**, keep the Site URL as `http://localhost:3000` and add `http://localhost:3000` to the redirect allow list if needed. The app sends users back to that origin after Google sign-in.
-5. On the CA Studyspace login screen, choose **Continue with Google**. Google accounts use the same profile, notes, and community tables as email accounts. You do not need another SQL migration.
+5. On the CA Orbit login screen, choose **Continue with Google**. Google accounts use the same profile, notes, and community tables as email accounts. You do not need another SQL migration.
 
 When deploying, add the production site origin to Google Authorized JavaScript origins and to Supabase redirect URLs; use the same Supabase callback URL in Google.
 

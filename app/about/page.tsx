@@ -4,16 +4,16 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "About Us",
-  description: "Learn about the mission, features, and story behind CA Studyspace — the 100% free, focused study platform for CA Foundation aspirants across India.",
+  description: "Learn about the mission, features, and story behind CA Orbit — the 100% free, focused study platform for CA Foundation aspirants across India.",
   alternates: { canonical: "/about" },
 };
 
 export default function AboutUsPage() {
   return (
     <LegalLayout
-      title="About CA Studyspace"
+      title="About CA Orbit"
       subtitle="Built by aspirants, for aspirants. Giving every CA Foundation student a focused, distraction-free study desk and structured progress tools."
-      lastUpdated="October 13, 2026"
+      lastUpdated="October 15, 2026"
       activePath="/about"
     >
       <div className="legal-article">
@@ -22,13 +22,13 @@ export default function AboutUsPage() {
           <span className="about-kicker">OUR CORE MISSION</span>
           <h2>A dedicated digital study room for the toughest examination journey in India.</h2>
           <p>
-            Preparing for CA Foundation requires hundreds of hours of solitary discipline. CA Studyspace was built to replace aimless scrolling and loneliness with deep focus, transparent progress tracking, verified motivation, and structured academic productivity.
+            Preparing for CA Foundation requires hundreds of hours of solitary discipline. CA Orbit was built to replace aimless scrolling and loneliness with deep focus, transparent progress tracking, verified motivation, and structured academic productivity.
           </p>
         </div>
 
         {/* Section 1: The Problem & Origin */}
         <section className="legal-section">
-          <h2>1. Why CA Studyspace Exists</h2>
+          <h2>1. Why CA Orbit Exists</h2>
           <p>
             Every year, lakhs of passionate students across India register for the CA Foundation exam. Yet, over 70% of students struggle with the exact same challenges:
           </p>
@@ -50,7 +50,7 @@ export default function AboutUsPage() {
             </div>
           </div>
           <p style={{ marginTop: "16px" }}>
-            We created <strong>CA Studyspace</strong> to fix this: an all-in-one, clean, elegant web workspace with zero distractions, authentic peer study rooms, verified gamified ranks, and a centralized library of ICAI resources.
+            We created <strong>CA Orbit</strong> to fix this: an all-in-one, clean, elegant web workspace with zero distractions, authentic peer study rooms, verified gamified ranks, and a centralized library of ICAI resources.
           </p>
         </section>
 
@@ -97,9 +97,9 @@ export default function AboutUsPage() {
             We believe that every aspiring Chartered Accountant—whether studying in a metro city or a small village—deserves equal access to premium productivity and focus tools.
           </p>
           <div className="legal-notice-box">
-            <strong>Why there is NO subscription paywall on CA Studyspace:</strong>
+            <strong>Why there is NO subscription paywall on CA Orbit:</strong>
             <p>
-              Rather than locking features behind expensive recurring subscriptions, CA Studyspace is supported through minimal, clean third-party advertisements (such as Google AdSense). This ensures:
+              Rather than locking features behind expensive recurring subscriptions, CA Orbit is supported through minimal, clean third-party advertisements (such as Google AdSense). This ensures:
             </p>
             <ul>
               <li><strong>Zero Cost for Students:</strong> Every tool, timer, mock test, and shared note feature remains accessible to all.</li>
@@ -117,7 +117,7 @@ export default function AboutUsPage() {
             <div>
               <strong>Non-Affiliation Notice:</strong>
               <p>
-                CA Studyspace is an independent student initiative created to support CA Foundation aspirants. CA Studyspace is <strong>NOT affiliated with, endorsed by, or sponsored by the Institute of Chartered Accountants of India (ICAI)</strong>. All study materials, question papers, and syllabus syllabi are the intellectual property of their respective owners.
+                CA Orbit is an independent student initiative created to support CA Foundation aspirants. CA Orbit is <strong>NOT affiliated with, endorsed by, or sponsored by the Institute of Chartered Accountants of India (ICAI)</strong>. All study materials, question papers, and syllabus syllabi are the intellectual property of their respective owners.
               </p>
             </div>
           </div>
@@ -126,10 +126,10 @@ export default function AboutUsPage() {
         {/* Section 5: Join the Community CTA */}
         <section className="about-cta-card">
           <h2>Ready to transform your CA Foundation prep?</h2>
-          <p>Join thousands of aspirants building disciplined, daily focus routines on CA Studyspace today.</p>
+          <p>Join thousands of aspirants building disciplined, daily focus routines on CA Orbit today.</p>
           <div className="about-cta-actions">
             <Link href="/" className="primary about-cta-desk-btn">
-              Open CA Studyspace Desk ↗
+              Open CA Orbit Desk ↗
             </Link>
             <Link href="/privacy" className="about-cta-privacy-btn">
               Read Privacy Policy
