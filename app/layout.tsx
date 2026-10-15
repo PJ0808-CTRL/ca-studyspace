@@ -31,11 +31,20 @@ export const metadata: Metadata = {
     siteName: "CA Orbit",
     title: "CA Orbit — Study better together",
     description: "Plan your CA Foundation preparation, track progress, focus with Pomodoro sessions, share notes, and study with other aspirants.",
+    images: [
+      {
+        url: "/apple-touch-icon.png",
+        width: 180,
+        height: 180,
+        alt: "CA Orbit — Chartered Accountancy Study Workspace",
+      },
+    ],
   },
   twitter: {
     card: "summary",
     title: "CA Orbit — Study better together",
     description: "One focused space for CA Foundation preparation, notes, progress, discussions, and official ICAI papers.",
+    images: ["/apple-touch-icon.png"],
   },
   icons: {
     icon: [{ url: "/favicon.png", type: "image/png", sizes: "64x64" }],

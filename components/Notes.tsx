@@ -52,7 +52,7 @@ export default function Notes({
       if (!active) return;
       if (error) setListError(error.message);
       else {
-        const rows = (data || []) as Note[];
+        const rows = ((data || []) as Note[]).filter(item => !isItemDeletedByMod(item.id));
         setItems(previous => page === 0 ? rows.slice(0, PAGE_SIZE) : [...previous, ...rows.slice(0, PAGE_SIZE)]);
         setHasMore(rows.length > PAGE_SIZE);
       }

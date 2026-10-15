@@ -326,7 +326,7 @@ export default function Home() {
                 <i>🛡️</i> Moderator
               </span>
             ) : (
-              <span className="study-status"><i /> Your study space</span>
+              <span className="study-status"><i /> Study Desk</span>
             )}
             <div className="profile-menu-container">
               <button

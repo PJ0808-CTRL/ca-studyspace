@@ -45,7 +45,7 @@ const MOTIVATIONAL_QUOTES = [
   { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
   { text: "The difference between an ordinary student and a Chartered Accountant is discipline.", author: "CA Community" },
   { text: "Balance sheets may not tally on the first attempt, but persistence always balances out.", author: "Foundation Mentor" },
-  { text: "Every concept and provision you master today brings you closer to the prefix 'CA'.", author: "Study Space" },
+  { text: "Every concept and provision you master today brings you closer to the prefix 'CA'.", author: "CA Orbit" },
   { text: "Do what is right, not what is easy. Master one concept at a time.", author: "Anonymous" },
   { text: "You don't have to be extreme, just consistent. Deep focus compounds exponentially.", author: "Anonymous" },
   { text: "The expert in anything was once a beginner. Keep turning the pages.", author: "Helen Hayes" },

@@ -32,7 +32,7 @@ export default function Auth({ supabase, initialMode = "signup" }: { supabase: S
         setMessage(
           data.session
             ? "Account created! Opening your dashboard…"
-            : "Account created! You can now log in to your study space."
+            : "Account created! You can now log in to CA Orbit."
         );
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });

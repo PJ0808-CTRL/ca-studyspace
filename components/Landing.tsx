@@ -131,6 +131,27 @@ export default function Landing({
           <span>YOUR COMPLETE FOUNDATION WORKSPACE</span>
           <div><b>Accounting</b><b>Business Laws</b><b>Quantitative Aptitude</b><b>Business Economics</b></div>
         </section>
+
+        {/* Animated Feature Marquee Ticker */}
+        <div className="landing-ticker-strip" aria-hidden="true">
+          <div className="landing-ticker-track">
+            <span className="landing-ticker-item"><i>⚡</i> <strong>Live Study Rooms:</strong> Realtime study accountability</span>
+            <span className="landing-ticker-item"><i>⚡</i> <strong>GitHub Study Heatmap:</strong> 365-day visual consistency grid</span>
+            <span className="landing-ticker-item"><i>⚡</i> <strong>Spaced Flashcards:</strong> Scientific 1-3-7-15-30 day recall</span>
+            <span className="landing-ticker-item"><i>⚡</i> <strong>Pomodoro Focus Studio:</strong> Ambient soundscapes & auto-logs</span>
+            <span className="landing-ticker-item"><i>⚡</i> <strong>ICAI Papers Library:</strong> Official MTPs, RTPs & answers</span>
+            <span className="landing-ticker-item"><i>⚡</i> <strong>All-India XP Leaderboard:</strong> 9 rank tiers & trophy case</span>
+            <span className="landing-ticker-item"><i>⚡</i> <strong>100% Free Forever:</strong> Zero paywalls, zero waitlists</span>
+            {/* Duplicated for seamless loop */}
+            <span className="landing-ticker-item"><i>⚡</i> <strong>Live Study Rooms:</strong> Realtime study accountability</span>
+            <span className="landing-ticker-item"><i>⚡</i> <strong>GitHub Study Heatmap:</strong> 365-day visual consistency grid</span>
+            <span className="landing-ticker-item"><i>⚡</i> <strong>Spaced Flashcards:</strong> Scientific 1-3-7-15-30 day recall</span>
+            <span className="landing-ticker-item"><i>⚡</i> <strong>Pomodoro Focus Studio:</strong> Ambient soundscapes & auto-logs</span>
+            <span className="landing-ticker-item"><i>⚡</i> <strong>ICAI Papers Library:</strong> Official MTPs, RTPs & answers</span>
+            <span className="landing-ticker-item"><i>⚡</i> <strong>All-India XP Leaderboard:</strong> 9 rank tiers & trophy case</span>
+            <span className="landing-ticker-item"><i>⚡</i> <strong>100% Free Forever:</strong> Zero paywalls, zero waitlists</span>
+          </div>
+        </div>
         <section className="landing-section" id="features">
           <div className="section-intro">
             <p className="landing-kicker">EVERYTHING IN ONE PLACE</p>

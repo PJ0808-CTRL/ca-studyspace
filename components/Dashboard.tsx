@@ -11,6 +11,7 @@ import {
   type GamificationState,
 } from "@/lib/gamification";
 import RankEmblem from "./RankEmblem";
+import StudyHeatmap from "./StudyHeatmap";
 
 const today = () => new Date().toLocaleDateString("en-CA");
 
@@ -370,6 +371,9 @@ export default function Dashboard({
           </div>
         </section>
       </div>
+
+      {/* GitHub-Style 365-Day Study Activity Heatmap */}
+      <StudyHeatmap logs={logs} />
 
       {/* Subject Distribution & Balance Analytics */}
       <section className="card subject-balance-card">
