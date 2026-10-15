@@ -76,19 +76,15 @@ export default function Dashboard({
     const target = new Date(`${profile.exam_date}T00:00:00`);
     const diff = target.getTime() - Date.now();
     const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-    let phase = "Foundation Stage";
     let phaseDesc = "Comprehensive syllabus learning and illustration mastery.";
     if (days < 30) {
-      phase = "Final Sprint";
       phaseDesc = "Solve full 3-hour MTPs, revise RTP questions, and drill weak chapters.";
     } else if (days < 75) {
-      phase = "Consolidation & Revision";
       phaseDesc = "First & second cycle revisions, chapter tests, and formula recall.";
     }
     return {
       days,
       formattedDate: target.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-      phase,
       phaseDesc,
     };
   }, [profile.exam_date]);
@@ -228,7 +224,6 @@ export default function Dashboard({
             </div>
             <div className="ticker-info">
               <div className="ticker-phase-row">
-                <span className="tag">{examInfo.phase}</span>
                 <span className="ticker-date">Target: {examInfo.formattedDate}</span>
                 <button type="button" className="text-button" onClick={() => setEditingExamDate(true)}>Change ✎</button>
               </div>
