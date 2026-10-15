@@ -30,11 +30,11 @@ To change the sender name to **CA Orbit**:
    ```text
    CA Orbit
    ```
-3. To send from your own domain (e.g. `caorbitsupport@gmail.com` or custom address) without any Supabase references:
+3. To send from your own domain (e.g. `castudyspacesupport@gmail.com` or custom address) without any Supabase references:
    - Go to **Project Settings** &rarr; **Authentication** &rarr; **SMTP Settings**.
    - Enable **Custom SMTP**.
    - Enter credentials from any free transactional email provider (such as [Resend](https://resend.com), [Brevo/Sendinblue](https://brevo.com), or [SendGrid]).
-   - **Sender email**: `no-reply@caorbit.vercel.app`
+   - **Sender email**: `no-reply@castudyspace.vercel.app`
    - **Sender name**: `CA Orbit`
 
 ---

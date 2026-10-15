@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     }
 
     const recipientName = typeof name === "string" && name ? name : "Aspirant";
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://caorbit.vercel.app";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://castudyspace.vercel.app";
     const html = getWelcomeEmailHtml(recipientName, siteUrl);
     const subject = "Welcome to CA Orbit! 🎓 Your study desk is ready";
 

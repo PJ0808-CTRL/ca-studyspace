@@ -169,8 +169,8 @@ export default function TermsOfServicePage() {
           </p>
           <div className="legal-contact-card">
             <strong>CA Orbit Legal & Community Compliance</strong>
-            <p>Email: <a href="mailto:caorbitsupport@gmail.com">caorbitsupport@gmail.com</a></p>
-            <p>Website: <Link href="/">caorbit.vercel.app</Link></p>
+            <p>Email: <a href="mailto:castudyspacesupport@gmail.com">castudyspacesupport@gmail.com</a></p>
+            <p>Website: <Link href="/">castudyspace.vercel.app</Link></p>
           </div>
         </section>
       </div>

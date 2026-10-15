@@ -1,6 +1,6 @@
 export function getWelcomeEmailHtml(name: string, siteUrl: string): string {
   const safeName = name ? name.split(" ")[0] : "Aspirant";
-  const deskUrl = siteUrl || "https://caorbit.vercel.app";
+  const deskUrl = siteUrl || "https://castudyspace.vercel.app";
 
   return `<!DOCTYPE html>
 <html>

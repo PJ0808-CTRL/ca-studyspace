@@ -35,7 +35,7 @@ export default function PrivacyPolicyPage() {
             Welcome to CA Orbit (referred to herein as &ldquo;CA Orbit&rdquo;, &ldquo;we&rdquo;, &ldquo;our&rdquo;, or &ldquo;the Platform&rdquo;). We are committed to protecting your privacy and ensuring transparency regarding how your data is handled while you prepare for your Chartered Accountancy examinations.
           </p>
           <p>
-            This Privacy Policy applies to all services, features, Pomodoro tools, discussion boards, study rooms, notes libraries, and resources available at <strong>caorbit.vercel.app</strong> and its subdomains.
+            This Privacy Policy applies to all services, features, Pomodoro tools, discussion boards, study rooms, notes libraries, and resources available at <strong>castudyspace.vercel.app</strong> and its subdomains.
           </p>
         </section>
 
@@ -195,8 +195,8 @@ export default function PrivacyPolicyPage() {
           </p>
           <div className="legal-contact-card">
             <strong>CA Orbit Privacy & Compliance Desk</strong>
-            <p>Email: <a href="mailto:caorbitsupport@gmail.com">caorbitsupport@gmail.com</a></p>
-            <p>Platform: <Link href="/">caorbit.vercel.app</Link></p>
+            <p>Email: <a href="mailto:castudyspacesupport@gmail.com">castudyspacesupport@gmail.com</a></p>
+            <p>Platform: <Link href="/">castudyspace.vercel.app</Link></p>
             <p>Response Time: Typically within 24–48 business hours</p>
           </div>
         </section>
