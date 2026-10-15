@@ -26,7 +26,7 @@ export default function Notes({
   const fileInput = useRef<HTMLInputElement>(null);
   const [method, setMethod] = useState<"upload" | "write">("upload");
   const [shared, setShared] = useState(false);
-  const [scope, setScope] = useState<"mine" | "shared">("shared");
+  const [scope, setScope] = useState<"mine" | "shared">("mine");
   const [subjectFilter, setSubjectFilter] = useState<Subject | "All subjects">("All subjects");
   const [page, setPage] = useState(0);
   const [reload, setReload] = useState(0);
@@ -188,7 +188,11 @@ export default function Notes({
           role="tab"
           aria-selected={mobileTab === "browse"}
         >
-          <span>▤</span> Browse notes {items.length > 0 && `(${items.length})`}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ marginRight: 6 }}>
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+          </svg>
+          Browse notes {items.length > 0 && `(${items.length})`}
         </button>
         <button
           type="button"
@@ -197,7 +201,11 @@ export default function Notes({
           role="tab"
           aria-selected={mobileTab === "create"}
         >
-          <span>+</span> Upload / Write
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ marginRight: 6 }}>
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Upload / Write
         </button>
       </div>
 
@@ -266,11 +274,11 @@ export default function Notes({
             </div>
           </div>
           <div className="segmented">
-            <button type="button" className={scope === "shared" ? "active" : ""} onClick={() => { setScope("shared"); setItems([]); setPage(0); }}>
-              Shared notes
-            </button>
             <button type="button" className={scope === "mine" ? "active" : ""} onClick={() => { setScope("mine"); setItems([]); setPage(0); }}>
               My notes
+            </button>
+            <button type="button" className={scope === "shared" ? "active" : ""} onClick={() => { setScope("shared"); setItems([]); setPage(0); }}>
+              Shared notes
             </button>
           </div>
           <label className="note-filter">
@@ -293,7 +301,12 @@ export default function Notes({
                   {item.content && <p>{item.content}</p>}
                   {item.file_name && (
                     <div className="note-attachment">
-                      <span>▤</span>
+                      <span className="note-file-icon" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                          <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                      </span>
                       <div className="note-attachment-info">
                         <strong>{item.file_name}</strong>
                         <small>{item.file_size ? `${(item.file_size / 1024 / 1024).toFixed(1)} MB` : "Document"}</small>
@@ -312,16 +325,47 @@ export default function Notes({
                         onClick={() => void remove(item)}
                         title={isModerator && item.user_id !== userId ? "Moderator: Permanently delete note" : "Delete note"}
                       >
-                        {isModerator && item.user_id !== userId ? "🛡️ Delete Note" : "Delete"}
+                        {isModerator && item.user_id !== userId ? (
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            </svg>
+                            Moderator: Delete
+                          </span>
+                        ) : (
+                          "Delete"
+                        )}
                       </button>
                     )}
                   </div>
                 </article>
               ))
             ) : !loading ? (
-              <p className="empty">
-                {scope === "mine" ? "You haven’t added a note for this subject yet." : "No shared notes for this subject yet. Be the first to contribute."}
-              </p>
+              <div className="notes-empty-state">
+                <div className="notes-empty-icon" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                  </svg>
+                </div>
+                <b>{scope === "mine" ? "Your notes library is empty" : "No shared notes for this subject yet"}</b>
+                <p>
+                  {scope === "mine"
+                    ? "Upload your revision PDFs, chapter summaries, or handwritten notes to keep them organized across all your devices."
+                    : "Be the first aspirant to contribute notes for this subject and help fellow students."}
+                </p>
+                {scope === "mine" && (
+                  <button
+                    type="button"
+                    className="primary notes-empty-cta"
+                    onClick={() => setMobileTab("create")}
+                  >
+                    + Upload or write a note
+                  </button>
+                )}
+              </div>
             ) : null}
             {loading && <p className="empty">Loading notes…</p>}
           </div>
