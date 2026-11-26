@@ -71,7 +71,7 @@ export default function Auth({ supabase, initialMode = "signup" }: { supabase: S
         <span className="wordmark">CA <span>Orbit</span></span>
         <p className="eyebrow">FOR CA FOUNDATION ASPIRANTS</p>
         <h1>Your preparation has a place now.</h1>
-        <p>Track the hours. Share useful notes. Find official papers. Solve doubts with students studying the same subjects.</p>
+        <p>Track the hours. Share useful notes. Solve doubts with students studying the same subjects.</p>
         <div className="auth-features">
           <span>01 <strong>Study with a plan</strong></span>
           <span>02 <strong>Share your notes</strong></span>

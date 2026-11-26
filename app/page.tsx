@@ -10,7 +10,6 @@ import Pomodoro from "@/components/Pomodoro";
 import Rooms from "@/components/Rooms";
 import Notes from "@/components/Notes";
 import Community from "@/components/Community";
-import Resources from "@/components/Resources";
 import Settings from "@/components/Settings";
 import ThemeToggle from "@/components/ThemeToggle";
 import ModeratorAuth from "@/components/ModeratorAuth";
@@ -21,7 +20,7 @@ import { getSupabase } from "@/lib/supabase";
 import { isModeratorActive, activateModeratorSession, deactivateModeratorSession, verifyModeratorPasscode } from "@/lib/moderation";
 import type { Discussion, Profile, Reply, StudyLog } from "@/lib/types";
 
-type View = "dashboard" | "plan" | "pomodoro" | "leaderboard" | "rooms" | "community" | "notes" | "resources" | "settings";
+type View = "dashboard" | "plan" | "pomodoro" | "leaderboard" | "rooms" | "community" | "notes" | "settings";
 const navigation: { id: View; label: string; icon: string }[] = [
   { id: "dashboard", label: "Dashboard", icon: "▦" },
   { id: "plan", label: "Study plan", icon: "◫" },
@@ -30,7 +29,6 @@ const navigation: { id: View; label: string; icon: string }[] = [
   { id: "rooms", label: "Live rooms", icon: "◉" },
   { id: "community", label: "Discussions", icon: "☷" },
   { id: "notes", label: "Notes", icon: "▤" },
-  { id: "resources", label: "ICAI papers", icon: "↗" },
   { id: "settings", label: "My profile", icon: "⚙" },
 ];
 
@@ -461,7 +459,6 @@ export default function Home() {
           {view === "rooms" && <Rooms supabase={supabase} userId={user.id} profile={profile} isModerator={isModerator} />}
           {view === "community" && <Community supabase={supabase} userId={user.id} profile={profile} discussions={discussions} replies={replies} refresh={refresh} isModerator={isModerator} />}
           {view === "notes" && <Notes supabase={supabase} userId={user.id} isModerator={isModerator} />}
-          {view === "resources" && <Resources />}
           {view === "settings" && <Settings supabase={supabase} profile={profile} refresh={refresh} />}
           <footer>
             <div className="app-footer-bar">

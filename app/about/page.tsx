@@ -50,7 +50,7 @@ export default function AboutUsPage() {
             </div>
           </div>
           <p style={{ marginTop: "16px" }}>
-            We created <strong>CA Orbit</strong> to fix this: an all-in-one, clean, elegant web workspace with zero distractions, authentic peer study rooms, verified gamified ranks, and a centralized library of ICAI resources.
+            We created <strong>CA Orbit</strong> to fix this: an all-in-one, clean, elegant web workspace with zero distractions, authentic peer study rooms, verified gamified ranks, and curated student-shared notes.
           </p>
         </section>
 
@@ -81,9 +81,9 @@ export default function AboutUsPage() {
             <div className="about-pillar-row">
               <div className="about-pillar-icon">↗</div>
               <div className="about-pillar-content">
-                <h3>3. Curated Notes & Official ICAI Materials Index</h3>
+                <h3>3. Curated Notes &amp; Study Summaries</h3>
                 <p>
-                  Direct, one-click access to official ICAI question papers, Revision Test Papers (RTPs), Mock Test Papers (MTPs), suggested answers, and student-shared summaries in one centralized library.
+                  Direct, one-click access to your personal revision PDFs, chapter summaries, and student-shared study notes organized by subject in one centralized library.
                 </p>
               </div>
             </div>

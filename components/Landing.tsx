@@ -52,16 +52,6 @@ const TICKER_ITEMS = [
   {
     icon: (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-      </svg>
-    ),
-    label: "ICAI Papers Library:",
-    desc: "Official MTPs, RTPs & answers",
-  },
-  {
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
         <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
         <path d="M4 22h16" />
@@ -156,7 +146,7 @@ export default function Landing({
           <div className="hero-copy">
             <div className="landing-kicker">BUILT FOR CA FOUNDATION</div>
             <h1>Study with <em>clarity.</em><br />Grow with consistency.</h1>
-            <p>One focused space to plan your day, run Pomodoro sessions, share notes, discuss difficult concepts, and find official ICAI papers.</p>
+            <p>One focused space to plan your day, run Pomodoro sessions, share notes, and discuss difficult concepts.</p>
             <div className="hero-cta">
               <button className="landing-start large" onClick={onStart}>Launch your free study orbit <span>↗</span></button>
               <button className="hero-link" onClick={() => scrollTo("features")}>Explore the workspace ↓</button>
@@ -270,13 +260,6 @@ export default function Landing({
                 <div><i>A</i><span><b>Can someone explain this step?</b><small>Quantitative Aptitude</small></span></div>
                 <div><i>P</i><span><b>Yes — start with the formula...</b><small>Just now</small></span></div>
               </div>
-            </article>
-            <article className="feature-card feature-papers">
-              <div className="feature-icon">↗</div>
-              <span>OFFICIAL ICAI PAPERS</span>
-              <h3>The right paper, without the hunt.</h3>
-              <p>Browse official question papers, MCQ keys, RTPs, MTPs, and suggested answers from one searchable library.</p>
-              <div className="paper-tags"><span>Question papers</span><span>RTP</span><span>MTP</span><span>Answers</span></div>
             </article>
           </div>
         </section>

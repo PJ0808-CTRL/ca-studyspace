@@ -20,9 +20,9 @@ export const metadata: Metadata = {
     default: "CA Orbit — Study better together",
     template: "%s | CA Orbit",
   },
-  description: "The all-in-one focus and study platform for CA Foundation aspirants: progress tracking, Pomodoro sessions, shared notes, live rooms, discussions, and official ICAI papers.",
+  description: "The all-in-one focus and study platform for CA Foundation aspirants: progress tracking, Pomodoro sessions, shared notes, live rooms, and discussions.",
   applicationName: "CA Orbit",
-  keywords: ["CA Foundation", "CA study app", "ICAI papers", "CA notes", "Pomodoro", "CA aspirants", "CA Orbit"],
+  keywords: ["CA Foundation", "CA study app", "CA notes", "Pomodoro", "CA aspirants", "CA Orbit"],
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary",
     title: "CA Orbit — Study better together",
-    description: "One focused space for CA Foundation preparation, notes, progress, discussions, and official ICAI papers.",
+    description: "One focused space for CA Foundation preparation, notes, progress, and discussions.",
     images: ["/apple-touch-icon.png"],
   },
   icons: {
